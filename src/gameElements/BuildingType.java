@@ -1,5 +1,8 @@
 package gameElements;
 
+/**
+ * This enum lists the possible types of buildings.
+ */
 public enum BuildingType {
 	VILLAGE_HALL,
 	FARM,

@@ -29,7 +29,7 @@ public class Village {
 			map[i] = new Building[MAP_COL_COUNT];
 		}
 
-		inventory = new Inventory(100, 100, 100);
+		inventory = new Inventory(1000, 1000, 1000);
 		freeWorkers = new ArrayList<>();
 		busyWorkers = new ArrayList<>();
 		freeWorkers.add(new Worker());
@@ -65,14 +65,14 @@ public class Village {
 	 * @param pos the position to check
 	 * @return <code>true</code> if the square is occupied, <code>false</code> if not
 	 */
-	public boolean isSquareFull(Position pos) { return map[pos.x][pos.y] != null; }
+	public boolean isSquareFull(Position pos) { return map[pos.X][pos.Y] != null; }
 
 	/**
 	 * Returns the building at the given map square.
 	 * @param pos the position to retrieve from
 	 * @return the <code>Building</code> object at the position
 	 */
-	private Building getBuilding(Position pos) { return map[pos.x][pos.y]; }
+	private Building getBuilding(Position pos) { return map[pos.X][pos.Y]; }
 
 	/**
 	 * Returns the current inventory count.
@@ -103,7 +103,7 @@ public class Village {
 		builder.setBusy(true);
 		busyWorkers.add(builder);
 		inventory.payCost(constructor.getBuildCost());
-		map[pos.x][pos.y] = constructor.addBuilding(pos);
+		map[pos.X][pos.Y] = constructor.addBuilding(pos);
 		return builder;
 	}
 

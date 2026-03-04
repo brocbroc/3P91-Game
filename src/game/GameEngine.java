@@ -103,6 +103,22 @@ public class GameEngine implements Runnable {
 			case "add building":
 				this.addBuilding();
 				return;
+			case "upgrade building":
+				// ADD CODE
+				return;
+			case "add inhabitant":
+				// ADD CODE
+				return;
+			case "upgrade inhabitant":
+				// ADD CODE
+				return;
+			case "attack":
+				// ADD CODE
+				// generate village
+				// let player look for new village until they find one they like
+				// begin attack
+				// technically separate cases but related.
+				return;
 			case "switch player":
 				this.switchPlayer();
 				return;

@@ -9,6 +9,10 @@ import java.util.concurrent.*;
 import java.util.HashMap;
 import utility.*;
 
+/**
+ * This class represents the game engine.
+ * It adds players, runs the main game thread, and handles I/O.
+ */
 public class GameEngine implements Runnable {
 	private GraphicalInterface gui;
 	private HashMap<Integer, Player> players;
@@ -20,7 +24,7 @@ public class GameEngine implements Runnable {
 	private Village base;
 
 	/**
-	 * This is a constructor for GameEngine.
+	 * Class constructor.
 	 */
 	public GameEngine() {
 		players = new HashMap<>();
@@ -31,8 +35,9 @@ public class GameEngine implements Runnable {
 	}
 
 	/**
-	 * This method adds a player to the list of players.
-	 * If the player does not have a village, create a new village for the player.
+	 * Adds a new player to <code>players</code>.
+	 * If there is not a village in <code>villages</code> corresponding to <code>id</code>,
+	 * create a new <code>Village</code> object for the player.
 	 * @param id the player id
 	 */
 	public void addPlayer(int id) {
@@ -46,7 +51,8 @@ public class GameEngine implements Runnable {
 	}
 
 	/**
-	 * This method sets the active player.
+	 * Sets the active player.
+	 * This method sets <code>base</code> to the village of the player with <code>id</code>
 	 * @param id the player id
 	 */
 	public void setActivePlayer(int id) {
@@ -58,7 +64,7 @@ public class GameEngine implements Runnable {
 	}
 
 	/**
-	 * This method starts the game thread
+	 * Starts the thread <code>gameThread</code>
 	 */
 	public void startGameThread() {
 		running = true;
@@ -67,15 +73,15 @@ public class GameEngine implements Runnable {
 	}
 
 	/**
-	 * This method is the main game thread.
-	 * It takes commands from the console and then executes the commands, through the update method
+	 * Runs <code>gameThread</code>.
+	 * This method takes commands from the console and then executes the commands, through
+	 * <code>update()</code>
 	 */
 	@Override
 	public void run() {
 		draw();
 
 		while (running) {
-			System.out.print("Command: ");
 			try {
 				String input = in.readLine().toLowerCase();
 				update(input);
@@ -87,9 +93,10 @@ public class GameEngine implements Runnable {
 	}
 
 	/**
-	 * This method executes the input command.
+	 * Executes the input command.
 	 * @param input the command to execute
-	 * @throws IOException if addBuilding() or switchPlayer() throw exceptions
+	 * @throws IOException if <code>addBuilding()</code> or <code>switchPlayer()</code> throw an
+	 * exception
 	 */
 	public void update(String input) throws IOException {
 		switch (input) {
@@ -109,12 +116,16 @@ public class GameEngine implements Runnable {
 	}
 
 	/**
-	 * This method draws the village of the active player.
+	 * Draws <code>base</code>.
 	 */
 	public void draw() {
-		synchronized (base) {
+		final Village BASE = base;
+
+		synchronized (BASE) {
+			System.out.println();
 			int[] inventory = base.getInventoryValues();
-			System.out.printf("Inventory: Gold - %d, Iron - %d, Lumber - %d", inventory[0], inventory[1], inventory[2]);
+			System.out.printf("Inventory: Gold - %d, Iron - %d, Lumber - %d", inventory[0],
+				inventory[1], inventory[2]);
 			System.out.println();
 			Building[][] map = base.getMap();
 
@@ -122,6 +133,8 @@ public class GameEngine implements Runnable {
 				for (Building building : buildings) {
 					if (building == null) {
 						System.out.print(".");
+					} else if (building.isUnderConstruction()) {
+						System.out.print("#");
 					} else {
 						switch (building.getClass().getName()) {
 							case "gameElements.VillageHall":
@@ -148,19 +161,22 @@ public class GameEngine implements Runnable {
 	}
 
 	/**
-	 * This method adds a new building to the village.
-	 * @throws IOException if BufferedReader fails
+	 * Adds a new building to <code>base</code>.
+	 * @throws IOException if <code>BufferedReader</code> fails
 	 */
 	public void addBuilding() throws IOException {
 		System.out.print("Building type: ");
 		BuildingType type;
+		BuildingConstructor constructor = null;
 
 		switch (in.readLine().toLowerCase()) {
 			case "village hall":
 				type = BuildingType.VILLAGE_HALL;
+				constructor = new VillageHallConstructor();
 				break;
 			case "farm":
 				type = BuildingType.FARM;
+				constructor = new FarmConstructor();
 				break;
 			case "lumber mill":
 				type = BuildingType.LUMBER_MILL;
@@ -186,38 +202,34 @@ public class GameEngine implements Runnable {
 		String posInput = in.readLine();
 		Position pos = parsePosition(posInput);
 
-		if (pos == null) {
+		if (pos == null || base.isSquareFull(pos)) {
 			System.out.println("Invalid building position.");
 			return;
 		}
 
-		// User input acquired. Now time for synchronized part
-		synchronized (base) {
-
-		}
-		/*
-		Worker builder = current.checkAddBuilding(type, pos);
+		Worker builder = base.tryAddBuilding(constructor, pos);
 
 		if (builder == null) {
-			System.out.println("Invalid resources/space/builder.");
+			System.out.println("Building requirements not met.");
 			return;
 		}
 
-		System.out.println("Building started...");
+		// Works with switch player but unnecessarily draws village when done (even though player has changed)
+		System.out.println("Under construction...");
+		final Village BASE = base;
 		scheduler.schedule(() -> {
-			synchronized (current) {
-				builder.setBusy(true);
-				current.addBuildingTest(type, pos);
-				builder.setBusy(false);
+			BASE.completeAddBuilding(builder, pos);
+
+			if (BASE == base) {
+				System.out.println("Building completed.");
+				draw();
 			}
-			System.out.println("Building completed.");
-			draw();
-		}, Player.getBuildTime(type), TimeUnit.SECONDS);*/
+		}, constructor.getBuildTime(), TimeUnit.SECONDS);
 	}
 
 	/**
-	 * This method switches the active player
-	 * @throws IOException if BufferedReader fails
+	 * Switches the active player
+	 * @throws IOException if <code>BufferedReader</code> fails
 	 */
 	public void switchPlayer() throws IOException {
 		System.out.print("New player ID: ");
@@ -232,9 +244,9 @@ public class GameEngine implements Runnable {
 	}
 
 	/**
-	 * This method creates a position object from string input
+	 * Creates a <code>Position</code> object from <code>input</code>.
 	 * @param input the input string of the form "[int] [int]"
-	 * @return the position object, or null if the input was invalid
+	 * @return the <code>Position</code> object, or <code>null</code> if <code>input</code> was invalid
 	 */
 	private Position parsePosition(String input) {
 		String[] coordinates = input.split(" ");
@@ -249,7 +261,7 @@ public class GameEngine implements Runnable {
 	}
 
 	/**
-	 * This method begins a new game.
+	 * Begins a new game.
 	 * @param args
 	 */
 	public static void main(String[] args) {

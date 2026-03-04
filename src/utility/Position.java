@@ -7,10 +7,10 @@ public class Position {
 	public int y;
 
 	public Position(int x, int y) {
-		if (x < 0 || x >= Village.MAP_ROW_COUNT) {
+		if (x < 0 || x >= Village.getMapRowCount()) {
 			throw new IllegalArgumentException("x is out of bounds");
 		}
-		if (y < 0 || y >= Village.MAP_COL_COUNT) {
+		if (y < 0 || y >= Village.getMapColCount()) {
 			throw new IllegalArgumentException("y is out of bounds");
 		}
 

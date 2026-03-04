@@ -2,30 +2,31 @@ package game;
 
 /**
  * This class represents a player of the game.
+ * Every player has a village and an ID. The village is not deleted when the player is.
  */
 public class Player {
-	private int id;
-	private Village village;
+	private final int ID;
+	private final Village VILLAGE;
 
 	/**
-	 * This is a constructor for Player.
-	 * @param id the player id
+	 * Class constructor.
+	 * @param id the player ID
 	 * @param village the player's village
 	 */
 	public Player(int id, Village village) {
-		this.id = id;
-		this.village = village;
+		ID = id;
+		VILLAGE = village;
 	}
 
 	/**
-	 * This method returns the player id.
-	 * @return the player id
+	 * Returns the player ID.
+	 * @return the player ID
 	 */
-	public int getId() { return id; }
+	public int getId() { return ID; }
 
 	/**
-	 * This method returns the player's village.
+	 * Returns the player's village.
 	 * @return the player's village
 	 */
-	public Village getVillage() { return village; }
+	public Village getVillage() { return VILLAGE; }
 }

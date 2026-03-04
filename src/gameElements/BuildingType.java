@@ -1,0 +1,11 @@
+package gameElements;
+
+public enum BuildingType {
+	VILLAGE_HALL,
+	FARM,
+	LUMBER_MILL,
+	IRON_MINE,
+	GOLD_MINE,
+	ARCHER_TOWER,
+	CANNON
+}

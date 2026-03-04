@@ -6,6 +6,8 @@ public class GraphicalInterface {
 	private Player player;
 	private Village base;
 
-	public GraphicalInterface() {
+	public GraphicalInterface(Player player) {
+		this.player = player;
+		base = player.getVillage();
 	}
 }

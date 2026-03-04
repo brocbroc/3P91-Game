@@ -2,11 +2,11 @@ package game;
 
 import gameElements.*;
 import gui.GraphicalInterface;
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.concurrent.*;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
 import utility.*;
 
 public class GameEngine implements Runnable {
@@ -14,18 +14,27 @@ public class GameEngine implements Runnable {
 	private HashMap<Integer, Player> players;
 	private HashMap<Integer, Village> villages;
 	private Thread gameThread;
-	private Scanner in;
+	private BufferedReader in;
 	private ScheduledExecutorService scheduler;
-	private Player currentPlayer;
+	private volatile boolean running;
 	private Village base;
 
+	/**
+	 * This is a constructor for GameEngine.
+	 */
 	public GameEngine() {
 		players = new HashMap<>();
 		villages = new HashMap<>();
-		in = new Scanner(System.in);
+		in = new BufferedReader(new InputStreamReader(System.in));
 		scheduler = new ScheduledThreadPoolExecutor(5);
+		running = false;
 	}
 
+	/**
+	 * This method adds a player to the list of players.
+	 * If the player does not have a village, create a new village for the player.
+	 * @param id the player id
+	 */
 	public void addPlayer(int id) {
 		if (villages.containsKey(id)) {
 			players.put(id, new Player(id, villages.get(id)));
@@ -36,55 +45,78 @@ public class GameEngine implements Runnable {
 		}
 	}
 
-	public void setCurrentPlayer(int id) {
+	/**
+	 * This method sets the active player.
+	 * @param id the player id
+	 */
+	public void setActivePlayer(int id) {
 		if (players.containsKey(id)) {
-			currentPlayer = players.get(id);
-			base = currentPlayer.getVillage();
+			base = players.get(id).getVillage();
 		} else {
 			System.out.println("Invalid player id");
 		}
 	}
 
+	/**
+	 * This method starts the game thread
+	 */
 	public void startGameThread() {
+		running = true;
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
 
+	/**
+	 * This method is the main game thread.
+	 * It takes commands from the console and then executes the commands, through the update method
+	 */
 	@Override
 	public void run() {
 		draw();
 
-		while (gameThread != null) {
+		while (running) {
 			System.out.print("Command: ");
-			String input = in.nextLine().toLowerCase();
-			update(input);
+			try {
+				String input = in.readLine().toLowerCase();
+				update(input);
+			} catch (IOException e) {
+				System.out.println("An IO exception occurred.");
+				e.printStackTrace();
+			}
 		}
 	}
 
-	public void update(String input) {
-		if (input.equals("add building")) {
-			this.addBuilding();
-			return;
+	/**
+	 * This method executes the input command.
+	 * @param input the command to execute
+	 * @throws IOException if addBuilding() or switchPlayer() throw exceptions
+	 */
+	public void update(String input) throws IOException {
+		switch (input) {
+			case "add building":
+				this.addBuilding();
+				return;
+			case "switch player":
+				this.switchPlayer();
+				return;
+			case "exit":
+				running = false;
+				in.close();
+				return;
+			default:
+				System.out.println("Invalid command.");
 		}
-
-		System.out.println("Invalid command.");
 	}
 
-	private Position parsePosition(String input) {
-		String[] coordinates = input.split(" ");
-
-		try {
-			int x = Integer.parseInt(coordinates[0]);
-			int y = Integer.parseInt(coordinates[1]);
-			return new Position(x, y);
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
-	}
-
+	/**
+	 * This method draws the village of the active player.
+	 */
 	public void draw() {
-		synchronized (current) {
-			Building[][] map = current.getVillage().getMap();
+		synchronized (base) {
+			int[] inventory = base.getInventoryValues();
+			System.out.printf("Inventory: Gold - %d, Iron - %d, Lumber - %d", inventory[0], inventory[1], inventory[2]);
+			System.out.println();
+			Building[][] map = base.getMap();
 
 			for (Building[] buildings : map) {
 				for (Building building : buildings) {
@@ -115,11 +147,15 @@ public class GameEngine implements Runnable {
 		}
 	}
 
-	public void addBuilding() {
+	/**
+	 * This method adds a new building to the village.
+	 * @throws IOException if BufferedReader fails
+	 */
+	public void addBuilding() throws IOException {
 		System.out.print("Building type: ");
 		BuildingType type;
 
-		switch (in.nextLine().toLowerCase()) {
+		switch (in.readLine().toLowerCase()) {
 			case "village hall":
 				type = BuildingType.VILLAGE_HALL;
 				break;
@@ -147,7 +183,7 @@ public class GameEngine implements Runnable {
 		}
 
 		System.out.print("Position [x y]: ");
-		String posInput = in.nextLine();
+		String posInput = in.readLine();
 		Position pos = parsePosition(posInput);
 
 		if (pos == null) {
@@ -155,6 +191,11 @@ public class GameEngine implements Runnable {
 			return;
 		}
 
+		// User input acquired. Now time for synchronized part
+		synchronized (base) {
+
+		}
+		/*
 		Worker builder = current.checkAddBuilding(type, pos);
 
 		if (builder == null) {
@@ -171,14 +212,52 @@ public class GameEngine implements Runnable {
 			}
 			System.out.println("Building completed.");
 			draw();
-		}, Player.getBuildTime(type), TimeUnit.SECONDS);
+		}, Player.getBuildTime(type), TimeUnit.SECONDS);*/
 	}
 
+	/**
+	 * This method switches the active player
+	 * @throws IOException if BufferedReader fails
+	 */
+	public void switchPlayer() throws IOException {
+		System.out.print("New player ID: ");
+
+		try {
+			int id = Integer.parseInt(in.readLine());
+			setActivePlayer(id);
+			draw();
+		} catch (NumberFormatException e) {
+			System.out.println("Invalid player id.");
+		}
+	}
+
+	/**
+	 * This method creates a position object from string input
+	 * @param input the input string of the form "[int] [int]"
+	 * @return the position object, or null if the input was invalid
+	 */
+	private Position parsePosition(String input) {
+		String[] coordinates = input.split(" ");
+
+		try {
+			int x = Integer.parseInt(coordinates[0]);
+			int y = Integer.parseInt(coordinates[1]);
+			return new Position(x, y);
+		} catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * This method begins a new game.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		System.out.println("Start");
 		GameEngine game = new GameEngine();
 		game.addPlayer(0);
-		game.setCurrentPlayer(0);
+		game.addPlayer(1);
+		game.setActivePlayer(0);
 		game.startGameThread();
 
 		// Definitely need to figure out how to add events

@@ -37,8 +37,34 @@ public class Village {
 		return map[pos.x][pos.y] != null;
 	}
 
+	public int[] getInventoryValues() {
+		return new int[] {inventory.getGold(), inventory.getIron(), inventory.getLumber()};
+	}
+
 	public boolean checkInventory(Cost cost) {
 		return inventory.checkCost(cost);
+	}
+
+	public static Cost getBuildCost(BuildingType type) {
+		switch (type) {
+			case VILLAGE_HALL:
+				return VillageHall.getBuildCost();
+			case FARM:
+				return Farm.getBuildCost();
+			default:
+				return null;
+		}
+	}
+
+	public static int getBuildTime(BuildingType type) {
+		switch (type) {
+			case VILLAGE_HALL:
+				return VillageHall.getBuildTime();
+			case FARM:
+				return Farm.getBuildTime();
+			default:
+				return 0;
+		}
 	}
 
 	public void payCost(Cost cost) {

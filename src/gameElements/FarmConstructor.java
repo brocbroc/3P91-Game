@@ -11,14 +11,18 @@ public class FarmConstructor implements BuildingConstructor {
 	 * @return the build cost
 	 */
 	@Override
-	public Cost getBuildCost() { return Farm.getBuildCost(); }
+	public Cost getBuildCost() {
+		return new Farm(new Position(0,0)).getBuildCost();
+	}
 
 	/**
 	 * Returns the build time
 	 * @return the build time, in seconds
 	 */
 	@Override
-	public int getBuildTime() { return Farm.getBuildTime(); }
+	public int getBuildTime() {
+		return new Farm(new Position(0,0)).getBuildTime();
+	}
 
 	/**
 	 * Creates a new farm at the given position.

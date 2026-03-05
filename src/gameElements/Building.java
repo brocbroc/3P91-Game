@@ -23,6 +23,37 @@ public abstract class Building {
 		isUnderConstruction = true;
 	}
 
+	public Position getPosition() { return position; }
+
+	public  int getLevel() { return level; }
+
+	/**
+	 * Upgrade this building by 1 level (caller should check max level).
+	 */
+	public void upgrade(){level++;}
+
+	/**
+	 * @return maximum level allowed for this building type
+	 */
+	public abstract int getMaxLevel();
+
+	/**
+	 * @return cost to build this building
+	 */
+	public abstract Cost getBuildCost();
+
+	/**
+	 * @return time to build (seconds)
+	 */
+	public abstract int getBuildTime();
+	/**
+	 * @return cost to upgrade from current level (simple scaling)
+	 */
+	public Cost getUpgradeCost() {
+		// Simple default upgrade formula; override per building if you want
+		return new Cost(2 * level, 2 * level, 2 * level);
+	}
+
 	/**
 	 * Checks if the building is under construction
 	 * @return <code>true</code> if the building is under construction, <code>false</code>

@@ -16,6 +16,8 @@ public class Village {
 	private Inventory inventory;
 	private List<Worker> freeWorkers;
 	private List<Worker> busyWorkers;
+	private List<Inhabitant> inhabitants;//all inhabitants
+	private List<Fighter> army;//only fighters for attacking
 
 	/**
 	 * Class constructor.
@@ -34,6 +36,9 @@ public class Village {
 		busyWorkers = new ArrayList<>();
 		freeWorkers.add(new Worker());
 		freeWorkers.add(new Worker());
+		inhabitants = new ArrayList<>();
+		army = new ArrayList<>();
+		inhabitants.addAll(freeWorkers);
 	}
 
 	/**

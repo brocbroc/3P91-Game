@@ -1,27 +1,22 @@
 package gameElements;
 
-import utility.Position;
+import utility.*;
 
-/**
- * Base class for combat units.
- */
 public abstract class Fighter extends Inhabitant implements Damager {
-    protected int health;
     protected int baseDamage;
+    protected int hitPoints;
 
-    public Fighter(int damage, int health) {
+    public Fighter(int baseDamage, int hitPoints) {
         super();
-        this.baseDamage = damage;
-        this.health = health;
-        position = new Position(0,0);
+        this.baseDamage = baseDamage;
+        this.hitPoints = hitPoints;
+        this.position = new Position(0, 0);
     }
 
     @Override
     public int damage() {
-        return baseDamage + (level * 2);
+        return baseDamage + (2 * (level - 1));
     }
 
-    public int getHealth() {
-        return health;
-    }
+    public abstract Cost getTrainCost();
 }

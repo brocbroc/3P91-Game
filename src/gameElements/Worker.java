@@ -6,6 +6,7 @@ public class Worker extends Inhabitant {
 	private boolean isBusy;
 
 	public Worker() {
+		super();
 		position = new Position(0, 0); // Spawn point
 		isBusy = false;
 	}

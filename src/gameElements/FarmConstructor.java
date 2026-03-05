@@ -1,18 +1,39 @@
 package gameElements;
 
+import gameElements.building.Building;
+import gameElements.building.Farm;
 import utility.*;
 
 /**
  * This class represents a constructor for the <code>Farm</code> class.
+ * DO NOT TOUCH
  */
 public class FarmConstructor implements BuildingConstructor {
+	/**
+	 * Returns the number of farms.
+	 * @return the number of farms
+	 */
+	@Override
+	public int getCount() {
+		return Farm.getCount();
+	}
+
+	/**
+	 * Returns the maximum number of farms.
+	 * @return the maximum number of farms
+	 */
+	@Override
+	public int getMaxCount() {
+		return Farm.getMaxCount();
+	}
+
 	/**
 	 * Returns the build cost
 	 * @return the build cost
 	 */
 	@Override
 	public Cost getBuildCost() {
-		return new Farm(new Position(0,0)).getBuildCost();
+		return Farm.getBuildCost();
 	}
 
 	/**
@@ -21,7 +42,7 @@ public class FarmConstructor implements BuildingConstructor {
 	 */
 	@Override
 	public int getBuildTime() {
-		return new Farm(new Position(0,0)).getBuildTime();
+		return Farm.getBuildTime();
 	}
 
 	/**

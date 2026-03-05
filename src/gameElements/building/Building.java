@@ -1,4 +1,4 @@
-package gameElements;
+package gameElements.building;
 
 import utility.*;
 
@@ -9,8 +9,15 @@ public abstract class Building {
 	protected Position position;
 	protected int level;
 	protected static int maxLevel;
+	protected static int count;
+	protected static int maxCount;
+	protected static int[] maxCounts;
 	protected static Cost buildCost;
 	protected static int buildTime; // seconds
+	protected Cost upgradeCost;
+	protected static Cost[] upgradeCosts;
+	protected int upgradeTime; // seconds
+	protected static int[] upgradeTimes;
 	protected boolean isUnderConstruction;
 
 	/**
@@ -23,36 +30,30 @@ public abstract class Building {
 		isUnderConstruction = true;
 	}
 
+	/**
+	 * Returns the position of the building.
+	 * @return the position of the building
+	 */
 	public Position getPosition() { return position; }
 
-	public  int getLevel() { return level; }
+	/**
+	 * Returns the level of the building.
+	 * @return the level of the building
+	 */
+	public int getLevel() { return level; }
 
 	/**
-	 * Upgrade this building by 1 level (caller should check max level).
+	 * Returns the upgrade cost
+	 * @return the upgrade cost
 	 */
-	public void upgrade(){level++;}
+	public Cost getUpgradeCost() { return upgradeCost; }
+
 
 	/**
-	 * @return maximum level allowed for this building type
+	 * Returns the upgrade time
+	 * @return the upgrade time, in seconds
 	 */
-	public abstract int getMaxLevel();
-
-	/**
-	 * @return cost to build this building
-	 */
-	public abstract Cost getBuildCost();
-
-	/**
-	 * @return time to build (seconds)
-	 */
-	public abstract int getBuildTime();
-	/**
-	 * @return cost to upgrade from current level (simple scaling)
-	 */
-	public Cost getUpgradeCost() {
-		// Simple default upgrade formula; override per building if you want
-		return new Cost(2 * level, 2 * level, 2 * level);
-	}
+	public int getUpgradeTime() { return upgradeTime; }
 
 	/**
 	 * Checks if the building is under construction
@@ -66,4 +67,10 @@ public abstract class Building {
 	 * @param b the construction status
 	 */
 	public void setUnderConstruction(boolean b) { isUnderConstruction = b; }
+
+	/**
+	 * Returns the character representing the building
+	 * @return a character
+	 */
+	public abstract String draw();
 }

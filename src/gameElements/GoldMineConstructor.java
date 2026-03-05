@@ -1,12 +1,57 @@
 package gameElements;
 
+import gameElements.building.Building;
+import gameElements.building.GoldMine;
 import utility.*;
 
+/**
+ * This class represents a constructor for the <code>GoldMine</code> class.
+ * DO NOT TOUCH
+ */
 public class GoldMineConstructor implements BuildingConstructor {
-    private static final Cost BUILD_COST = new Cost(0, 15, 25);
-    private static final int BUILD_TIME = 20;
+    /**
+     * Returns the number of gold mines.
+     * @return the number of gold mine
+     */
+    @Override
+    public int getCount() {
+        return GoldMine.getCount();
+    }
 
-    @Override public Cost getBuildCost() { return BUILD_COST; }
-    @Override public int getBuildTime() { return BUILD_TIME; }
-    @Override public Building addBuilding(Position pos) { return new GoldMine(pos); }
+    /**
+     * Returns the maximum number of gold mine.
+     * @return the maximum number of gold mine
+     */
+    @Override
+    public int getMaxCount() {
+        return GoldMine.getMaxCount();
+    }
+
+    /**
+     * Returns the build cost
+     * @return the build cost
+     */
+    @Override
+    public Cost getBuildCost() {
+        return GoldMine.getBuildCost();
+    }
+
+    /**
+     * Returns the build time
+     * @return the build time, in seconds
+     */
+    @Override
+    public int getBuildTime() {
+        return GoldMine.getBuildTime();
+    }
+
+    /**
+     * Creates a new gold mine at the given position.
+     * @param pos the position of the new gold mine
+     * @return the new gold mine
+     */
+    @Override
+    public Building addBuilding(Position pos) {
+        return new GoldMine(pos);
+    }
 }

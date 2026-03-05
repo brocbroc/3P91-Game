@@ -1,12 +1,57 @@
 package gameElements;
 
+import gameElements.building.ArcherTower;
+import gameElements.building.Building;
 import utility.*;
 
+/**
+ * This class represents a constructor for the <code>ArcherTower</code> class.
+ * DO NOT TOUCH
+ */
 public class ArcherTowerConstructor implements BuildingConstructor {
-    private static final Cost BUILD_COST = new Cost(0, 10, 20);
-    private static final int BUILD_TIME = 15;
+    /**
+     * Returns the number of archer towers.
+     * @return the number of archer towers
+     */
+    @Override
+    public int getCount() {
+        return ArcherTower.getCount();
+    }
 
-    @Override public Cost getBuildCost() { return BUILD_COST; }
-    @Override public int getBuildTime() { return BUILD_TIME; }
-    @Override public Building addBuilding(Position pos) { return new ArcherTower(pos); }
+    /**
+     * Returns the maximum number of archer towers.
+     * @return the maximum number of archer towers
+     */
+    @Override
+    public int getMaxCount() {
+        return ArcherTower.getMaxCount();
+    }
+
+    /**
+     * Returns the build cost
+     * @return the build cost
+     */
+    @Override
+    public Cost getBuildCost() {
+        return ArcherTower.getBuildCost();
+    }
+
+    /**
+     * Returns the build time
+     * @return the build time, in seconds
+     */
+    @Override
+    public int getBuildTime() {
+        return ArcherTower.getBuildTime();
+    }
+
+    /**
+     * Creates a new archer tower at the given position.
+     * @param pos the position of the new archer tower
+     * @return the new archer tower
+     */
+    @Override
+    public Building addBuilding(Position pos) {
+        return new ArcherTower(pos);
+    }
 }

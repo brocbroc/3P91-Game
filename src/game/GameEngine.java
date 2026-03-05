@@ -1,6 +1,7 @@
 package game;
 
 import gameElements.*;
+import gameElements.building.*;
 import gui.GraphicalInterface;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -83,6 +84,9 @@ public class GameEngine implements Runnable {
 
 		while (running) {
 			try {
+				// Not working sometimes????
+				// Not accepting new input after adding all buildings once
+				System.out.println("Input command... ");
 				String input = in.readLine().toLowerCase();
 				update(input);
 			} catch (IOException e) {
@@ -104,7 +108,7 @@ public class GameEngine implements Runnable {
 				this.addBuilding();
 				return;
 			case "upgrade building":
-				// ADD CODE
+				this.upgradeBuilding();
 				return;
 			case "add inhabitant":
 				// ADD CODE
@@ -123,8 +127,7 @@ public class GameEngine implements Runnable {
 				this.switchPlayer();
 				return;
 			case "exit":
-				running = false;
-				in.close();
+				this.exit();
 				return;
 			default:
 				System.out.println("Invalid command.");
@@ -152,14 +155,7 @@ public class GameEngine implements Runnable {
 					} else if (building.isUnderConstruction()) {
 						System.out.print("#");
 					} else {
-						switch (building.getClass().getName()) {
-							case "gameElements.VillageHall":
-								System.out.print("H");
-								break;
-							case "gameElements.Farm":
-								System.out.print("F");
-								break;
-						}
+						System.out.print(building.draw());
 					}
 
 					System.out.print(" ");
@@ -177,37 +173,34 @@ public class GameEngine implements Runnable {
 	}
 
 	/**
-	 * Adds a new building to <code>base</code>.
+	 * Adds a new building to <code>base</code>, if requirements are met.
 	 * @throws IOException if <code>BufferedReader</code> fails
 	 */
 	public void addBuilding() throws IOException {
 		System.out.print("Building type: ");
-		BuildingType type;
-		BuildingConstructor constructor = null;
+		BuildingConstructor constructor;
 
 		switch (in.readLine().toLowerCase()) {
 			case "village hall":
-				type = BuildingType.VILLAGE_HALL;
 				constructor = new VillageHallConstructor();
 				break;
 			case "farm":
-				type = BuildingType.FARM;
 				constructor = new FarmConstructor();
 				break;
 			case "lumber mill":
-				type = BuildingType.LUMBER_MILL;
+				constructor = new LumberMillConstructor();
 				break;
 			case "iron mine":
-				type = BuildingType.IRON_MINE;
+				constructor = new IronMineConstructor();
 				break;
 			case "gold mine":
-				type = BuildingType.GOLD_MINE;
+				constructor = new GoldMineConstructor();
 				break;
 			case "archer tower":
-				type = BuildingType.ARCHER_TOWER;
+				constructor = new ArcherTowerConstructor();
 				break;
 			case "cannon":
-				type = BuildingType.CANNON;
+				constructor = new CannonConstructor();
 				break;
 			default:
 				System.out.println("Invalid building type.");
@@ -223,6 +216,11 @@ public class GameEngine implements Runnable {
 			return;
 		}
 
+		if (constructor.getCount() == constructor.getMaxCount()) {
+			System.out.println("Maximum number of buildings of this type already constructed.");
+			return;
+		}
+
 		Worker builder = base.tryAddBuilding(constructor, pos);
 
 		if (builder == null) {
@@ -230,7 +228,6 @@ public class GameEngine implements Runnable {
 			return;
 		}
 
-		// Works with switch player but unnecessarily draws village when done (even though player has changed)
 		System.out.println("Under construction...");
 		final Village BASE = base;
 		scheduler.schedule(() -> {
@@ -241,6 +238,30 @@ public class GameEngine implements Runnable {
 				draw();
 			}
 		}, constructor.getBuildTime(), TimeUnit.SECONDS);
+	}
+
+	/**
+	 * Upgrades the building at the desired location, if requirements are met.
+	 * @throws IOException if <code>BufferedReader</code> fails
+	 */
+	public void upgradeBuilding() throws IOException {
+		System.out.print("Position [x y]: ");
+		String posInput = in.readLine();
+		Position pos = parsePosition(posInput);
+
+		if (pos == null) {
+			System.out.println("Invalid building position.");
+			return;
+		}
+
+		Building b = base.getBuilding(pos);
+
+		if (b == null) {
+			System.out.println("No building to upgrade.");
+			return;
+		}
+
+		// Check upgrade requirements then make upgrade
 	}
 
 	/**
@@ -257,6 +278,17 @@ public class GameEngine implements Runnable {
 		} catch (NumberFormatException e) {
 			System.out.println("Invalid player id.");
 		}
+	}
+
+	/**
+	 * Exits the game.
+	 * @throws IOException if <code>BufferedReader</code> fails
+	 */
+	public void exit() throws IOException {
+		System.out.println("Game exited.");
+		running = false;
+		in.close();
+		scheduler.shutdown();
 	}
 
 	/**

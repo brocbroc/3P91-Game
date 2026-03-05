@@ -1,8 +1,11 @@
 package game;
 
 import gameElements.*;
+import gameElements.building.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import gameElements.building.Building;
 import utility.*;
 
 /**
@@ -77,7 +80,7 @@ public class Village {
 	 * @param pos the position to retrieve from
 	 * @return the <code>Building</code> object at the position
 	 */
-	private Building getBuilding(Position pos) { return map[pos.X][pos.Y]; }
+	public Building getBuilding(Position pos) { return map[pos.X][pos.Y]; }
 
 	/**
 	 * Returns the current inventory count.

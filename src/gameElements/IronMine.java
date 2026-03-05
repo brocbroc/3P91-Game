@@ -12,9 +12,4 @@ public class IronMine extends Building {
     @Override public int getMaxLevel() { return MAX_LEVEL; }
     @Override public Cost getBuildCost() { return BUILD_COST; }
     @Override public int getBuildTime() { return BUILD_TIME; }
-
-    @Override
-    public Cost getUpgradeCost() {
-        return new Cost(3 * getLevel(), 6 * getLevel(), 6 * getLevel());
-    }
 }

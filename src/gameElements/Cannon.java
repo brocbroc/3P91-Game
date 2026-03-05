@@ -16,12 +16,5 @@ public class Cannon extends Building implements Damager {
     @Override public int getBuildTime() { return BUILD_TIME; }
 
     @Override
-    public double damage() {
-        return baseDamage * (1.0 + 0.20 * (getLevel() - 1));
-    }
-
-    @Override
-    public Cost getUpgradeCost() {
-        return new Cost(0, 15 * getLevel(), 10 * getLevel());
-    }
+    public int damage() {return 12; }
 }

@@ -46,7 +46,7 @@ public class Village {
 	 * Returns the number of rows in <code>map</code>.
 	 * @return the number of rows in <code>map</code>
 	 */
-	public static int getMapRowCount() { return MAP_COL_COUNT; }
+	public static int getMapRowCount() { return MAP_ROW_COUNT; }
 
 	/**
 	 * Returns the number of columns in <code>map</code>.

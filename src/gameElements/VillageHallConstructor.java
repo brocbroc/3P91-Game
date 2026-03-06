@@ -1,11 +1,32 @@
 package gameElements;
 
+import gameElements.building.Building;
+import gameElements.building.VillageHall;
 import utility.*;
 
 /**
  * This class represents a constructor for the <code>VillageHall</code> class.
+ * DO NOT TOUCH
  */
 public class VillageHallConstructor implements BuildingConstructor {
+	/**
+	 * Returns the number of village halls.
+	 * @return the number of village halls
+	 */
+	@Override
+	public int getCount() {
+		return VillageHall.getCount();
+	}
+
+	/**
+	 * Returns the maximum number of village halls.
+	 * @return the maximum number of village halls
+	 */
+	@Override
+	public int getMaxCount() {
+		return VillageHall.getMaxCount();
+	}
+
 	/**
 	 * Returns the build cost
 	 * @return the build cost

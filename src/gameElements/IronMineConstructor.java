@@ -1,12 +1,57 @@
 package gameElements;
 
+import gameElements.building.Building;
+import gameElements.building.IronMine;
 import utility.*;
 
+/**
+ * This class represents a constructor for the <code>IronMine</code> class.
+ * DO NOT TOUCH
+ */
 public class IronMineConstructor implements BuildingConstructor {
-    private static final Cost BUILD_COST = new Cost(0, 10, 20);
-    private static final int BUILD_TIME = 18;
+    /**
+     * Returns the number of iron mines.
+     * @return the number of iron mines
+     */
+    @Override
+    public int getCount() {
+        return IronMine.getCount();
+    }
 
-    @Override public Cost getBuildCost() { return BUILD_COST; }
-    @Override public int getBuildTime() { return BUILD_TIME; }
-    @Override public Building addBuilding(Position pos) { return new IronMine(pos); }
+    /**
+     * Returns the maximum number of iron mines.
+     * @return the maximum number of iron mines
+     */
+    @Override
+    public int getMaxCount() {
+        return IronMine.getMaxCount();
+    }
+
+    /**
+     * Returns the build cost
+     * @return the build cost
+     */
+    @Override
+    public Cost getBuildCost() {
+        return IronMine.getBuildCost();
+    }
+
+    /**
+     * Returns the build time
+     * @return the build time, in seconds
+     */
+    @Override
+    public int getBuildTime() {
+        return IronMine.getBuildTime();
+    }
+
+    /**
+     * Creates a new iron mine at the given position.
+     * @param pos the position of the new iron mine
+     * @return the new iron mine
+     */
+    @Override
+    public Building addBuilding(Position pos) {
+        return new IronMine(pos);
+    }
 }

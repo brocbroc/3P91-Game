@@ -1,11 +1,25 @@
 package gameElements;
 
+import gameElements.building.Building;
 import utility.*;
 
 /**
- * This class represents a constructor for the <code>Building</code> class.
+ * This interface represents a constructor for the <code>Building</code> subclasses.
+ * DO NOT TOUCH
  */
 public interface BuildingConstructor {
+	/**
+	 * Returns the number of buildings of this type.
+	 * @return the number of buildings of this type
+	 */
+	int getCount();
+
+	/**
+	 * Returns the maximum number of buildings of this type.
+	 * @return the maximum number of buildings of this type
+	 */
+	int getMaxCount();
+
 	/**
 	 * Returns the build cost.
 	 * @return the build cost

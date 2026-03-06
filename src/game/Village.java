@@ -124,4 +124,131 @@ public class Village {
 		freeWorkers.add(builder);
 		this.getBuilding(pos).setUnderConstruction(false);
 	}
+
+	/**
+	 * Attempts to pay a cost from the village inventory.
+	 * The inventory is only updated if the village has enough resources.
+	 *
+	 * @param cost the resource cost to be paid
+	 * @return true if the cost was successfully paid, false otherwise
+	 */
+	public boolean tryPayCost(Cost cost) {
+		if (!inventory.checkCost(cost)) {
+			return false;
+		}
+
+		inventory.payCost(cost);
+		return true;
+	}
+
+	/**
+	 * Adds loot to the village inventory.
+	 * This is typically called after a successful attack where the village
+	 * gains resources from another village.
+	 *
+	 * @param loot the amount of gold, iron, and lumber to add
+	 */
+	public void addLoot(Cost loot) {
+		inventory.addGold(loot.GOLD);
+		inventory.addIron(loot.IRON);
+		inventory.addLumber(loot.LUMBER);
+	}
+
+	/**
+	 * Removes resources from the village inventory.
+	 * This method is used when the village is attacked and loses resources.
+	 * The loss is clamped so that the inventory values never become negative.
+	 *
+	 * @param loss the amount of gold, iron, and lumber to remove
+	 */
+	public void removeLoot(Cost loss) {
+		int goldLoss = Math.min(loss.GOLD, inventory.getGold());
+		int ironLoss = Math.min(loss.IRON, inventory.getIron());
+		int lumberLoss = Math.min(loss.LUMBER, inventory.getLumber());
+
+		inventory.payCost(new Cost(goldLoss, ironLoss, lumberLoss));
+	}
+
+	/**
+	 * Trains or adds a new inhabitant to the village.
+	 * The inhabitant will only be added if the village can pay the required cost.
+	 * Workers are added to the free worker list, while fighters are added to the army.
+	 *
+	 * @param h the inhabitant to add to the village
+	 * @param trainingCost the cost required to train the inhabitant
+	 * @return true if the inhabitant was successfully trained, false otherwise
+	 */
+	public boolean trainInhabitant(Inhabitant h, Cost trainingCost) {
+		if (!tryPayCost(trainingCost)) {
+			return false;
+		}
+
+		inhabitants.add(h);
+
+		if (h instanceof Worker) {
+			freeWorkers.add((Worker) h);
+		}
+
+		if (h instanceof Fighter) {
+			army.add((Fighter) h);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Calculates the attack score of the village.
+	 * The attack score is based on the total damage output of all army units.
+	 *
+	 * @return the total attack score of the village army
+	 */
+	public int getAttackScore() {
+		int total = 0;
+
+		for (Fighter fighter : army) {
+			total += fighter.damage();
+		}
+
+		return total;
+	}
+
+	/**
+	 * Calculates the defense score of the village.
+	 * The defense score is determined by the damage to defense buildings
+	 * (such as archer towers and cannons) and the size of the population.
+	 *
+	 * @return the defense score of the village
+	 */
+	public int getDefenseScore() {
+		int total = 0;
+
+		for (Building[] row : map) {
+			for (Building building : row) {
+				if (building != null && !building.isUnderConstruction() && building instanceof Damager) {
+					total += ((Damager) building).damage();
+				}
+			}
+		}
+
+		total += inhabitants.size();
+		return total;
+	}
+
+	/**
+	 * Returns the total number of inhabitants currently in the village.
+	 *
+	 * @return the population size of the village
+	 */
+	public int getPopulation() {
+		return inhabitants.size();
+	}
+
+	/**
+	 * Returns the number of army units in the village.
+	 *
+	 * @return the number of fighters in the village army
+	 */
+	public int getArmySize() {
+		return army.size();
+	}
 }

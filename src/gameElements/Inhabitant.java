@@ -1,28 +1,42 @@
 package gameElements;
 
-import utility.*;
+import utility.Position;
 
 /**
- * This class represents an inhabitant of a village.
+ * Abstract class representing an inhabitant of a village.
+ * Inhabitants can be upgraded and occupy positions in the village.
  */
 public abstract class Inhabitant {
-	protected Position position;
-	protected Position newPosition;
-	protected int level;
 
-	public Inhabitant() {
-		level = 1;
-	}
+    protected Position position;
+    protected Position newPosition;
+    protected int level;
 
-	public int getLevel() {
-		return level;
-	}
+    /**
+     * Creates a new inhabitant starting at level 1.
+     */
+    public Inhabitant() {
+        level = 1;
+    }
 
-	public void upgrade() {
-		level++;
-	}
+    /**
+     * Returns the level of the inhabitant.
+     */
+    public int getLevel() {
+        return level;
+    }
 
-	public Position getPosition() {
-		return position;
-	}
+    /**
+     * Upgrades the inhabitant to the next level.
+     */
+    public void upgrade() {
+        level++;
+    }
+
+    /**
+     * Returns the current position of the inhabitant.
+     */
+    public Position getPosition() {
+        return position;
+    }
 }

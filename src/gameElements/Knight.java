@@ -2,7 +2,11 @@ package gameElements;
 
 import utility.Cost;
 
+/**
+ * Represents a heavily armored knight unit.
+ */
 public class Knight extends Fighter {
+
     public Knight() {
         super(10, 60);
     }

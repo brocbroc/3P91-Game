@@ -2,7 +2,11 @@ package gameElements;
 
 import utility.Cost;
 
+/**
+ * Represents an archer unit with ranged attack capability.
+ */
 public class Archer extends Fighter {
+
     public Archer() {
         super(7, 30);
     }

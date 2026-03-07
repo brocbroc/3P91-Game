@@ -1,7 +1,7 @@
 package game;
 
-import gameElements.*;
 import gameElements.building.Building;
+import gameElements.inhabitant.Worker;
 import gui.GraphicalInterface;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +22,7 @@ public class GameEngine implements Runnable {
 	private BufferedReader in;
 	private ScheduledExecutorService scheduler;
 	private volatile boolean running;
+	private volatile boolean redraw; // Implement later
 	private Village base;
 
 	/**
@@ -33,6 +34,7 @@ public class GameEngine implements Runnable {
 		in = new BufferedReader(new InputStreamReader(System.in));
 		scheduler = new ScheduledThreadPoolExecutor(5);
 		running = false;
+		redraw = false;
 	}
 
 	/**
@@ -108,7 +110,7 @@ public class GameEngine implements Runnable {
 				this.upgradeBuilding();
 				return;
 			case "add inhabitant":
-				// ADD CODE
+				this.addInhabitant();
 				return;
 			case "upgrade inhabitant":
 				// ADD CODE
@@ -280,6 +282,61 @@ public class GameEngine implements Runnable {
 				draw();
 			}
 		}, b.getUpgradeTime(), TimeUnit.SECONDS);
+	}
+
+	/**
+	 * Adds an inhabitant of the desired type, if requirements are met.
+	 * @throws IOException if <code>BufferedReader</code> fails
+	 */
+	public void addInhabitant() throws IOException {
+		if (base.isVillageFull()) {
+			System.out.println("Village is full. No new inhabitants can be added.");
+			return;
+		}
+
+		System.out.print("Inhabitant type: ");
+		InhabitantConstructor constructor = null;
+		InhabitantType type;
+
+		switch (in.readLine().toLowerCase()) {
+			case "worker":
+				constructor = new WorkerConstructor();
+				type = InhabitantType.WORKER;
+				break;
+			case "lumberman":
+				constructor = new LumbermanConstructor();
+				type = InhabitantType.LUMBERMAN;
+				break;
+			case "iron miner":
+				constructor = new IronMinerConstructor();
+				type = InhabitantType.IRON_MINER;
+				break;
+			case "gold miner":
+				constructor = new GoldMinerConstructor();
+				type = InhabitantType.GOLD_MINER;
+				break;
+			case "soldier":
+				type = InhabitantType.SOLDIER;
+				break;
+			case "archer":
+				type = InhabitantType.ARCHER;
+				break;
+			case "knight":
+				type = InhabitantType.KNIGHT;
+				break;
+			case "catapult":
+				type = InhabitantType.CATAPULT;
+				break;
+			default:
+				System.out.println("Invalid inhabitant type.");
+				return;
+		}
+
+		if (base.tryAddInhabitant(constructor, type)) {
+			System.out.println("Inhabitant was added.");
+		} else {
+			System.out.println("Inhabitant requirements not met.");
+		}
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package gameElements;
+package gameElements.inhabitant;
 
 import utility.Position;
 
@@ -7,7 +7,6 @@ import utility.Position;
  * Inhabitants can be upgraded and occupy positions in the village.
  */
 public abstract class Inhabitant {
-
     protected Position position;
     protected Position newPosition;
     protected int level;
@@ -34,9 +33,18 @@ public abstract class Inhabitant {
     }
 
     /**
-     * Returns the current position of the inhabitant.
+     * Returns the position of the inhabitant.
+     * @return the current position
      */
     public Position getPosition() {
         return position;
+    }
+
+    /**
+     * Sets the position of the inhabitant.
+     * @param pos the new position
+     */
+    public void setPosition(Position pos) {
+        position = pos;
     }
 }

@@ -1,4 +1,4 @@
-package gameElements;
+package gameElements.inhabitant;
 
 import utility.Cost;
 

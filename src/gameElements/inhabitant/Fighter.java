@@ -1,5 +1,6 @@
-package gameElements;
+package gameElements.inhabitant;
 
+import gameElements.Damager;
 import utility.*;
 
 /**

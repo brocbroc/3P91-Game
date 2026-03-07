@@ -3,6 +3,7 @@ package game;
 import gameElements.*;
 import gameElements.building.Building;
 import gameElements.building.Farm;
+import gameElements.inhabitant.*;
 import java.util.ArrayList;
 import java.util.List;
 import utility.*;
@@ -17,9 +18,10 @@ public class Village {
 	private Building[][] map;
 	private Inventory inventory;
 	private int maxPopulation;
-	private List<Worker> freeWorkers;
-	private List<Worker> busyWorkers;
-	private List<Inhabitant> inhabitants;//all inhabitants
+	private PeasantList<Worker> workers;
+	private PeasantList<Lumberman> lumbermen;
+	private PeasantList<IronMiner> ironMiners;
+	private PeasantList<GoldMiner> goldMiners;
 	private List<Fighter> army;//only fighters for attacking
 
 	/**
@@ -36,13 +38,12 @@ public class Village {
 
 		inventory = new Inventory(1000, 1000, 1000);
 		maxPopulation = 10;
-		freeWorkers = new ArrayList<>();
-		busyWorkers = new ArrayList<>();
-		freeWorkers.add(new Worker());
-		freeWorkers.add(new Worker());
-		inhabitants = new ArrayList<>();
+		workers = new PeasantList<>();
+		lumbermen = new PeasantList<>();
+		ironMiners = new PeasantList<>();
+		goldMiners = new PeasantList<>();
+		workers.addPeasant(new Worker());
 		army = new ArrayList<>();
-		inhabitants.addAll(freeWorkers);
 	}
 
 	/**
@@ -92,6 +93,16 @@ public class Village {
 	}
 
 	/**
+	 * Returns whether or not the village is full of inhabitants.
+	 * @return <code>true</code> if the village is full, <code>false</code> if not
+	 */
+	public boolean isVillageFull() {
+		int currentPopulation = workers.getCount() + lumbermen.getCount() + ironMiners.getCount()
+			+ goldMiners.getCount();
+		return currentPopulation >= maxPopulation;
+	}
+
+	/**
 	 * Adds a building to the map if the cost can be paid and there is a free worker.
 	 * Sets the free worker to busy and returns the worker.
 	 * @param constructor the building constructor
@@ -100,35 +111,30 @@ public class Village {
 	 * building cannot be added
 	 */
 	public Worker tryAddBuilding(BuildingConstructor constructor, Position pos) {
-		if (!inventory.checkCost(constructor.getBuildCost()) || freeWorkers.isEmpty()) {
+		if (!inventory.checkCost(constructor.getBuildCost()) || workers.isFreePeasantEmpty()) {
 			return null;
 		}
 
-		Worker builder = freeWorkers.remove(0);
-		builder.setBusy(true);
-		busyWorkers.add(builder);
+		Worker w = workers.getPeasant();
+		w.setPosition(pos);
 		inventory.payCost(constructor.getBuildCost());
 		map[pos.X][pos.Y] = constructor.addBuilding(pos);
-		return builder;
+		return w;
 	}
 
 	/**
 	 * Finishes building construction. Releases the builder and sets the building as not under
 	 * construction.
-	 * @param builder the worker constructing the building
+	 * @param w the worker constructing the building
 	 * @param pos the position of the building
 	 */
-	public synchronized void completeAddBuilding(Worker builder, Position pos) {
-		builder.setBusy(false);
-		busyWorkers.remove(builder);
-		freeWorkers.add(builder);
+	public synchronized void completeAddBuilding(Worker w, Position pos) {
+		workers.freePeasant(w);
 		Building b = this.getBuilding(pos);
 		b.setUnderConstruction(false);
-		System.out.println(maxPopulation);
 
 		if (b instanceof Farm) {
 			maxPopulation += ((Farm) b).getPopulationIncrease();
-			System.out.println(maxPopulation);
 		}
 	}
 
@@ -140,37 +146,76 @@ public class Village {
 	 * <code>null</code> if the building cannot be upgraded
 	 */
 	public Worker tryUpgradeBuilding(Building b) {
-		if (b.isUnderConstruction() || !inventory.checkCost(b.getUpgradeCost()) ||
-			freeWorkers.isEmpty()) {
+		if (b.isUnderConstruction() || !inventory.checkCost(b.getUpgradeCost())
+			|| workers.isFreePeasantEmpty()) {
 			return null;
 		}
 
-		Worker builder = freeWorkers.remove(0);
-		builder.setBusy(true);
-		busyWorkers.add(builder);
+		Worker w = workers.getPeasant();
+		w.setPosition(b.getPosition());
 		inventory.payCost(b.getUpgradeCost());
 		b.setUnderConstruction(true);
-		return builder;
+		return w;
 	}
 
 	/**
 	 * Finishes the upgrade building process. Releases the worker, applies the upgrade, and sets
 	 * the building as not under construction.
 	 * @param b the building being upgraded
-	 * @param builder the worker upgrading the building
+	 * @param w the worker upgrading the building
 	 */
-	public synchronized void completeUpgradeBuilding(Building b, Worker builder) {
-		builder.setBusy(false);
-		busyWorkers.remove(builder);
-		freeWorkers.add(builder);
+	public synchronized void completeUpgradeBuilding(Building b, Worker w) {
+		workers.freePeasant(w);
 		b.setUnderConstruction(false);
 		b.upgrade();
-		System.out.println(maxPopulation);
 
-		if (b instanceof Farm) { // TEST FARM
+		if (b instanceof Farm) {
 			maxPopulation += ((Farm) b).getPopulationIncrease();
-			System.out.println(maxPopulation);
 		}
+	}
+
+	/**
+	 * Adds an inhabitant if the cost can be paid.
+	 * @param constructor the inhabitant constructor
+	 * @param type the type of inhabitant
+	 * @return <code>true</code> if an inhabitant was added, <code>false</code> otherwise
+	 */
+	public boolean tryAddInhabitant(InhabitantConstructor constructor, InhabitantType type) {
+		if (!inventory.checkCost(constructor.getProductionCost())) {
+			return false;
+		}
+
+		inventory.payCost(constructor.getProductionCost());
+		Inhabitant person = constructor.addInhabitant();
+
+		switch (type) {
+			case WORKER:
+				workers.addPeasant((Worker) person);
+				System.out.println("Worker count: " + workers.getCount());
+				break;
+			case LUMBERMAN:
+				lumbermen.addPeasant((Lumberman) person);
+				System.out.println("Lumberman count: " + lumbermen.getCount());
+				break;
+			case IRON_MINER:
+				ironMiners.addPeasant((IronMiner) person);
+				System.out.println("Iron miner count: " + ironMiners.getCount());
+				break;
+			case GOLD_MINER:
+				goldMiners.addPeasant((GoldMiner) person);
+				System.out.println("Gold miner count: " + goldMiners.getCount());
+				break;
+			case SOLDIER:
+				break;
+			case ARCHER:
+				break;
+			case KNIGHT:
+				break;
+			case CATAPULT:
+				break;
+		}
+
+		return true;
 	}
 
 	/**
@@ -218,33 +263,6 @@ public class Village {
 	}
 
 	/**
-	 * Trains or adds a new inhabitant to the village.
-	 * The inhabitant will only be added if the village can pay the required cost.
-	 * Workers are added to the free worker list, while fighters are added to the army.
-	 *
-	 * @param h the inhabitant to add to the village
-	 * @param trainingCost the cost required to train the inhabitant
-	 * @return true if the inhabitant was successfully trained, false otherwise
-	 */
-	public boolean trainInhabitant(Inhabitant h, Cost trainingCost) {
-		if (!tryPayCost(trainingCost)) {
-			return false;
-		}
-
-		inhabitants.add(h);
-
-		if (h instanceof Worker) {
-			freeWorkers.add((Worker) h);
-		}
-
-		if (h instanceof Fighter) {
-			army.add((Fighter) h);
-		}
-
-		return true;
-	}
-
-	/**
 	 * Calculates the attack score of the village.
 	 * The attack score is based on the total damage output of all army units.
 	 *
@@ -278,17 +296,8 @@ public class Village {
 			}
 		}
 
-		total += inhabitants.size();
+		//total += inhabitants.size();
 		return total;
-	}
-
-	/**
-	 * Returns the total number of inhabitants currently in the village.
-	 *
-	 * @return the population size of the village
-	 */
-	public int getPopulation() {
-		return inhabitants.size();
 	}
 
 	/**

@@ -2,7 +2,11 @@ package gameElements;
 
 import utility.Cost;
 
+/**
+ * Represents a siege unit used to damage buildings.
+ */
 public class Catapult extends Fighter {
+
     public Catapult() {
         super(14, 50);
     }

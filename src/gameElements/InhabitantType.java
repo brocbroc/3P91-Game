@@ -1,4 +1,4 @@
-package utility;
+package gameElements;
 
 /**
  * This enum lists the different types of inhabitants.

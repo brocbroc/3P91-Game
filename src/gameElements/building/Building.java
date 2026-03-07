@@ -7,12 +7,13 @@ import utility.*;
  * DO NOT TOUCH
  */
 public abstract class Building {
+	protected static final int MAX_LEVEL = 4;
 	protected Position position;
 	protected int level;
 	protected Cost upgradeCost;
 	protected int upgradeTime; // seconds
 	protected boolean isUnderConstruction;
-	protected static final int MAX_LEVEL = 4;
+	protected int hitPoints;
 
 	/**
 	 * Class constructor.

@@ -6,18 +6,18 @@ import utility.Cost;
  * Represents a siege unit used to damage buildings.
  */
 public class Catapult extends Fighter {
+    private static final Cost PRODUCTION_COST = new Cost(20, 20, 20);
 
+    /**
+     * Class constructor.
+     */
     public Catapult() {
         super(14, 50);
     }
 
-    @Override
-    public Cost getTrainCost() {
-        return new Cost(25, 15, 25);
-    }
-
-    @Override
-    public String toString() {
-        return "Catapult (L" + level + ")";
-    }
+    /**
+     * Returns the production cost of a soldier
+     * @return the production cost
+     */
+    public static Cost getProductionCost() { return PRODUCTION_COST; }
 }

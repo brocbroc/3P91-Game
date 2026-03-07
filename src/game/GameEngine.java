@@ -1,5 +1,6 @@
 package game;
 
+import gameElements.InhabitantType;
 import gameElements.building.Building;
 import gameElements.inhabitant.Worker;
 import gui.GraphicalInterface;
@@ -316,15 +317,19 @@ public class GameEngine implements Runnable {
 				type = InhabitantType.GOLD_MINER;
 				break;
 			case "soldier":
+				constructor = new SoldierConstructor();
 				type = InhabitantType.SOLDIER;
 				break;
 			case "archer":
+				constructor = new ArcherConstructor();
 				type = InhabitantType.ARCHER;
 				break;
 			case "knight":
+				constructor = new KnightConstructor();
 				type = InhabitantType.KNIGHT;
 				break;
 			case "catapult":
+				constructor = new CatapultConstructor();
 				type = InhabitantType.CATAPULT;
 				break;
 			default:

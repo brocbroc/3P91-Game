@@ -40,9 +40,4 @@ public abstract class Fighter extends Inhabitant implements Damager {
     public int getHitPoints() {
         return hitPoints;
     }
-
-    /**
-     * Returns the training cost of the unit.
-     */
-    public abstract Cost getTrainCost();
 }

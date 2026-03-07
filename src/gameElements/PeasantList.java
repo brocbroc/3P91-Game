@@ -1,4 +1,4 @@
-package utility;
+package gameElements;
 
 import gameElements.inhabitant.Peasant;
 import java.util.List;
@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class PeasantList<T extends Peasant> {
 	private List<T> freePeasants;
 	private List<T> busyPeasants;
+	private int count;
 
 	/**
 	 * Class constructor.
@@ -19,6 +20,7 @@ public class PeasantList<T extends Peasant> {
 	public PeasantList() {
 		freePeasants = new ArrayList<>();
 		busyPeasants = new ArrayList<>();
+		count = 0;
 	}
 
 	/**
@@ -31,7 +33,7 @@ public class PeasantList<T extends Peasant> {
 	 * Returns the total number of peasants
 	 * @return the number of peasants
 	 */
-	public int getCount() { return freePeasants.size() + busyPeasants.size(); }
+	public int getCount() { return count; }
 
 	/**
 	 * Gets a free peasant, sets them to busy, and returns the peasant.
@@ -60,5 +62,6 @@ public class PeasantList<T extends Peasant> {
 	 */
 	public void addPeasant(T peasant) {
 		freePeasants.add(peasant);
+		count++;
 	}
 }

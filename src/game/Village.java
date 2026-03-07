@@ -18,10 +18,13 @@ public class Village {
 	private Building[][] map;
 	private Inventory inventory;
 	private int maxPopulation;
+	private int population;
 	private PeasantList<Worker> workers;
 	private PeasantList<Lumberman> lumbermen;
 	private PeasantList<IronMiner> ironMiners;
 	private PeasantList<GoldMiner> goldMiners;
+	private Army fighters;
+
 	private List<Fighter> army;//only fighters for attacking
 
 	/**
@@ -38,11 +41,14 @@ public class Village {
 
 		inventory = new Inventory(1000, 1000, 1000);
 		maxPopulation = 10;
+		population = 1;
 		workers = new PeasantList<>();
 		lumbermen = new PeasantList<>();
 		ironMiners = new PeasantList<>();
 		goldMiners = new PeasantList<>();
+		fighters = new Army();
 		workers.addPeasant(new Worker());
+
 		army = new ArrayList<>();
 	}
 
@@ -97,9 +103,7 @@ public class Village {
 	 * @return <code>true</code> if the village is full, <code>false</code> if not
 	 */
 	public boolean isVillageFull() {
-		int currentPopulation = workers.getCount() + lumbermen.getCount() + ironMiners.getCount()
-			+ goldMiners.getCount();
-		return currentPopulation >= maxPopulation;
+		return population >= maxPopulation;
 	}
 
 	/**
@@ -187,6 +191,7 @@ public class Village {
 
 		inventory.payCost(constructor.getProductionCost());
 		Inhabitant person = constructor.addInhabitant();
+		population++;
 
 		switch (type) {
 			case WORKER:
@@ -206,31 +211,23 @@ public class Village {
 				System.out.println("Gold miner count: " + goldMiners.getCount());
 				break;
 			case SOLDIER:
+				fighters.addSoldier((Soldier) person);
+				System.out.println("Fighter count: " + fighters.getCount());
 				break;
 			case ARCHER:
+				fighters.addArcher((Archer) person);
+				System.out.println("Fighter count: " + fighters.getCount());
 				break;
 			case KNIGHT:
+				fighters.addKnight((Knight) person);
+				System.out.println("Fighter count: " + fighters.getCount());
 				break;
 			case CATAPULT:
+				fighters.addCatapult((Catapult) person);
+				System.out.println("Fighter count: " + fighters.getCount());
 				break;
 		}
 
-		return true;
-	}
-
-	/**
-	 * Attempts to pay a cost from the village inventory.
-	 * The inventory is only updated if the village has enough resources.
-	 *
-	 * @param cost the resource cost to be paid
-	 * @return true if the cost was successfully paid, false otherwise
-	 */
-	public boolean tryPayCost(Cost cost) {
-		if (!inventory.checkCost(cost)) {
-			return false;
-		}
-
-		inventory.payCost(cost);
 		return true;
 	}
 

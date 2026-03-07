@@ -2,6 +2,7 @@ package utility;
 
 /**
  * This class represents a cost in resources.
+ * DO NOT TOUCH
  */
 public class Cost {
 	public final int GOLD;

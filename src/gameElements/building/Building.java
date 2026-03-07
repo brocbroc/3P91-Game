@@ -4,21 +4,15 @@ import utility.*;
 
 /**
  * This class represents a Building.
+ * DO NOT TOUCH
  */
 public abstract class Building {
 	protected Position position;
 	protected int level;
-	protected static int maxLevel;
-	protected static int count;
-	protected static int maxCount;
-	protected static int[] maxCounts;
-	protected static Cost buildCost;
-	protected static int buildTime; // seconds
 	protected Cost upgradeCost;
-	protected static Cost[] upgradeCosts;
 	protected int upgradeTime; // seconds
-	protected static int[] upgradeTimes;
 	protected boolean isUnderConstruction;
+	protected static final int MAX_LEVEL = 4;
 
 	/**
 	 * Class constructor.
@@ -26,7 +20,7 @@ public abstract class Building {
 	 */
 	public Building(Position pos) {
 		position = pos;
-		level = 1;
+		level = 0;
 		isUnderConstruction = true;
 	}
 
@@ -41,6 +35,12 @@ public abstract class Building {
 	 * @return the level of the building
 	 */
 	public int getLevel() { return level; }
+
+	/**
+	 * Returns the maximum possible level of buildings of this type.
+	 * @return the maximum possible level
+	 */
+	public abstract int getMaxLevel();
 
 	/**
 	 * Returns the upgrade cost
@@ -73,4 +73,9 @@ public abstract class Building {
 	 * @return a character
 	 */
 	public abstract String draw();
+
+	/**
+	 * Upgrades the building
+	 */
+	public abstract void upgrade();
 }

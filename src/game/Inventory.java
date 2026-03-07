@@ -5,6 +5,7 @@ import utility.*;
 /**
  * This class represents the inventory of a village.
  * The amount of each resource cannot drop below 0.
+ * DO NOT TOUCH
  */
 public class Inventory {
 	private int maxGold;

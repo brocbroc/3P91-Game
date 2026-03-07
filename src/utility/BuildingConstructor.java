@@ -1,7 +1,6 @@
-package gameElements;
+package utility;
 
 import gameElements.building.Building;
-import utility.*;
 
 /**
  * This interface represents a constructor for the <code>Building</code> subclasses.

@@ -1,8 +1,7 @@
-package gameElements;
+package utility;
 
 import gameElements.building.ArcherTower;
 import gameElements.building.Building;
-import utility.*;
 
 /**
  * This class represents a constructor for the <code>ArcherTower</code> class.

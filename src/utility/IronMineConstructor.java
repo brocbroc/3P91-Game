@@ -1,8 +1,7 @@
-package gameElements;
+package utility;
 
 import gameElements.building.Building;
 import gameElements.building.IronMine;
-import utility.*;
 
 /**
  * This class represents a constructor for the <code>IronMine</code> class.

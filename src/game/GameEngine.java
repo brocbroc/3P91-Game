@@ -1,7 +1,7 @@
 package game;
 
 import gameElements.*;
-import gameElements.building.*;
+import gameElements.building.Building;
 import gui.GraphicalInterface;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,9 +84,6 @@ public class GameEngine implements Runnable {
 
 		while (running) {
 			try {
-				// Not working sometimes????
-				// Not accepting new input after adding all buildings once
-				System.out.println("Input command... ");
 				String input = in.readLine().toLowerCase();
 				update(input);
 			} catch (IOException e) {
@@ -245,7 +242,7 @@ public class GameEngine implements Runnable {
 	 * @throws IOException if <code>BufferedReader</code> fails
 	 */
 	public void upgradeBuilding() throws IOException {
-		System.out.print("Position [x y]: ");
+		System.out.print("Position [x y]: "); // doesn't print this sometimes after first enter in update()
 		String posInput = in.readLine();
 		Position pos = parsePosition(posInput);
 
@@ -261,7 +258,28 @@ public class GameEngine implements Runnable {
 			return;
 		}
 
-		// Check upgrade requirements then make upgrade
+		if (b.getLevel() == b.getMaxLevel()) {
+			System.out.println("Building is fully upgraded.");
+			return;
+		}
+
+		Worker builder = base.tryUpgradeBuilding(b);
+
+		if (builder == null) {
+			System.out.println("Upgrade requirements not met.");
+			return;
+		}
+
+		System.out.println("Upgrading building...");
+		final Village BASE = base;
+		scheduler.schedule(() -> {
+			BASE.completeUpgradeBuilding(b, builder);
+
+			if (BASE == base) {
+				System.out.println("Upgrade completed.");
+				draw();
+			}
+		}, b.getUpgradeTime(), TimeUnit.SECONDS);
 	}
 
 	/**

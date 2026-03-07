@@ -1,8 +1,7 @@
-package gameElements;
+package utility;
 
 import gameElements.building.Building;
 import gameElements.building.Farm;
-import utility.*;
 
 /**
  * This class represents a constructor for the <code>Farm</code> class.

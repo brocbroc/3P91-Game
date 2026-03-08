@@ -1,12 +1,12 @@
 package gameElements.building;
 
-import utility.*;
+import utility.Cost;
+import utility.Position;
 
 /**
  * This class represents a village hall.
  * The level of the village hall determines the maximum upgrade level and the maximum number of
  * buildings for the other Building subclasses. Only one village hall may exist.
- * DO NOT TOUCH
  */
 public class VillageHall extends Building {
 	private static int maxLevel;
@@ -48,38 +48,50 @@ public class VillageHall extends Building {
 	 * @return the maximum possible level
 	 */
 	@Override
-	public int getMaxLevel() { return maxLevel; }
+	public int getMaxLevel() {
+		return maxLevel;
+	}
 
 	/**
 	 * Returns the current number of village halls
 	 * @return the number of village halls
 	 */
-	public static int getCount() { return count; }
+	public static int getCount() {
+		return count;
+	}
 
 	/**
 	 * Returns the maximum number of village halls
 	 * @return the maximum number of village halls
 	 */
-	public static int getMaxCount() { return maxCount; }
+	public static int getMaxCount() {
+		return maxCount;
+	}
 
 	/**
 	 * Returns the build cost
 	 * @return the build cost
 	 */
-	public static Cost getBuildCost() { return BUILD_COST; }
+	public static Cost getBuildCost() {
+		return BUILD_COST;
+	}
 
 	/**
 	 * Returns the build time
 	 * @return the build time, in seconds
 	 */
-	public static int getBuildTime() { return BUILD_TIME; }
+	public static int getBuildTime() {
+		return BUILD_TIME;
+	}
 
 	/**
 	 * Returns the character representing the building
 	 * @return a character
 	 */
 	@Override
-	public String draw() { return "H"; }
+	public String draw() {
+		return "H";
+	}
 
 	/**
 	 * Upgrades the village hall
@@ -105,7 +117,7 @@ public class VillageHall extends Building {
 	 */
 	private void setAllMaxLevel(int level) {
 		Farm.setMaxLevel(level);
-		LumberMill.setMaxCount(level);
+		LumberMill.setMaxLevel(level);
 		IronMine.setMaxLevel(level);
 		GoldMine.setMaxLevel(level);
 		ArcherTower.setMaxLevel(level);

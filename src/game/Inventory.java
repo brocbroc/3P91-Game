@@ -1,11 +1,10 @@
 package game;
 
-import utility.*;
+import utility.Cost;
 
 /**
  * This class represents the inventory of a village.
  * The amount of each resource cannot drop below 0.
- * DO NOT TOUCH
  */
 public class Inventory {
 	private int maxGold;
@@ -37,19 +36,25 @@ public class Inventory {
 	 * Returns the amount of gold in the inventory
 	 * @return the amount of gold
 	 */
-	public int getGold() { return gold; }
+	public int getGold() {
+		return gold;
+	}
 
 	/**
 	 * Returns the amount of iron in the inventory
 	 * @return the amount of iron
 	 */
-	public int getIron() { return iron; }
+	public int getIron() {
+		return iron;
+	}
 
 	/**
 	 * Returns the amount of lumber in the inventory
 	 * @return the amount of lumber
 	 */
-	public int getLumber() { return lumber; }
+	public int getLumber() {
+		return lumber;
+	}
 
 	/**
 	 * Checks if a cost can be covered by the inventory.

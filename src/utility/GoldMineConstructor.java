@@ -5,7 +5,6 @@ import gameElements.building.GoldMine;
 
 /**
  * This class represents a constructor for the <code>GoldMine</code> class.
- * DO NOT TOUCH
  */
 public class GoldMineConstructor implements BuildingConstructor {
     /**

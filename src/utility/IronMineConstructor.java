@@ -5,7 +5,6 @@ import gameElements.building.IronMine;
 
 /**
  * This class represents a constructor for the <code>IronMine</code> class.
- * DO NOT TOUCH
  */
 public class IronMineConstructor implements BuildingConstructor {
     /**

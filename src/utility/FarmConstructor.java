@@ -5,7 +5,6 @@ import gameElements.building.Farm;
 
 /**
  * This class represents a constructor for the <code>Farm</code> class.
- * DO NOT TOUCH
  */
 public class FarmConstructor implements BuildingConstructor {
 	/**

@@ -1,7 +1,8 @@
 package gameElements.building;
 
 import gameElements.Damager;
-import utility.*;
+import utility.Cost;
+import utility.Position;
 
 /**
  * This class represents an archer tower.
@@ -47,50 +48,66 @@ public class ArcherTower extends Building implements Damager {
      * @return the maximum possible level
      */
     @Override
-    public int getMaxLevel() { return maxLevel; }
+    public int getMaxLevel() {
+        return maxLevel;
+    }
 
     /**
      * Returns the current number of archer towers
      * @return the number of archer towers
      */
-    public static int getCount() { return count; }
+    public static int getCount() {
+        return count;
+    }
 
     /**
      * Returns the maximum number of archer towers
      * @return the maximum number of archer towers
      */
-    public static int getMaxCount() { return maxCount; }
+    public static int getMaxCount() {
+        return maxCount;
+    }
 
     /**
      * Returns the build cost
      * @return the build cost
      */
-    public static Cost getBuildCost() { return BUILD_COST; }
+    public static Cost getBuildCost() {
+        return BUILD_COST;
+    }
 
     /**
      * Returns the build time
      * @return the build time, in seconds
      */
-    public static int getBuildTime() { return BUILD_TIME; }
+    public static int getBuildTime() {
+        return BUILD_TIME;
+    }
 
     /**
      * Sets the maximum upgrade level
      * @param level the maximum upgrade level
      */
-    static void setMaxLevel(int level) { maxLevel = level; }
+    static void setMaxLevel(int level) {
+        maxLevel = level;
+    }
 
     /**
      * Sets the maximum number of archer towers allowed
      * @param count the maximum number of archer towers
      */
-    static void setMaxCount(int count) { maxCount = count; }
+    static void setMaxCount(int count) {
+        maxCount = count;
+    }
 
     /**
      * Returns the character representing the building
      * @return a character
      */
     @Override
-    public String draw() { return "A"; }
+    public String draw() {
+        return "A";
+    }
 
     /**
      * Upgrades the archer tower

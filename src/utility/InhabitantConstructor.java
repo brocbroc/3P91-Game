@@ -13,6 +13,12 @@ public interface InhabitantConstructor {
 	Cost getProductionCost();
 
 	/**
+	 * Return the production time
+	 * @return the production time, in seconds
+	 */
+	int getProductionTime();
+
+	/**
 	 * Creates a new inhabitant
 	 * @return the new inhabitant
 	 */

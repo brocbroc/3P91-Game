@@ -56,46 +56,58 @@ public class Village {
 	 * Returns the player ID.
 	 * @return the player ID
 	 */
-	public int getPlayerID() { return PLAYER_ID; }
+	public int getPlayerID() {
+		return PLAYER_ID;
+	}
 
 	/**
 	 * Returns the number of rows in <code>map</code>.
 	 * @return the number of rows in <code>map</code>
 	 */
-	public static int getMapRowCount() { return MAP_ROW_COUNT; }
+	public static int getMapRowCount() {
+		return MAP_ROW_COUNT;
+	}
 
 	/**
 	 * Returns the number of columns in <code>map</code>.
 	 * @return the number of columns in <code>map</code>
 	 */
-	public static int getMapColCount() { return MAP_COL_COUNT; }
+	public static int getMapColCount() {
+		return MAP_COL_COUNT;
+	}
 
 	/**
 	 * Returns the map of the village.
 	 * @return <code>map</code>
 	 */
-	public Building[][] getMap() { return map; }
+	public Building[][] getMap() {
+		return map;
+	}
 
 	/**
 	 * Checks if a given map square is occupied.
 	 * @param pos the position to check
 	 * @return <code>true</code> if the square is occupied, <code>false</code> if not
 	 */
-	public boolean isSquareFull(Position pos) { return map[pos.X][pos.Y] != null; }
+	public boolean isSquareFull(Position pos) {
+		return map[pos.X][pos.Y] != null;
+	}
 
 	/**
 	 * Returns the building at the given map square.
 	 * @param pos the position to retrieve from
 	 * @return the <code>Building</code> object at the position
 	 */
-	public Building getBuilding(Position pos) { return map[pos.X][pos.Y]; }
+	public Building getBuilding(Position pos) {
+		return map[pos.X][pos.Y];
+	}
 
 	/**
 	 * Returns the current inventory count.
 	 * @return an array of the inventory count of gold, iron, and lumber, respectively
 	 */
 	public int[] getInventoryValues() {
-		return new int[] {inventory.getGold(), inventory.getIron(), inventory.getLumber()};
+		return new int[] { inventory.getGold(), inventory.getIron(), inventory.getLumber() };
 	}
 
 	/**
@@ -181,54 +193,58 @@ public class Village {
 	/**
 	 * Adds an inhabitant if the cost can be paid.
 	 * @param constructor the inhabitant constructor
-	 * @param type the type of inhabitant
-	 * @return <code>true</code> if an inhabitant was added, <code>false</code> otherwise
+	 * @return an inhabitant if one was added, <code>null</code> otherwise
 	 */
-	public boolean tryAddInhabitant(InhabitantConstructor constructor, InhabitantType type) {
+	public Inhabitant tryAddInhabitant(InhabitantConstructor constructor) {
 		if (!inventory.checkCost(constructor.getProductionCost())) {
-			return false;
+			return null;
 		}
 
 		inventory.payCost(constructor.getProductionCost());
-		Inhabitant person = constructor.addInhabitant();
 		population++;
+		return constructor.addInhabitant();
+	}
 
+	/**
+	 * Completes adding an inhabitant to the village
+	 * @param inhabitant the inhabitant to add
+	 * @param type the type of inhabitant
+	 */
+	public synchronized void completeAddInhabitant(Inhabitant inhabitant, InhabitantType type) {
 		switch (type) {
 			case WORKER:
-				workers.addPeasant((Worker) person);
+				workers.addPeasant((Worker) inhabitant);
 				System.out.println("Worker count: " + workers.getCount());
 				break;
 			case LUMBERMAN:
-				lumbermen.addPeasant((Lumberman) person);
+				lumbermen.addPeasant((Lumberman) inhabitant);
 				System.out.println("Lumberman count: " + lumbermen.getCount());
 				break;
 			case IRON_MINER:
-				ironMiners.addPeasant((IronMiner) person);
+				ironMiners.addPeasant((IronMiner) inhabitant);
 				System.out.println("Iron miner count: " + ironMiners.getCount());
 				break;
 			case GOLD_MINER:
-				goldMiners.addPeasant((GoldMiner) person);
+				goldMiners.addPeasant((GoldMiner) inhabitant);
 				System.out.println("Gold miner count: " + goldMiners.getCount());
 				break;
 			case SOLDIER:
-				fighters.addSoldier((Soldier) person);
+				fighters.addSoldier((Soldier) inhabitant);
 				System.out.println("Fighter count: " + fighters.getCount());
 				break;
 			case ARCHER:
-				fighters.addArcher((Archer) person);
+				fighters.addArcher((Archer) inhabitant);
 				System.out.println("Fighter count: " + fighters.getCount());
 				break;
 			case KNIGHT:
-				fighters.addKnight((Knight) person);
+				fighters.addKnight((Knight) inhabitant);
 				System.out.println("Fighter count: " + fighters.getCount());
 				break;
 			case CATAPULT:
-				fighters.addCatapult((Catapult) person);
+				fighters.addCatapult((Catapult) inhabitant);
 				System.out.println("Fighter count: " + fighters.getCount());
 				break;
 		}
-
-		return true;
 	}
 
 	/**

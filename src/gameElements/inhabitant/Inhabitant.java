@@ -4,32 +4,17 @@ import utility.Position;
 
 /**
  * Abstract class representing an inhabitant of a village.
- * Inhabitants can be upgraded and occupy positions in the village.
+ * Each inhabitant subclass can be upgraded.
  */
 public abstract class Inhabitant {
+    protected static final int MAX_LEVEL = 4;
     protected Position position;
-    protected Position newPosition;
-    protected int level;
 
     /**
-     * Creates a new inhabitant starting at level 1.
+     * Class constructor.
      */
     public Inhabitant() {
-        level = 1;
-    }
-
-    /**
-     * Returns the level of the inhabitant.
-     */
-    public int getLevel() {
-        return level;
-    }
-
-    /**
-     * Upgrades the inhabitant to the next level.
-     */
-    public void upgrade() {
-        level++;
+        position = new Position(0, 0); // Spawn point
     }
 
     /**

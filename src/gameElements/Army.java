@@ -4,6 +4,9 @@ import gameElements.inhabitant.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents an army of fighters.
+ */
 public class Army {
 	private List<Soldier> soldiers;
 	private List<Archer> archers;
@@ -11,6 +14,9 @@ public class Army {
 	private List<Catapult> catapults;
 	private int count;
 
+	/**
+	 * Class constructor.
+	 */
 	public Army() {
 		soldiers = new ArrayList<>();
 		archers = new ArrayList<>();
@@ -19,23 +25,45 @@ public class Army {
 		count = 0;
 	}
 
-	public int getCount() { return count; }
+	/**
+	 * Returns the number of fighters.
+	 * @return the number of fighters
+	 */
+	public int getCount() {
+		return count;
+	}
 
+	/**
+	 * Adds a soldier to the army
+	 * @param s the new soldier
+	 */
 	public void addSoldier(Soldier s) {
 		soldiers.add(s);
 		count++;
 	}
 
+	/**
+	 * Adds an archer to the army
+	 * @param a the new archer
+	 */
 	public void addArcher(Archer a) {
 		archers.add(a);
 		count++;
 	}
 
+	/**
+	 * Adds a knight to the army
+	 * @param k the new knight
+	 */
 	public void addKnight(Knight k) {
 		knights.add(k);
 		count++;
 	}
 
+	/**
+	 * Adds a new catapult to the army
+	 * @param c the new catapult
+	 */
 	public void addCatapult(Catapult c) {
 		catapults.add(c);
 		count++;

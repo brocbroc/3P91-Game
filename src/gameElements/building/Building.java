@@ -1,10 +1,10 @@
 package gameElements.building;
 
-import utility.*;
+import utility.Cost;
+import utility.Position;
 
 /**
  * This class represents a Building.
- * DO NOT TOUCH
  */
 public abstract class Building {
 	protected static final int MAX_LEVEL = 4;
@@ -29,13 +29,17 @@ public abstract class Building {
 	 * Returns the position of the building.
 	 * @return the position of the building
 	 */
-	public Position getPosition() { return position; }
+	public Position getPosition() {
+		return position;
+	}
 
 	/**
 	 * Returns the level of the building.
 	 * @return the level of the building
 	 */
-	public int getLevel() { return level; }
+	public int getLevel() {
+		return level;
+	}
 
 	/**
 	 * Returns the maximum possible level of buildings of this type.
@@ -47,27 +51,34 @@ public abstract class Building {
 	 * Returns the upgrade cost
 	 * @return the upgrade cost
 	 */
-	public Cost getUpgradeCost() { return upgradeCost; }
-
+	public Cost getUpgradeCost() {
+		return upgradeCost;
+	}
 
 	/**
 	 * Returns the upgrade time
 	 * @return the upgrade time, in seconds
 	 */
-	public int getUpgradeTime() { return upgradeTime; }
+	public int getUpgradeTime() {
+		return upgradeTime;
+	}
 
 	/**
 	 * Checks if the building is under construction
 	 * @return <code>true</code> if the building is under construction, <code>false</code>
 	 * otherwise
 	 */
-	public boolean isUnderConstruction() { return isUnderConstruction; }
+	public boolean isUnderConstruction() {
+		return isUnderConstruction;
+	}
 
 	/**
 	 * Set the construction status
 	 * @param b the construction status
 	 */
-	public void setUnderConstruction(boolean b) { isUnderConstruction = b; }
+	public void setUnderConstruction(boolean b) {
+		isUnderConstruction = b;
+	}
 
 	/**
 	 * Returns the character representing the building

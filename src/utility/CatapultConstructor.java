@@ -12,7 +12,18 @@ public class CatapultConstructor implements InhabitantConstructor {
 	 * @return the production cost
 	 */
 	@Override
-	public Cost getProductionCost() { return Catapult.getProductionCost(); }
+	public Cost getProductionCost() {
+		return Catapult.getProductionCost();
+	}
+
+	/**
+	 * Return the production time
+	 * @return the production time, in seconds
+	 */
+	@Override
+	public int getProductionTime() {
+		return Catapult.getProductionTime();
+	}
 
 	/**
 	 * Creates a new catapult

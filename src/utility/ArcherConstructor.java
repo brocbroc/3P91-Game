@@ -12,7 +12,18 @@ public class ArcherConstructor implements InhabitantConstructor {
 	 * @return the production cost
 	 */
 	@Override
-	public Cost getProductionCost() { return Archer.getProductionCost(); }
+	public Cost getProductionCost() {
+		return Archer.getProductionCost();
+	}
+
+	/**
+	 * Return the production time
+	 * @return the production time, in seconds
+	 */
+	@Override
+	public int getProductionTime() {
+		return Archer.getProductionTime();
+	}
 
 	/**
 	 * Creates a new archer

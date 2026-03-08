@@ -1,11 +1,11 @@
 package gameElements.building;
 
-import utility.*;
+import utility.Cost;
+import utility.Position;
 
 /**
  * This class represents a farm.
  * The level and number of farms determine the maximum population size.
- * DO NOT TOUCH
  */
 public class Farm extends Building {
 	private static int maxLevel;
@@ -49,43 +49,57 @@ public class Farm extends Building {
 	 * @return the maximum possible level
 	 */
 	@Override
-	public int getMaxLevel() { return maxLevel; }
+	public int getMaxLevel() {
+		return maxLevel;
+	}
 
 	/**
 	 * Returns the current number of farms
 	 * @return the number of farms
 	 */
-	public static int getCount() { return count; }
+	public static int getCount() {
+		return count;
+	}
 
 	/**
 	 * Returns the maximum number of farms
 	 * @return the maximum number of farms
 	 */
-	public static int getMaxCount() { return maxCount; }
+	public static int getMaxCount() {
+		return maxCount;
+	}
 
 	/**
 	 * Returns the build cost
 	 * @return the build cost
 	 */
-	public static Cost getBuildCost() { return BUILD_COST; }
+	public static Cost getBuildCost() {
+		return BUILD_COST;
+	}
 
 	/**
 	 * Returns the build time
 	 * @return the build time, in seconds
 	 */
-	public static int getBuildTime() { return BUILD_TIME; }
+	public static int getBuildTime() {
+		return BUILD_TIME;
+	}
 
 	/**
 	 * Sets the maximum upgrade level
 	 * @param level the maximum upgrade level
 	 */
-	static void setMaxLevel(int level) { maxLevel = level; }
+	static void setMaxLevel(int level) {
+		maxLevel = level;
+	}
 
 	/**
 	 * Sets the maximum number of farms allowed
 	 * @param count the maximum number of farms
 	 */
-	static void setMaxCount(int count) { maxCount = count; }
+	static void setMaxCount(int count) {
+		maxCount = count;
+	}
 
 	/**
 	 * Returns the increase in population after a farm is added/upgraded
@@ -104,7 +118,9 @@ public class Farm extends Building {
 	 * @return a character
 	 */
 	@Override
-	public String draw() { return "F"; }
+	public String draw() {
+		return "F";
+	}
 
 	/**
 	 * Upgrades the farm

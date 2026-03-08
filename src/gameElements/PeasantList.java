@@ -27,13 +27,17 @@ public class PeasantList<T extends Peasant> {
 	 * Checks if there are no free peasants.
 	 * @return <code>true</code> if no peasants are free, <code>false</code> if there is a free peasant
 	 */
-	public boolean isFreePeasantEmpty() { return freePeasants.isEmpty(); }
+	public boolean isFreePeasantEmpty() {
+		return freePeasants.isEmpty();
+	}
 
 	/**
 	 * Returns the total number of peasants
 	 * @return the number of peasants
 	 */
-	public int getCount() { return count; }
+	public int getCount() {
+		return count;
+	}
 
 	/**
 	 * Gets a free peasant, sets them to busy, and returns the peasant.

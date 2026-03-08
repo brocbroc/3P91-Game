@@ -5,7 +5,6 @@ import gameElements.building.VillageHall;
 
 /**
  * This class represents a constructor for the <code>VillageHall</code> class.
- * DO NOT TOUCH
  */
 public class VillageHallConstructor implements BuildingConstructor {
 	/**
@@ -31,14 +30,18 @@ public class VillageHallConstructor implements BuildingConstructor {
 	 * @return the build cost
 	 */
 	@Override
-	public Cost getBuildCost() { return VillageHall.getBuildCost(); }
+	public Cost getBuildCost() {
+		return VillageHall.getBuildCost();
+	}
 
 	/**
 	 * Returns the build time
 	 * @return the build time, in seconds
 	 */
 	@Override
-	public int getBuildTime() { return VillageHall.getBuildTime(); }
+	public int getBuildTime() {
+		return VillageHall.getBuildTime();
+	}
 
 	/**
 	 * Creates a new village hall at the given position.

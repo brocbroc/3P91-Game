@@ -5,7 +5,6 @@ import gameElements.building.LumberMill;
 
 /**
  * This class represents a constructor for the <code>LumberMill</code> class.
- * DO NOT TOUCH
  */
 public class LumberMillConstructor implements BuildingConstructor {
     /**

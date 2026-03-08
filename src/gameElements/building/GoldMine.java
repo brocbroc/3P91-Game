@@ -1,6 +1,7 @@
 package gameElements.building;
 
-import utility.*;
+import utility.Cost;
+import utility.Position;
 
 /**
  * This class represents a gold mine.
@@ -45,50 +46,66 @@ public class GoldMine extends Building {
      * @return the maximum possible level
      */
     @Override
-    public int getMaxLevel() { return maxLevel; }
+    public int getMaxLevel() {
+        return maxLevel;
+    }
 
     /**
      * Returns the current number of gold mines
      * @return the number of gold mines
      */
-    public static int getCount() { return count; }
+    public static int getCount() {
+        return count;
+    }
 
     /**
      * Returns the maximum number of gold mines
      * @return the maximum number of gold mines
      */
-    public static int getMaxCount() { return maxCount; }
+    public static int getMaxCount() {
+        return maxCount;
+    }
 
     /**
      * Returns the build cost
      * @return the build cost
      */
-    public static Cost getBuildCost() { return BUILD_COST; }
+    public static Cost getBuildCost() {
+        return BUILD_COST;
+    }
 
     /**
      * Returns the build time
      * @return the build time, in seconds
      */
-    public static int getBuildTime() { return BUILD_TIME; }
+    public static int getBuildTime() {
+        return BUILD_TIME;
+    }
 
     /**
      * Sets the maximum upgrade level
      * @param level the maximum upgrade level
      */
-    static void setMaxLevel(int level) { maxLevel = level; }
+    static void setMaxLevel(int level) {
+        maxLevel = level;
+    }
 
     /**
      * Sets the maximum number of gold mines allowed
      * @param count the maximum number of gold mines
      */
-    static void setMaxCount(int count) { maxCount = count; }
+    static void setMaxCount(int count) {
+        maxCount = count;
+    }
 
     /**
      * Returns the character representing the building
      * @return a character
      */
     @Override
-    public String draw() { return "G"; }
+    public String draw() {
+        return "G";
+    }
 
     /**
      * Upgrades the gold mine

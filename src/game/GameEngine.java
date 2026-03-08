@@ -2,6 +2,7 @@ package game;
 
 import gameElements.InhabitantType;
 import gameElements.building.Building;
+import gameElements.inhabitant.Inhabitant;
 import gameElements.inhabitant.Worker;
 import gui.GraphicalInterface;
 import java.io.BufferedReader;
@@ -114,7 +115,7 @@ public class GameEngine implements Runnable {
 				this.addInhabitant();
 				return;
 			case "upgrade inhabitant":
-				// ADD CODE
+				this.upgradeInhabitant();
 				return;
 			case "attack":
 				// ADD CODE
@@ -337,10 +338,65 @@ public class GameEngine implements Runnable {
 				return;
 		}
 
-		if (base.tryAddInhabitant(constructor, type)) {
-			System.out.println("Inhabitant was added.");
-		} else {
+		Inhabitant inhabitant = base.tryAddInhabitant(constructor);
+
+		if (inhabitant == null) {
 			System.out.println("Inhabitant requirements not met.");
+		}
+
+		System.out.println("Producing inhabitant...");
+		final Village BASE = base;
+		scheduler.schedule(() -> {
+			BASE.completeAddInhabitant(inhabitant, type);
+			System.out.println("Inhabitant added.");
+		}, constructor.getProductionTime(), TimeUnit.SECONDS);
+	}
+
+	/**
+	 * Upgrades the desired type of inhabitants, if requirements are met.
+	 * @throws IOException if <code>BufferedReader</code> fails
+	 */
+	public void upgradeInhabitant() throws IOException {
+		System.out.print("Inhabitant type: ");
+		InhabitantConstructor constructor = null;
+		InhabitantType type;
+
+		switch (in.readLine().toLowerCase()) {
+			case "worker":
+				constructor = new WorkerConstructor();
+				type = InhabitantType.WORKER;
+				break;
+			case "lumberman":
+				constructor = new LumbermanConstructor();
+				type = InhabitantType.LUMBERMAN;
+				break;
+			case "iron miner":
+				constructor = new IronMinerConstructor();
+				type = InhabitantType.IRON_MINER;
+				break;
+			case "gold miner":
+				constructor = new GoldMinerConstructor();
+				type = InhabitantType.GOLD_MINER;
+				break;
+			case "soldier":
+				constructor = new SoldierConstructor();
+				type = InhabitantType.SOLDIER;
+				break;
+			case "archer":
+				constructor = new ArcherConstructor();
+				type = InhabitantType.ARCHER;
+				break;
+			case "knight":
+				constructor = new KnightConstructor();
+				type = InhabitantType.KNIGHT;
+				break;
+			case "catapult":
+				constructor = new CatapultConstructor();
+				type = InhabitantType.CATAPULT;
+				break;
+			default:
+				System.out.println("Invalid inhabitant type.");
+				return;
 		}
 	}
 

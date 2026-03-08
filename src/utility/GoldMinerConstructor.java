@@ -4,7 +4,7 @@ import gameElements.inhabitant.GoldMiner;
 import gameElements.inhabitant.Inhabitant;
 
 /**
- * This class constructs gold miners.
+ * This class constructs a gold miner.
  */
 public class GoldMinerConstructor implements InhabitantConstructor {
 	/**
@@ -12,7 +12,18 @@ public class GoldMinerConstructor implements InhabitantConstructor {
 	 * @return the production cost
 	 */
 	@Override
-	public Cost getProductionCost() { return GoldMiner.getProductionCost(); }
+	public Cost getProductionCost() {
+		return GoldMiner.getProductionCost();
+	}
+
+	/**
+	 * Return the production time
+	 * @return the production time, in seconds
+	 */
+	@Override
+	public int getProductionTime() {
+		return GoldMiner.getProductionTime();
+	}
 
 	/**
 	 * Creates a new gold miner

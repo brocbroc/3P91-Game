@@ -4,7 +4,7 @@ import gameElements.inhabitant.Inhabitant;
 import gameElements.inhabitant.Worker;
 
 /**
- * This class creates workers.
+ * This class creates a worker.
  */
 public class WorkerConstructor implements InhabitantConstructor {
 	/**
@@ -12,7 +12,18 @@ public class WorkerConstructor implements InhabitantConstructor {
 	 * @return the production cost
 	 */
 	@Override
-	public Cost getProductionCost() { return Worker.getProductionCost(); }
+	public Cost getProductionCost() {
+		return Worker.getProductionCost();
+	}
+
+	/**
+	 * Return the production time
+	 * @return the production time, in seconds
+	 */
+	@Override
+	public int getProductionTime() {
+		return Worker.getProductionTime();
+	}
 
 	/**
 	 * Creates a new worker

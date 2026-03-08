@@ -12,7 +12,18 @@ public class KnightConstructor implements InhabitantConstructor {
 	 * @return the production cost
 	 */
 	@Override
-	public Cost getProductionCost() { return Knight.getProductionCost(); }
+	public Cost getProductionCost() {
+		return Knight.getProductionCost();
+	}
+
+	/**
+	 * Return the production time
+	 * @return the production time, in seconds
+	 */
+	@Override
+	public int getProductionTime() {
+		return Knight.getProductionTime();
+	}
 
 	/**
 	 * Creates a new knight

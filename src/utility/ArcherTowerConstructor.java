@@ -5,7 +5,6 @@ import gameElements.building.Building;
 
 /**
  * This class represents a constructor for the <code>ArcherTower</code> class.
- * DO NOT TOUCH
  */
 public class ArcherTowerConstructor implements BuildingConstructor {
     /**

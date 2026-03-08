@@ -8,7 +8,6 @@ import utility.*;
  * Fighters can deal damage and have hit points.
  */
 public abstract class Fighter extends Inhabitant implements Damager {
-
     protected int baseDamage;
     protected int hitPoints;
 
@@ -22,7 +21,6 @@ public abstract class Fighter extends Inhabitant implements Damager {
         super();
         this.baseDamage = baseDamage;
         this.hitPoints = hitPoints;
-        this.position = new Position(0, 0);
     }
 
     /**
@@ -31,7 +29,7 @@ public abstract class Fighter extends Inhabitant implements Damager {
      */
     @Override
     public int damage() {
-        return baseDamage + (2 * (level - 1));
+        return baseDamage;
     }
 
     /**

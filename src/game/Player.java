@@ -3,7 +3,6 @@ package game;
 /**
  * This class represents a player of the game.
  * Every player has a village and an ID. The village is not deleted when the player is.
- * DO NOT TOUCH
  */
 public class Player {
 	private final int ID;
@@ -23,11 +22,15 @@ public class Player {
 	 * Returns the player ID.
 	 * @return the player ID
 	 */
-	public int getId() { return ID; }
+	public int getId() {
+		return ID;
+	}
 
 	/**
 	 * Returns the player's village.
 	 * @return the player's village
 	 */
-	public Village getVillage() { return VILLAGE; }
+	public Village getVillage() {
+		return VILLAGE;
+	}
 }

@@ -5,7 +5,6 @@ import gameElements.building.Cannon;
 
 /**
  * This class represents a constructor for the <code>Cannon</code> class.
- * DO NOT TOUCH
  */
 public class CannonConstructor implements BuildingConstructor {
     /**

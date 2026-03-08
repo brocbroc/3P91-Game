@@ -4,7 +4,6 @@ import gameElements.building.Building;
 
 /**
  * This interface represents a constructor for the <code>Building</code> subclasses.
- * DO NOT TOUCH
  */
 public interface BuildingConstructor {
 	/**

@@ -4,7 +4,7 @@ import gameElements.inhabitant.Inhabitant;
 import gameElements.inhabitant.Lumberman;
 
 /**
- * This class creates lumbermen.
+ * This class creates a lumberman.
  */
 public class LumbermanConstructor implements InhabitantConstructor {
 	/**
@@ -12,7 +12,18 @@ public class LumbermanConstructor implements InhabitantConstructor {
 	 * @return the production cost
 	 */
 	@Override
-	public Cost getProductionCost() { return Lumberman.getProductionCost(); }
+	public Cost getProductionCost() {
+		return Lumberman.getProductionCost();
+	}
+
+	/**
+	 * Return the production time
+	 * @return the production time, in seconds
+	 */
+	@Override
+	public int getProductionTime() {
+		return Lumberman.getProductionTime();
+	}
 
 	/**
 	 * Creates a new lumberman

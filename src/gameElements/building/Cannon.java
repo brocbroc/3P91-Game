@@ -1,7 +1,8 @@
 package gameElements.building;
 
 import gameElements.Damager;
-import utility.*;
+import utility.Cost;
+import utility.Position;
 
 /**
  * This class represents a cannon.
@@ -47,50 +48,66 @@ public class Cannon extends Building implements Damager {
      * @return the maximum possible level
      */
     @Override
-    public int getMaxLevel() { return maxLevel; }
+    public int getMaxLevel() {
+        return maxLevel;
+    }
 
     /**
      * Returns the current number of cannons
      * @return the number of cannons
      */
-    public static int getCount() { return count; }
+    public static int getCount() {
+        return count;
+    }
 
     /**
      * Returns the maximum number of cannons
      * @return the maximum number of cannons
      */
-    public static int getMaxCount() { return maxCount; }
+    public static int getMaxCount() {
+        return maxCount;
+    }
 
     /**
      * Returns the build cost
      * @return the build cost
      */
-    public static Cost getBuildCost() { return BUILD_COST; }
+    public static Cost getBuildCost() {
+        return BUILD_COST;
+    }
 
     /**
      * Returns the build time
      * @return the build time, in seconds
      */
-    public static int getBuildTime() { return BUILD_TIME; }
+    public static int getBuildTime() {
+        return BUILD_TIME;
+    }
 
     /**
      * Sets the maximum upgrade level
      * @param level the maximum upgrade level
      */
-    static void setMaxLevel(int level) { maxLevel = level; }
+    static void setMaxLevel(int level) {
+        maxLevel = level;
+    }
 
     /**
      * Sets the maximum number of cannons allowed
      * @param count the maximum number of cannons
      */
-    static void setMaxCount(int count) { maxCount = count; }
+    static void setMaxCount(int count) {
+        maxCount = count;
+    }
 
     /**
      * Returns the character representing the building
      * @return a character
      */
     @Override
-    public String draw() { return "C"; }
+    public String draw() {
+        return "C";
+    }
 
     /**
      * Upgrades the cannon

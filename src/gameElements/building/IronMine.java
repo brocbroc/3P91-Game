@@ -1,7 +1,11 @@
 package gameElements.building;
 
+import gameElements.inhabitant.IronMiner;
 import utility.Cost;
 import utility.Position;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents an iron mine.
@@ -14,6 +18,8 @@ public class IronMine extends Building {
     private static final int BUILD_TIME; // seconds
     private static final Cost[] UPGRADE_COSTS;
     private static final int[] UPGRADE_TIMES;
+    private List<IronMiner> miners;
+    private int maxMiners;
 
     static {
         maxLevel = 0;
@@ -39,6 +45,8 @@ public class IronMine extends Building {
         count++;
         upgradeCost = UPGRADE_COSTS[0];
         upgradeTime = UPGRADE_TIMES[0];
+        miners = new ArrayList<>();
+        maxMiners = 1;
     }
 
     /**
@@ -119,7 +127,6 @@ public class IronMine extends Building {
             upgradeTime = UPGRADE_TIMES[level];
         }
 
-        // Increases number of people allowed to work at mill
-        // Increases the resource collecting multiplier
+        maxMiners += 2;
     }
 }

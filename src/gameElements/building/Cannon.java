@@ -15,7 +15,8 @@ public class Cannon extends Building implements Damager {
     private static final int BUILD_TIME; // seconds
     private static final Cost[] UPGRADE_COSTS;
     private static final int[] UPGRADE_TIMES;
-    private final double baseDamage = 12.0;
+    private int damage; // per 2 seconds
+    private int range;
 
     static {
         maxLevel = 0;
@@ -122,10 +123,6 @@ public class Cannon extends Building implements Damager {
         }
 
         // Increases the damage
-        // Increases the attack speed
         // Maybe increase the attack range
     }
-
-    @Override
-    public int damage() {return 12; }
 }

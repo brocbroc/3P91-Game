@@ -11,5 +11,5 @@ public interface Damager {
      *
      * @return damage value
      */
-    int damage();
+    //int damage();
 }

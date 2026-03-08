@@ -8,34 +8,35 @@ import utility.*;
  * Fighters can deal damage and have hit points.
  */
 public abstract class Fighter extends Inhabitant implements Damager {
-    protected int baseDamage;
-    protected int hitPoints;
+    protected int remainingHitPoints;
+    protected boolean isDead;
 
     /**
-     * Creates a new fighter with a base damage and hit points.
-     *
-     * @param baseDamage the base damage inflicted by the unit
-     * @param hitPoints the base hit points of the unit
+     * Class constructor.
      */
-    public Fighter(int baseDamage, int hitPoints) {
+    public Fighter() {
         super();
-        this.baseDamage = baseDamage;
-        this.hitPoints = hitPoints;
+        isDead = false;
     }
 
     /**
-     * Calculates the damage inflicted by the fighter.
-     * Damage increases slightly with level.
+     * Returns the remaining hit points
+     * @return the remaining hit points
      */
-    @Override
-    public int damage() {
-        return baseDamage;
+    public int getRemainingHitPoints() {
+        return remainingHitPoints;
     }
 
     /**
-     * Returns the hit points of the fighter.
+     * Return whether or not the unit is dead
+     * @return <code>true</code> if the unit is dead, <code>false</code> if the unit is not dead
      */
-    public int getHitPoints() {
-        return hitPoints;
+    public boolean isDead() {
+        return isDead;
     }
+
+    /**
+     * Restores the hit points and sets <code>isDead</code> to false
+     */
+    public abstract void restore();
 }

@@ -11,19 +11,22 @@ public class Worker extends Inhabitant implements Peasant {
 	private static final Cost[] UPGRADE_COSTS;
 	private static final int[] UPGRADE_TIMES;
 	private static int level;
+	private static boolean isUpgrading;
+	private static double workRate;
 	private boolean isBusy;
 
 	static {
 		PRODUCTION_COST = new Cost(0, 10, 10);
 		PRODUCTION_TIME = 5;
 		UPGRADE_COSTS = new Cost[] {
-			new Cost(0, 0, 0),
-			new Cost(0, 0, 0),
-			new Cost(0, 0, 0),
-			new Cost(0, 0, 0)
+			new Cost(5, 20, 20),
+			new Cost(10, 40, 40),
+			new Cost(20, 80, 80),
+			new Cost(40, 160, 160)
 		};
-		UPGRADE_TIMES = new int[] {};
+		UPGRADE_TIMES = new int[] { 10, 15, 20, 25 };
 		level = 0;
+		workRate = 1;
 	}
 
 	/**
@@ -83,6 +86,30 @@ public class Worker extends Inhabitant implements Peasant {
 	}
 
 	/**
+	 * Returns whether or not the class is upgrading.
+	 * @return <code>true</code> if the class is upgrading, <code>false</code> otherwise
+	 */
+	public static boolean isUpgrading() {
+		return isUpgrading;
+	}
+
+	/**
+	 * Sets whether or not the class is upgrading
+	 * @param upgrading the new upgrade status
+	 */
+	public static void setUpgrading(boolean upgrading) {
+		isUpgrading = upgrading;
+	}
+
+	/**
+	 * Returns the work rate
+	 * @return the work rate
+	 */
+	public static double getWorkRate() {
+		return workRate;
+	}
+
+	/**
 	 * Checks if the worker is busy.
 	 * @return <code>true</code> if the worker is busy, <code>false</code> if not busy
 	 */
@@ -100,5 +127,11 @@ public class Worker extends Inhabitant implements Peasant {
 		this.isBusy = isBusy;
 	}
 
-	// workers refund materials when upgraded
+	/**
+	 * Upgrades the Worker class
+	 */
+	public static void upgrade() {
+		level++;
+		workRate -= 0.1;
+	}
 }

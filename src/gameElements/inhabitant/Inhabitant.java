@@ -18,6 +18,14 @@ public abstract class Inhabitant {
     }
 
     /**
+     * Returns the maximum upgrade level for inhabitant subclasses.
+     * @return the maximum upgrade level
+     */
+    public static int getMaxLevel() {
+        return MAX_LEVEL;
+    }
+
+    /**
      * Returns the position of the inhabitant.
      * @return the current position
      */

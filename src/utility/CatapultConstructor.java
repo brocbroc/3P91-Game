@@ -33,4 +33,57 @@ public class CatapultConstructor implements InhabitantConstructor {
 	public Inhabitant addInhabitant() {
 		return new Catapult();
 	}
+
+	/**
+	 * Returns the level of the Catapult class
+	 * @return the current level
+	 */
+	@Override
+	public int getLevel() {
+		return Catapult.getLevel();
+	}
+
+	/**
+	 * Returns whether or not the class is upgrading
+	 * @return <code>true</code> if the class is upgrading, <code>false</code> if not
+	 */
+	@Override
+	public boolean isUpgrading() {
+		return Catapult.isUpgrading();
+	}
+
+	/**
+	 * Set whether or not the class is upgrading
+	 * @param upgrading the upgrading status
+	 */
+	@Override
+	public void setUpgrading(boolean upgrading) {
+		Catapult.setUpgrading(upgrading);
+	}
+
+	/**
+	 * Returns the upgrade cost
+	 * @return the upgrade cost
+	 */
+	@Override
+	public Cost getUpgradeCost() {
+		return Catapult.getUpgradeCost();
+	}
+
+	/**
+	 * Returns the upgrade time
+	 * @return the upgrade time, in seconds
+	 */
+	@Override
+	public int getUpgradeTime() {
+		return Catapult.getUpgradeTime();
+	}
+
+	/**
+	 * Upgrades the Catapult class
+	 */
+	@Override
+	public void upgrade() {
+		Catapult.upgrade();
+	}
 }

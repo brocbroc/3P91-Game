@@ -11,25 +11,33 @@ public class Archer extends Fighter {
     private static final Cost[] UPGRADE_COSTS;
     private static final int[] UPGRADE_TIMES;
     private static int level;
+    private static boolean isUpgrading;
+    private static int hitPoints;
+    private static int damage;
+    private static int range; // per 2 seconds
 
     static {
         PRODUCTION_COST = new Cost(0, 10, 20);
         PRODUCTION_TIME = 10;
         UPGRADE_COSTS = new Cost[] {
-            new Cost(0, 0, 0),
-            new Cost(0, 0, 0),
-            new Cost(0, 0, 0),
-            new Cost(0, 0, 0)
+            new Cost(5, 20, 40),
+            new Cost(10, 40, 80),
+            new Cost(20, 80, 160),
+            new Cost(40, 160, 320)
         };
-        UPGRADE_TIMES = new int[] {};
+        UPGRADE_TIMES = new int[] { 15, 20, 25, 30 };
         level = 0;
+        hitPoints = 50;
+        damage = 5;
+        range = 10;
     }
 
     /**
      * Class constructor.
      */
     public Archer() {
-        super(7, 30);
+        super();
+        remainingHitPoints = hitPoints;
     }
 
     /**
@@ -78,5 +86,63 @@ public class Archer extends Fighter {
      */
     public static int getLevel() {
         return level;
+    }
+
+    /**
+     * Returns whether or not the class is upgrading.
+     * @return <code>true</code> if the class is upgrading, <code>false</code> otherwise
+     */
+    public static boolean isUpgrading() {
+        return isUpgrading;
+    }
+
+    /**
+     * Sets whether or not the class is upgrading
+     * @param upgrading the new upgrade status
+     */
+    public static void setUpgrading(boolean upgrading) {
+        isUpgrading = upgrading;
+    }
+
+    /**
+     * Returns the total hit points
+     * @return the total hit points
+     */
+    public static int getHitPoints() {
+        return hitPoints;
+    }
+
+    /**
+     * Returns the damage done
+     * @return the damage done
+     */
+    public static int getDamage() {
+        return damage;
+    }
+
+    /**
+     * Returns the range of attack
+     * @return the range
+     */
+    public static int getRange() {
+        return range;
+    }
+
+    /**
+     * Upgrades the Soldier class
+     */
+    public static void upgrade() {
+        level++;
+        hitPoints += 50;
+        damage += 5;
+    }
+
+    /**
+     * Restores the hit points and sets <code>isDead</code> to false
+     */
+    @Override
+    public void restore() {
+        remainingHitPoints = hitPoints;
+        isDead = false;
     }
 }

@@ -10,6 +10,7 @@ import utility.*;
 
 /**
  * This class represents a village. It stores the buildings and the inhabitants of the village.
+ * Any changes to the contents of the village are handled by this class.
  */
 public class Village {
 	private final int PLAYER_ID;
@@ -248,6 +249,30 @@ public class Village {
 	}
 
 	/**
+	 * Begins the upgrade inhabitant process, if the upgrade cost can be paid
+	 * @param constructor the inhabitant constructor
+	 * @return <code>true</code> if the inhabitant can be added, <code>false</code> if not
+	 */
+	public boolean tryUpgradeInhabitant(InhabitantConstructor constructor) {
+		if (constructor.isUpgrading() || !inventory.checkCost(constructor.getUpgradeCost())) {
+			return false;
+		}
+
+		inventory.payCost(constructor.getUpgradeCost());
+		constructor.setUpgrading(true);
+		return true;
+	}
+
+	/**
+	 * Completes the upgrade inhabitant process
+	 * @param constructor the inhabitant constructor
+	 */
+	public void completeUpgradeInhabitant(InhabitantConstructor constructor) {
+		constructor.upgrade();
+		constructor.setUpgrading(false);
+	}
+
+	/**
 	 * Adds loot to the village inventory.
 	 * This is typically called after a successful attack where the village
 	 * gains resources from another village.
@@ -285,7 +310,7 @@ public class Village {
 		int total = 0;
 
 		for (Fighter fighter : army) {
-			total += fighter.damage();
+			//total += fighter.damage();
 		}
 
 		return total;
@@ -304,7 +329,7 @@ public class Village {
 		for (Building[] row : map) {
 			for (Building building : row) {
 				if (building != null && !building.isUnderConstruction() && building instanceof Damager) {
-					total += ((Damager) building).damage();
+					//total += ((Damager) building).damage();
 				}
 			}
 		}

@@ -87,6 +87,11 @@ public class GameEngine implements Runnable {
 		draw();
 
 		while (running) {
+			if (redraw) {
+				redraw = false;
+				draw();
+			}
+
 			try {
 				String input = in.readLine().toLowerCase();
 				update(input);
@@ -229,6 +234,7 @@ public class GameEngine implements Runnable {
 			return;
 		}
 
+		int buildTime = (int) (constructor.getBuildTime() * Worker.getWorkRate());
 		System.out.println("Under construction...");
 		final Village BASE = base;
 		scheduler.schedule(() -> {
@@ -236,9 +242,9 @@ public class GameEngine implements Runnable {
 
 			if (BASE == base) {
 				System.out.println("Building completed.");
-				draw();
+				redraw = true;
 			}
-		}, constructor.getBuildTime(), TimeUnit.SECONDS);
+		}, buildTime, TimeUnit.SECONDS);
 	}
 
 	/**
@@ -246,7 +252,7 @@ public class GameEngine implements Runnable {
 	 * @throws IOException if <code>BufferedReader</code> fails
 	 */
 	public void upgradeBuilding() throws IOException {
-		System.out.print("Position [x y]: "); // doesn't print this sometimes after first enter in update()
+		System.out.print("Position [x y]: ");
 		String posInput = in.readLine();
 		Position pos = parsePosition(posInput);
 
@@ -274,6 +280,7 @@ public class GameEngine implements Runnable {
 			return;
 		}
 
+		int buildTime = (int) (b.getUpgradeTime() * Worker.getWorkRate());
 		System.out.println("Upgrading building...");
 		final Village BASE = base;
 		scheduler.schedule(() -> {
@@ -281,9 +288,9 @@ public class GameEngine implements Runnable {
 
 			if (BASE == base) {
 				System.out.println("Upgrade completed.");
-				draw();
+				redraw = true;
 			}
-		}, b.getUpgradeTime(), TimeUnit.SECONDS);
+		}, buildTime, TimeUnit.SECONDS);
 	}
 
 	/**
@@ -297,7 +304,7 @@ public class GameEngine implements Runnable {
 		}
 
 		System.out.print("Inhabitant type: ");
-		InhabitantConstructor constructor = null;
+		InhabitantConstructor constructor;
 		InhabitantType type;
 
 		switch (in.readLine().toLowerCase()) {
@@ -358,46 +365,50 @@ public class GameEngine implements Runnable {
 	 */
 	public void upgradeInhabitant() throws IOException {
 		System.out.print("Inhabitant type: ");
-		InhabitantConstructor constructor = null;
-		InhabitantType type;
+		InhabitantConstructor constructor;
 
 		switch (in.readLine().toLowerCase()) {
 			case "worker":
 				constructor = new WorkerConstructor();
-				type = InhabitantType.WORKER;
 				break;
 			case "lumberman":
 				constructor = new LumbermanConstructor();
-				type = InhabitantType.LUMBERMAN;
 				break;
 			case "iron miner":
 				constructor = new IronMinerConstructor();
-				type = InhabitantType.IRON_MINER;
 				break;
 			case "gold miner":
 				constructor = new GoldMinerConstructor();
-				type = InhabitantType.GOLD_MINER;
 				break;
 			case "soldier":
 				constructor = new SoldierConstructor();
-				type = InhabitantType.SOLDIER;
 				break;
 			case "archer":
 				constructor = new ArcherConstructor();
-				type = InhabitantType.ARCHER;
 				break;
 			case "knight":
 				constructor = new KnightConstructor();
-				type = InhabitantType.KNIGHT;
 				break;
 			case "catapult":
 				constructor = new CatapultConstructor();
-				type = InhabitantType.CATAPULT;
 				break;
 			default:
 				System.out.println("Invalid inhabitant type.");
 				return;
 		}
+
+		if (!base.tryUpgradeInhabitant(constructor)) {
+			System.out.println("Upgrade requirements not met.");
+			return;
+		}
+
+		System.out.println("Upgrading inhabitant...");
+		final Village BASE = base;
+		scheduler.schedule(() -> {
+			BASE.completeUpgradeInhabitant(constructor);
+			System.out.println("Inhabitant upgraded.");
+		}, constructor.getUpgradeTime(), TimeUnit.SECONDS);
+
 	}
 
 	/**
@@ -410,7 +421,7 @@ public class GameEngine implements Runnable {
 		try {
 			int id = Integer.parseInt(in.readLine());
 			setActivePlayer(id);
-			draw();
+			redraw = true;
 		} catch (NumberFormatException e) {
 			System.out.println("Invalid player id.");
 		}

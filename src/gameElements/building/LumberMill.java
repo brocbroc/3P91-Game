@@ -1,5 +1,8 @@
 package gameElements.building;
 
+import gameElements.inhabitant.Lumberman;
+import java.util.List;
+import java.util.ArrayList;
 import utility.Cost;
 import utility.Position;
 
@@ -14,6 +17,8 @@ public class LumberMill extends Building {
     private static final int BUILD_TIME; // seconds
     private static final Cost[] UPGRADE_COSTS;
     private static final int[] UPGRADE_TIMES;
+    private List<Lumberman> miners;
+    private int maxMiners;
 
     static {
         maxLevel = 0;
@@ -39,6 +44,8 @@ public class LumberMill extends Building {
         count++;
         upgradeCost = UPGRADE_COSTS[0];
         upgradeTime = UPGRADE_TIMES[0];
+        miners = new ArrayList<>();
+        maxMiners = 1;
     }
 
     /**
@@ -119,7 +126,6 @@ public class LumberMill extends Building {
             upgradeTime = UPGRADE_TIMES[level];
         }
 
-        // Increases number of people allowed to work at mill
-        // Increases the resource collecting multiplier
+        maxMiners += 2;
     }
 }

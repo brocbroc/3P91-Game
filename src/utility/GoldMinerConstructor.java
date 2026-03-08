@@ -33,4 +33,57 @@ public class GoldMinerConstructor implements InhabitantConstructor {
 	public Inhabitant addInhabitant() {
 		return new GoldMiner();
 	}
+
+	/**
+	 * Returns the level of the GoldMiner class
+	 * @return the current level
+	 */
+	@Override
+	public int getLevel() {
+		return GoldMiner.getLevel();
+	}
+
+	/**
+	 * Returns whether or not the class is upgrading
+	 * @return <code>true</code> if the class is upgrading, <code>false</code> if not
+	 */
+	@Override
+	public boolean isUpgrading() {
+		return GoldMiner.isUpgrading();
+	}
+
+	/**
+	 * Set whether or not the class is upgrading
+	 * @param upgrading the upgrading status
+	 */
+	@Override
+	public void setUpgrading(boolean upgrading) {
+		GoldMiner.setUpgrading(upgrading);
+	}
+
+	/**
+	 * Returns the upgrade cost
+	 * @return the upgrade cost
+	 */
+	@Override
+	public Cost getUpgradeCost() {
+		return GoldMiner.getUpgradeCost();
+	}
+
+	/**
+	 * Returns the upgrade time
+	 * @return the upgrade time, in seconds
+	 */
+	@Override
+	public int getUpgradeTime() {
+		return GoldMiner.getUpgradeTime();
+	}
+
+	/**
+	 * Upgrades the GoldMiner class
+	 */
+	@Override
+	public void upgrade() {
+		GoldMiner.upgrade();
+	}
 }

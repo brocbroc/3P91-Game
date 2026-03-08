@@ -11,19 +11,22 @@ public class Lumberman extends Inhabitant implements Peasant {
 	private static final Cost[] UPGRADE_COSTS;
 	private static final int[] UPGRADE_TIMES;
 	private static int level;
+	private static boolean isUpgrading;
+	private static int mineRate; // per 10 seconds
 	private boolean isBusy;
 
 	static {
 		PRODUCTION_COST = new Cost(5, 5, 20);
 		PRODUCTION_TIME = 5;
 		UPGRADE_COSTS = new Cost[] {
-			new Cost(0, 0, 0),
-			new Cost(0, 0, 0),
-			new Cost(0, 0, 0),
-			new Cost(0, 0, 0)
+			new Cost(10, 10, 40),
+			new Cost(20, 20, 80),
+			new Cost(40, 40, 160),
+			new Cost(80, 80, 320)
 		};
-		UPGRADE_TIMES = new int[] {};
+		UPGRADE_TIMES = new int[] { 10, 15, 20, 25 };
 		level = 0;
+		mineRate = 1;
 	}
 
 	/**
@@ -83,6 +86,22 @@ public class Lumberman extends Inhabitant implements Peasant {
 	}
 
 	/**
+	 * Returns whether or not the class is upgrading.
+	 * @return <code>true</code> if the class is upgrading, <code>false</code> otherwise
+	 */
+	public static boolean isUpgrading() {
+		return isUpgrading;
+	}
+
+	/**
+	 * Sets whether or not the class is upgrading
+	 * @param upgrading the new upgrade status
+	 */
+	public static void setUpgrading(boolean upgrading) {
+		isUpgrading = upgrading;
+	}
+
+	/**
 	 * Checks if the lumberman is busy.
 	 * @return <code>true</code> if the lumberman is busy, <code>false</code> if not busy
 	 */
@@ -98,5 +117,13 @@ public class Lumberman extends Inhabitant implements Peasant {
 	@Override
 	public void setBusy(boolean isBusy) {
 		this.isBusy = isBusy;
+	}
+
+	/**
+	 * Upgrades the Lumberman class
+	 */
+	public static void upgrade() {
+		level++;
+		mineRate++;
 	}
 }

@@ -66,15 +66,6 @@ public class Army {
 	}
 
 	/**
-	 * Returns the attack score of the army.
-	 * @return the attack score
-	 */
-	public int getAttackScore() {
-		return soldiers.size() * Soldier.getDamage() + archers.size() * Archer.getDamage()
-			+ knights.size() * Knight.getDamage() + catapults.size() * Catapult.getDamage();
-	}
-
-	/**
 	 * Adds a soldier to the army
 	 * @param s the new soldier
 	 */

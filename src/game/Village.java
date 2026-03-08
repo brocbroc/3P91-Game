@@ -276,25 +276,29 @@ public class Village {
 
 	/**
 	 * Generates village for attacking.
-	 * @return the generated village
+	 * @return the defense score of the generated village
 	 */
-	public Village generateVillage() {
+	public int generateVillage() {
 		Random rand = new Random();
 		int[] buildingCounts = new int[7];
 		buildingCounts[0] = 1;
-		buildingCounts[1] = rand.nextInt(5) - 2 + (level + 1) * 5;
+		buildingCounts[1] = rand.nextInt(5) - 3 + (level + 1) * 5;
 		buildingCounts[2] = rand.nextInt(3) - 1 + (level + 1) * 2;
 		buildingCounts[3] = rand.nextInt(3) - 1 + (level + 1) * 2;
 		buildingCounts[4] = rand.nextInt(3) - 1 + (level + 1) * 2;
-		buildingCounts[5] = rand.nextInt(5) - 2 + (level + 1) * 5;
-		buildingCounts[6] = rand.nextInt(5) - 2 + (level + 1) * 5;
-		Village v = new Village();
-		placeBuildings(v, buildingCounts);
-		return v;
-	}
+		buildingCounts[5] = rand.nextInt(5) - 3 + (level + 1) * 5;
+		buildingCounts[6] = rand.nextInt(5) - 3 + (level + 1) * 5;
+		int score = (int) (buildingCounts[0] * 500 * (1 + (level + 1) * 0.2)
+			+ buildingCounts[1] * 100 * (1 + (level + 1) * 0.2)
+			+ buildingCounts[2] * 200 * (1 + (level + 1) * 0.2)
+			+ buildingCounts[3] * 200 * (1 + (level + 1) * 0.2)
+			+ buildingCounts[4] * 200 * (1 + (level + 1) * 0.2)
+			+ buildingCounts[5] * 400 * (1 + (level + 1) * 0.2)
+			+ buildingCounts[6] * 400 * (1 + (level + 1) * 0.2));
+		score = score / 50;
+		score += (int) (buildingCounts[5] * 25 * (1 + (level + 1) * 0.2) + buildingCounts[6] * 50 * (1 + (level + 1) * 0.2));
 
-	private void placeBuildings(Village v, int[] buildingCounts) {
-
+		return score;
 	}
 
 	/**
@@ -341,7 +345,7 @@ public class Village {
 						score += ((Defense) building).getDamage();
 					}
 
-					score += building.getHitPoints() / 10;
+					score += building.getHitPoints() / 50;
 				}
 			}
 		}

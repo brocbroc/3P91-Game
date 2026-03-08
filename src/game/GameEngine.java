@@ -1,6 +1,5 @@
 package game;
 
-import gameElements.Army;
 import gameElements.InhabitantType;
 import gameElements.building.Building;
 import gameElements.inhabitant.*;
@@ -122,15 +121,8 @@ public class GameEngine implements Runnable {
 			case "upgrade inhabitant":
 				this.upgradeInhabitant();
 				return;
-			case "explore villages":
-				this.exploreVillages();
-				return;
 			case "attack":
-				// ADD CODE
-				// generate village
-				// let player look for new village until they find one they like
-				// begin attack
-				// technically separate cases but related.
+				this.generateVillage();
 				return;
 			case "switch player":
 				this.switchPlayer();
@@ -415,21 +407,21 @@ public class GameEngine implements Runnable {
 	}
 
 	/**
-	 * Creates new villages until the player selects one
+	 * Creates new villages until the player selects one, then starts attack
 	 * @throws IOException if <code>BufferedReader</code> fails
 	 */
-	public void exploreVillages() throws IOException {
+	public void generateVillage() throws IOException {
 		boolean generate = true;
 
 		do {
-			Village v = base.generateVillage();
-			System.out.println("Village defense score: " + v.getDefenseScore());
+			int defenseScore = base.generateVillage();
+			System.out.println("Village defense score: " + defenseScore);
 			System.out.print("Accept or pass (anything else to stop): ");
 			String input = in.readLine().toLowerCase();
 
 			if (input.equals("accept")) {
 				System.out.println("Target found. Attack begins.");
-				attack(v);
+				attack(defenseScore);
 				generate = false;
 			} else if (!input.equals("pass")) {
 				System.out.println("Village generation ended.");
@@ -440,10 +432,10 @@ public class GameEngine implements Runnable {
 
 	/**
 	 * Attacks the target village
-	 * @param target the target village
+	 * @param defenseScore the target village defense score
 	 * @throws IOException if <code>BufferedReader</code> fails
 	 */
-	public void attack(Village target) throws IOException {
+	public void attack(int defenseScore) throws IOException {
 		int[] fighterCounts = base.getFighterCount();
 
 		try {
@@ -485,8 +477,6 @@ public class GameEngine implements Runnable {
 
 			int attackScore = soldiers * Soldier.getDamage() + archers * Archer.getDamage()
 				+ knights * Knight.getDamage() + catapults * Catapult.getDamage();
-
-			int defenseScore = target.getDefenseScore();
 
 			if (defenseScore <= attackScore) {
 				System.out.println("Attack success.");

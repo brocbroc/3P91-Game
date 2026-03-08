@@ -2,10 +2,14 @@ package game;
 
 import gameElements.*;
 import gameElements.building.Building;
+import gameElements.building.Defense;
 import gameElements.building.Farm;
+import gameElements.building.VillageHall;
 import gameElements.inhabitant.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import utility.*;
 
 /**
@@ -13,11 +17,11 @@ import utility.*;
  * Any changes to the contents of the village are handled by this class.
  */
 public class Village {
-	private final int PLAYER_ID;
 	private static final int MAP_ROW_COUNT = 10;
 	private static final int MAP_COL_COUNT = 20;
 	private Building[][] map;
 	private Inventory inventory;
+	private int level;
 	private int maxPopulation;
 	private int population;
 	private PeasantList<Worker> workers;
@@ -30,10 +34,8 @@ public class Village {
 
 	/**
 	 * Class constructor.
-	 * @param id the ID of the player the village belongs to
 	 */
-	public Village(int id) {
-		PLAYER_ID = id;
+	public Village() {
 		map = new Building[MAP_ROW_COUNT][];
 
 		for (int i = 0; i < map.length; i++) {
@@ -41,6 +43,7 @@ public class Village {
 		}
 
 		inventory = new Inventory(1000, 1000, 1000);
+		level = 0;
 		maxPopulation = 10;
 		population = 1;
 		workers = new PeasantList<>();
@@ -51,14 +54,6 @@ public class Village {
 		workers.addPeasant(new Worker());
 
 		army = new ArrayList<>();
-	}
-
-	/**
-	 * Returns the player ID.
-	 * @return the player ID
-	 */
-	public int getPlayerID() {
-		return PLAYER_ID;
 	}
 
 	/**
@@ -117,6 +112,19 @@ public class Village {
 	 */
 	public boolean isVillageFull() {
 		return population >= maxPopulation;
+	}
+
+	/**
+	 * Returns the number of each type of fighter
+	 * @return an array of the number of each type of fighter
+	 */
+	public int[] getFighterCount() {
+		return new int[] {
+			fighters.getSoldierCount(),
+			fighters.getArcherCount(),
+			fighters.getKnightCount(),
+			fighters.getCatapultCount()
+		};
 	}
 
 	/**
@@ -188,6 +196,8 @@ public class Village {
 
 		if (b instanceof Farm) {
 			maxPopulation += ((Farm) b).getPopulationIncrease();
+		} else if (b instanceof VillageHall) {
+			level++;
 		}
 	}
 
@@ -215,35 +225,27 @@ public class Village {
 		switch (type) {
 			case WORKER:
 				workers.addPeasant((Worker) inhabitant);
-				System.out.println("Worker count: " + workers.getCount());
 				break;
 			case LUMBERMAN:
 				lumbermen.addPeasant((Lumberman) inhabitant);
-				System.out.println("Lumberman count: " + lumbermen.getCount());
 				break;
 			case IRON_MINER:
 				ironMiners.addPeasant((IronMiner) inhabitant);
-				System.out.println("Iron miner count: " + ironMiners.getCount());
 				break;
 			case GOLD_MINER:
 				goldMiners.addPeasant((GoldMiner) inhabitant);
-				System.out.println("Gold miner count: " + goldMiners.getCount());
 				break;
 			case SOLDIER:
 				fighters.addSoldier((Soldier) inhabitant);
-				System.out.println("Fighter count: " + fighters.getCount());
 				break;
 			case ARCHER:
 				fighters.addArcher((Archer) inhabitant);
-				System.out.println("Fighter count: " + fighters.getCount());
 				break;
 			case KNIGHT:
 				fighters.addKnight((Knight) inhabitant);
-				System.out.println("Fighter count: " + fighters.getCount());
 				break;
 			case CATAPULT:
 				fighters.addCatapult((Catapult) inhabitant);
-				System.out.println("Fighter count: " + fighters.getCount());
 				break;
 		}
 	}
@@ -270,6 +272,29 @@ public class Village {
 	public void completeUpgradeInhabitant(InhabitantConstructor constructor) {
 		constructor.upgrade();
 		constructor.setUpgrading(false);
+	}
+
+	/**
+	 * Generates village for attacking.
+	 * @return the generated village
+	 */
+	public Village generateVillage() {
+		Random rand = new Random();
+		int[] buildingCounts = new int[7];
+		buildingCounts[0] = 1;
+		buildingCounts[1] = rand.nextInt(5) - 2 + (level + 1) * 5;
+		buildingCounts[2] = rand.nextInt(3) - 1 + (level + 1) * 2;
+		buildingCounts[3] = rand.nextInt(3) - 1 + (level + 1) * 2;
+		buildingCounts[4] = rand.nextInt(3) - 1 + (level + 1) * 2;
+		buildingCounts[5] = rand.nextInt(5) - 2 + (level + 1) * 5;
+		buildingCounts[6] = rand.nextInt(5) - 2 + (level + 1) * 5;
+		Village v = new Village();
+		placeBuildings(v, buildingCounts);
+		return v;
+	}
+
+	private void placeBuildings(Village v, int[] buildingCounts) {
+
 	}
 
 	/**
@@ -301,49 +326,26 @@ public class Village {
 	}
 
 	/**
-	 * Calculates the attack score of the village.
-	 * The attack score is based on the total damage output of all army units.
-	 *
-	 * @return the total attack score of the village army
-	 */
-	public int getAttackScore() {
-		int total = 0;
-
-		for (Fighter fighter : army) {
-			//total += fighter.damage();
-		}
-
-		return total;
-	}
-
-	/**
 	 * Calculates the defense score of the village.
 	 * The defense score is determined by the damage to defense buildings
-	 * (such as archer towers and cannons) and the size of the population.
-	 *
+	 * and the hit points of the buildings.
 	 * @return the defense score of the village
 	 */
 	public int getDefenseScore() {
-		int total = 0;
+		int score = 0;
 
 		for (Building[] row : map) {
 			for (Building building : row) {
-				if (building != null && !building.isUnderConstruction() && building instanceof Damager) {
-					//total += ((Damager) building).damage();
+				if (building != null && !building.isUnderConstruction()) {
+					if (building instanceof Defense) {
+						score += ((Defense) building).getDamage();
+					}
+
+					score += building.getHitPoints() / 10;
 				}
 			}
 		}
 
-		//total += inhabitants.size();
-		return total;
-	}
-
-	/**
-	 * Returns the number of army units in the village.
-	 *
-	 * @return the number of fighters in the village army
-	 */
-	public int getArmySize() {
-		return army.size();
+		return score;
 	}
 }

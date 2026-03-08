@@ -42,6 +42,7 @@ public class Farm extends Building {
 		count++;
 		upgradeCost = UPGRADE_COSTS[0];
 		upgradeTime = UPGRADE_TIMES[0];
+		hitPoints = 100;
 	}
 
 	/**
@@ -128,6 +129,7 @@ public class Farm extends Building {
 	@Override
 	public void upgrade() {
 		level++;
+		hitPoints += 20;
 
 		if (level < MAX_LEVEL) {
 			upgradeCost = UPGRADE_COSTS[level];

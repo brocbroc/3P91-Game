@@ -1,9 +1,9 @@
 package game;
 
+import gameElements.Army;
 import gameElements.InhabitantType;
 import gameElements.building.Building;
-import gameElements.inhabitant.Inhabitant;
-import gameElements.inhabitant.Worker;
+import gameElements.inhabitant.*;
 import gui.GraphicalInterface;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,7 +49,7 @@ public class GameEngine implements Runnable {
 		if (villages.containsKey(id)) {
 			players.put(id, new Player(id, villages.get(id)));
 		} else {
-			Village v = new Village(id);
+			Village v = new Village();
 			villages.put(id, v);
 			players.put(id, new Player(id, v));
 		}
@@ -121,6 +121,9 @@ public class GameEngine implements Runnable {
 				return;
 			case "upgrade inhabitant":
 				this.upgradeInhabitant();
+				return;
+			case "explore villages":
+				this.exploreVillages();
 				return;
 			case "attack":
 				// ADD CODE
@@ -412,6 +415,94 @@ public class GameEngine implements Runnable {
 	}
 
 	/**
+	 * Creates new villages until the player selects one
+	 * @throws IOException if <code>BufferedReader</code> fails
+	 */
+	public void exploreVillages() throws IOException {
+		boolean generate = true;
+
+		do {
+			Village v = base.generateVillage();
+			System.out.println("Village defense score: " + v.getDefenseScore());
+			System.out.print("Accept or pass (anything else to stop): ");
+			String input = in.readLine().toLowerCase();
+
+			if (input.equals("accept")) {
+				System.out.println("Target found. Attack begins.");
+				attack(v);
+				generate = false;
+			} else if (!input.equals("pass")) {
+				System.out.println("Village generation ended.");
+				generate = false;
+			}
+		} while (generate);
+	}
+
+	/**
+	 * Attacks the target village
+	 * @param target the target village
+	 * @throws IOException if <code>BufferedReader</code> fails
+	 */
+	public void attack(Village target) throws IOException {
+		int[] fighterCounts = base.getFighterCount();
+
+		try {
+			System.out.print("Number of soldiers (max " + fighterCounts[0] + "): ");
+			String input = in.readLine();
+			int soldiers = Integer.parseInt(input);
+
+			if (soldiers < 0 || soldiers > fighterCounts[0]) {
+				System.out.println("Invalid number of soldiers.");
+				return;
+			}
+
+			System.out.print("Number of archers (max " + fighterCounts[1] + "): ");
+			input = in.readLine();
+			int archers = Integer.parseInt(input);
+
+			if (archers < 0 || archers > fighterCounts[1]) {
+				System.out.println("Invalid number of archers.");
+				return;
+			}
+
+			System.out.print("Number of knights (max " + fighterCounts[2] + "): ");
+			input = in.readLine();
+			int knights = Integer.parseInt(input);
+
+			if (knights < 0 || knights > fighterCounts[2]) {
+				System.out.println("Invalid number of knights.");
+				return;
+			}
+
+			System.out.print("Number of catapults (max " + fighterCounts[3] + "): ");
+			input = in.readLine();
+			int catapults = Integer.parseInt(input);
+
+			if (catapults < 0 || catapults > fighterCounts[3]) {
+				System.out.println("Invalid number of catapults.");
+				return;
+			}
+
+			int attackScore = soldiers * Soldier.getDamage() + archers * Archer.getDamage()
+				+ knights * Knight.getDamage() + catapults * Catapult.getDamage();
+
+			int defenseScore = target.getDefenseScore();
+
+			if (defenseScore <= attackScore) {
+				System.out.println("Attack success.");
+				Cost loot = new Cost(defenseScore / 50, defenseScore / 50, defenseScore / 50);
+				base.addLoot(loot);
+			} else {
+				System.out.println("Attack failed.");
+			}
+
+			redraw = true;
+		} catch (NumberFormatException e) {
+			System.out.println("Invalid input.");
+		}
+	}
+
+	/**
 	 * Switches the active player
 	 * @throws IOException if <code>BufferedReader</code> fails
 	 */
@@ -466,7 +557,5 @@ public class GameEngine implements Runnable {
 		game.addPlayer(1);
 		game.setActivePlayer(0);
 		game.startGameThread();
-
-		// Definitely need to figure out how to add events
 	}
 }

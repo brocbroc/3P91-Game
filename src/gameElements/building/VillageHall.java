@@ -41,6 +41,7 @@ public class VillageHall extends Building {
 		count++;
 		upgradeCost = UPGRADE_COSTS[0];
 		upgradeTime = UPGRADE_TIMES[0];
+		hitPoints = 500;
 	}
 
 	/**
@@ -106,9 +107,8 @@ public class VillageHall extends Building {
 		}
 
 		setAllMaxLevel(level);
-		System.out.println("Inside 6");
 		setAllMaxCount();
-		System.out.println("Inside 7");
+		hitPoints += 100;
 	}
 
 	/**

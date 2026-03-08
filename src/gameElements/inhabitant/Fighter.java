@@ -1,13 +1,10 @@
 package gameElements.inhabitant;
 
-import gameElements.Damager;
-import utility.*;
-
 /**
  * Abstract class representing a combat unit in the village army.
  * Fighters can deal damage and have hit points.
  */
-public abstract class Fighter extends Inhabitant implements Damager {
+public abstract class Fighter extends Inhabitant {
     protected int remainingHitPoints;
     protected boolean isDead;
 

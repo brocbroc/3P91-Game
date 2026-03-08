@@ -81,6 +81,14 @@ public abstract class Building {
 	}
 
 	/**
+	 * Return the hit points of the building
+	 * @return the hit points
+	 */
+	public int getHitPoints() {
+		return hitPoints;
+	}
+
+	/**
 	 * Returns the character representing the building
 	 * @return a character
 	 */

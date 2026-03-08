@@ -44,6 +44,7 @@ public class LumberMill extends Building {
         count++;
         upgradeCost = UPGRADE_COSTS[0];
         upgradeTime = UPGRADE_TIMES[0];
+        hitPoints = 200;
         miners = new ArrayList<>();
         maxMiners = 1;
     }
@@ -120,12 +121,12 @@ public class LumberMill extends Building {
     @Override
     public void upgrade() {
         level++;
+        hitPoints += 40;
+        maxMiners += 2;
 
         if (level < MAX_LEVEL) {
             upgradeCost = UPGRADE_COSTS[level];
             upgradeTime = UPGRADE_TIMES[level];
         }
-
-        maxMiners += 2;
     }
 }

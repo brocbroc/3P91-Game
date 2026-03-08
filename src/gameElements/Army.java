@@ -34,6 +34,47 @@ public class Army {
 	}
 
 	/**
+	 * Returns the number of soldiers.
+	 * @return the number of soldiers
+	 */
+	public int getSoldierCount() {
+		return soldiers.size();
+	}
+
+	/**
+	 * Returns the number of archers.
+	 * @return the number of archers
+	 */
+	public int getArcherCount() {
+		return archers.size();
+	}
+
+	/**
+	 * Returns the number of knights.
+	 * @return the number of knights
+	 */
+	public int getKnightCount() {
+		return knights.size();
+	}
+
+	/**
+	 * Returns the number of catapults.
+	 * @return the number of catapults
+	 */
+	public int getCatapultCount() {
+		return catapults.size();
+	}
+
+	/**
+	 * Returns the attack score of the army.
+	 * @return the attack score
+	 */
+	public int getAttackScore() {
+		return soldiers.size() * Soldier.getDamage() + archers.size() * Archer.getDamage()
+			+ knights.size() * Knight.getDamage() + catapults.size() * Catapult.getDamage();
+	}
+
+	/**
 	 * Adds a soldier to the army
 	 * @param s the new soldier
 	 */

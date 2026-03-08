@@ -1,13 +1,12 @@
 package gameElements.building;
 
-import gameElements.Damager;
 import utility.Cost;
 import utility.Position;
 
 /**
  * This class represents an archer tower.
  */
-public class ArcherTower extends Building implements Damager {
+public class ArcherTower extends Building implements Defense {
     private static int maxLevel;
     private static int count;
     private static int maxCount;
@@ -42,6 +41,9 @@ public class ArcherTower extends Building implements Damager {
         count++;
         upgradeCost = UPGRADE_COSTS[0];
         upgradeTime = UPGRADE_TIMES[0];
+        hitPoints = 400;
+        damage = 25;
+        range = 15;
     }
 
     /**
@@ -102,6 +104,15 @@ public class ArcherTower extends Building implements Damager {
     }
 
     /**
+     * Returns the amount of damage dealt
+     * @return the amount of damage
+     */
+    @Override
+    public int getDamage() {
+        return damage;
+    }
+
+    /**
      * Returns the character representing the building
      * @return a character
      */
@@ -116,6 +127,8 @@ public class ArcherTower extends Building implements Damager {
     @Override
     public void upgrade() {
         level++;
+        hitPoints += 80;
+        damage += 5;
 
         if (level < MAX_LEVEL) {
             upgradeCost = UPGRADE_COSTS[level];

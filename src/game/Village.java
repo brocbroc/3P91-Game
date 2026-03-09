@@ -29,8 +29,8 @@ public class Village {
 	private PeasantList<IronMiner> ironMiners;
 	private PeasantList<GoldMiner> goldMiners;
 	private Army fighters;
-
-	private List<Fighter> army;//only fighters for attacking
+	private int attackWins;
+	private int attackFails;
 
 	/**
 	 * Class constructor.
@@ -52,8 +52,8 @@ public class Village {
 		goldMiners = new PeasantList<>();
 		fighters = new Army();
 		workers.addPeasant(new Worker());
-
-		army = new ArrayList<>();
+		attackWins = 0;
+		attackFails = 0;
 	}
 
 	/**
@@ -351,5 +351,60 @@ public class Village {
 		}
 
 		return score;
+	}
+
+	/**
+	 * Updates the number of attack wins or fails.
+	 * @param result <code>true</code> if attack was successful, <code>false</code> if not
+	 */
+	public void recordAttack(boolean result) {
+		if (result) {
+			attackWins++;
+		} else {
+			attackFails++;
+		}
+	}
+
+	/**
+	 * Returns the rank of the village.
+	 * @return a string indicating the rank of the village
+	 */
+	public String getRank() {
+		switch (level) {
+			case 4:
+				if (attackRatio() > 0.6) {
+					return "PLATINUM";
+				}
+
+				return "GOLD";
+			case 3:
+				if (attackRatio() > 0.6) {
+					return "GOLD";
+				}
+
+				return "SILVER";
+			case 2:
+				if (attackRatio() > 0.6) {
+					return "SILVER";
+				}
+
+				return "BRONZE";
+			case 1:
+				if (attackRatio() > 0.6) {
+					return "BRONZE";
+				}
+
+				return "IRON";
+ 			default:
+				return "IRON";
+		}
+	}
+
+	/**
+	 * Returns the ratio of successful attacks to total attacks
+	 * @return the attack ratio
+	 */
+	private double attackRatio() {
+		return (double) attackWins / (attackWins + attackFails);
 	}
 }

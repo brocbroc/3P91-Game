@@ -104,8 +104,7 @@ public class GameEngine implements Runnable {
 	/**
 	 * Executes the input command.
 	 * @param input the command to execute
-	 * @throws IOException if <code>addBuilding()</code> or <code>switchPlayer()</code> throw an
-	 * exception
+	 * @throws IOException if called methods throw an exception
 	 */
 	public void update(String input) throws IOException {
 		switch (input) {
@@ -123,6 +122,9 @@ public class GameEngine implements Runnable {
 				return;
 			case "attack":
 				this.generateVillage();
+				return;
+			case "check rank":
+				this.checkRank();
 				return;
 			case "switch player":
 				this.switchPlayer();
@@ -482,14 +484,23 @@ public class GameEngine implements Runnable {
 				System.out.println("Attack success.");
 				Cost loot = new Cost(defenseScore / 50, defenseScore / 50, defenseScore / 50);
 				base.addLoot(loot);
+				base.recordAttack(true);
 			} else {
 				System.out.println("Attack failed.");
+				base.recordAttack(false);
 			}
 
 			redraw = true;
 		} catch (NumberFormatException e) {
 			System.out.println("Invalid input.");
 		}
+	}
+
+	/**
+	 * Returns the rank of the active player
+	 */
+	public void checkRank() {
+		System.out.println("Rank of village: " + base.getRank());
 	}
 
 	/**

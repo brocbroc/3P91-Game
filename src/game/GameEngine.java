@@ -1,8 +1,9 @@
 package game;
 
 import ChallengeDecision.*;
+import gameElements.BuildingType;
 import gameElements.InhabitantType;
-import gameElements.building.Building;
+import gameElements.building.*;
 import gameElements.inhabitant.*;
 import gui.GraphicalInterface;
 import java.io.BufferedReader;
@@ -186,25 +187,25 @@ public class GameEngine implements Runnable {
 
 		switch (in.readLine().toLowerCase()) {
 			case "village hall":
-				constructor = new VillageHallConstructor();
+				constructor = new VillageHallConstructor(base.getAllBuildingData());
 				break;
 			case "farm":
-				constructor = new FarmConstructor();
+				constructor = new FarmConstructor((FarmData) base.getBuildingData(BuildingType.FARM));
 				break;
 			case "lumber mill":
-				constructor = new LumberMillConstructor();
+				constructor = new LumberMillConstructor((LumberMillData) base.getBuildingData(BuildingType.LUMBER_MILL));
 				break;
 			case "iron mine":
-				constructor = new IronMineConstructor();
+				constructor = new IronMineConstructor((IronMineData) base.getBuildingData(BuildingType.IRON_MINE));
 				break;
 			case "gold mine":
-				constructor = new GoldMineConstructor();
+				constructor = new GoldMineConstructor((GoldMineData) base.getBuildingData(BuildingType.GOLD_MINE));
 				break;
 			case "archer tower":
-				constructor = new ArcherTowerConstructor();
+				constructor = new ArcherTowerConstructor((ArcherTowerData) base.getBuildingData(BuildingType.ARCHER_TOWER));
 				break;
 			case "cannon":
-				constructor = new CannonConstructor();
+				constructor = new CannonConstructor((CannonData) base.getBuildingData(BuildingType.CANNON));
 				break;
 			default:
 				System.out.println("Invalid building type.");

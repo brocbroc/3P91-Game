@@ -1,10 +1,10 @@
 package gameElements.building;
 
 /**
- * This class contains the data on a village's farms.
+ * This class contains the data on a village's cannons.
  * It holds the max level, count, and max count.
  */
-public class FarmData extends BuildingData {
+public class CannonData extends BuildingData {
 	private static final int[] maxCounts;
 
 	static {
@@ -14,7 +14,7 @@ public class FarmData extends BuildingData {
 	/**
 	 * Class constructor
 	 */
-	public FarmData() {
+	public CannonData() {
 		super();
 		maxCount = maxCounts[0];
 	}

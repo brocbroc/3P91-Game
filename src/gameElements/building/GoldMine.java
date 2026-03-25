@@ -11,20 +11,15 @@ import java.util.List;
  * This class represents a gold mine.
  */
 public class GoldMine extends Building {
-    private static int maxLevel;
-    private static int count;
-    private static int maxCount;
     private static final Cost BUILD_COST;
     private static final int BUILD_TIME; // seconds
     private static final Cost[] UPGRADE_COSTS;
     private static final int[] UPGRADE_TIMES;
+    private GoldMineData data;
     private List<GoldMiner> miners;
     private int maxMiners;
 
     static {
-        maxLevel = 0;
-        count = 0;
-        maxCount = 2;
         BUILD_COST = new Cost(20, 0, 0);
         BUILD_TIME = 60;
         UPGRADE_COSTS = new Cost[] {
@@ -39,10 +34,12 @@ public class GoldMine extends Building {
     /**
      * Class constructor.
      * @param pos the position of the new gold mine
+     * @param data the gold mine data
      */
-    public GoldMine(Position pos) {
+    public GoldMine(Position pos, GoldMineData data) {
         super(pos);
-        count++;
+        this.data = data;
+        data.incrementCount();
         upgradeCost = UPGRADE_COSTS[0];
         upgradeTime = UPGRADE_TIMES[0];
         hitPoints = 200;
@@ -56,23 +53,7 @@ public class GoldMine extends Building {
      */
     @Override
     public int getMaxLevel() {
-        return maxLevel;
-    }
-
-    /**
-     * Returns the current number of gold mines
-     * @return the number of gold mines
-     */
-    public static int getCount() {
-        return count;
-    }
-
-    /**
-     * Returns the maximum number of gold mines
-     * @return the maximum number of gold mines
-     */
-    public static int getMaxCount() {
-        return maxCount;
+        return data.getMaxLevel();
     }
 
     /**
@@ -89,22 +70,6 @@ public class GoldMine extends Building {
      */
     public static int getBuildTime() {
         return BUILD_TIME;
-    }
-
-    /**
-     * Sets the maximum upgrade level
-     * @param level the maximum upgrade level
-     */
-    static void setMaxLevel(int level) {
-        maxLevel = level;
-    }
-
-    /**
-     * Sets the maximum number of gold mines allowed
-     * @param count the maximum number of gold mines
-     */
-    static void setMaxCount(int count) {
-        maxCount = count;
     }
 
     /**

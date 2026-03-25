@@ -7,20 +7,15 @@ import utility.Position;
  * This class represents an archer tower.
  */
 public class ArcherTower extends Building implements Defense {
-    private static int maxLevel;
-    private static int count;
-    private static int maxCount;
     private static final Cost BUILD_COST;
     private static final int BUILD_TIME; // seconds
     private static final Cost[] UPGRADE_COSTS;
     private static final int[] UPGRADE_TIMES;
+    private ArcherTowerData data;
     private int damage; // per 2 seconds
     private int range;
 
     static {
-        maxLevel = 0;
-        count = 0;
-        maxCount = 5;
         BUILD_COST = new Cost(5, 10, 20);
         BUILD_TIME = 60;
         UPGRADE_COSTS = new Cost[] {
@@ -35,10 +30,12 @@ public class ArcherTower extends Building implements Defense {
     /**
      * Class constructor.
      * @param pos the position of the new archer tower
+     * @param data the archer tower data
      */
-    public ArcherTower(Position pos) {
+    public ArcherTower(Position pos, ArcherTowerData data) {
         super(pos);
-        count++;
+        this.data = data;
+        data.incrementCount();
         upgradeCost = UPGRADE_COSTS[0];
         upgradeTime = UPGRADE_TIMES[0];
         hitPoints = 400;
@@ -52,23 +49,7 @@ public class ArcherTower extends Building implements Defense {
      */
     @Override
     public int getMaxLevel() {
-        return maxLevel;
-    }
-
-    /**
-     * Returns the current number of archer towers
-     * @return the number of archer towers
-     */
-    public static int getCount() {
-        return count;
-    }
-
-    /**
-     * Returns the maximum number of archer towers
-     * @return the maximum number of archer towers
-     */
-    public static int getMaxCount() {
-        return maxCount;
+        return data.getMaxLevel();
     }
 
     /**
@@ -85,22 +66,6 @@ public class ArcherTower extends Building implements Defense {
      */
     public static int getBuildTime() {
         return BUILD_TIME;
-    }
-
-    /**
-     * Sets the maximum upgrade level
-     * @param level the maximum upgrade level
-     */
-    static void setMaxLevel(int level) {
-        maxLevel = level;
-    }
-
-    /**
-     * Sets the maximum number of archer towers allowed
-     * @param count the maximum number of archer towers
-     */
-    static void setMaxCount(int count) {
-        maxCount = count;
     }
 
     /**
@@ -134,8 +99,5 @@ public class ArcherTower extends Building implements Defense {
             upgradeCost = UPGRADE_COSTS[level];
             upgradeTime = UPGRADE_TIMES[level];
         }
-
-        // Increases the damage
-        // Maybe increase the attack range
     }
 }

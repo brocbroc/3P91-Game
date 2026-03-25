@@ -1,19 +1,30 @@
 package utility;
 
 import gameElements.building.ArcherTower;
+import gameElements.building.ArcherTowerData;
 import gameElements.building.Building;
 
 /**
  * This class represents a constructor for the <code>ArcherTower</code> class.
  */
 public class ArcherTowerConstructor implements BuildingConstructor {
+    private ArcherTowerData data;
+
+    /**
+     * Class constructor
+     * @param data the archer tower data
+     */
+    public ArcherTowerConstructor(ArcherTowerData data) {
+        this.data = data;
+    }
+
     /**
      * Returns the number of archer towers.
      * @return the number of archer towers
      */
     @Override
     public int getCount() {
-        return ArcherTower.getCount();
+        return data.getCount();
     }
 
     /**
@@ -22,7 +33,7 @@ public class ArcherTowerConstructor implements BuildingConstructor {
      */
     @Override
     public int getMaxCount() {
-        return ArcherTower.getMaxCount();
+        return data.getMaxCount();
     }
 
     /**
@@ -50,6 +61,6 @@ public class ArcherTowerConstructor implements BuildingConstructor {
      */
     @Override
     public Building addBuilding(Position pos) {
-        return new ArcherTower(pos);
+        return new ArcherTower(pos, data);
     }
 }

@@ -2,18 +2,29 @@ package utility;
 
 import gameElements.building.Building;
 import gameElements.building.IronMine;
+import gameElements.building.IronMineData;
 
 /**
  * This class represents a constructor for the <code>IronMine</code> class.
  */
 public class IronMineConstructor implements BuildingConstructor {
+    private IronMineData data;
+
+    /**
+     * Class constructor
+     * @param data the iron mine data
+     */
+    public IronMineConstructor(IronMineData data) {
+        this.data = data;
+    }
+
     /**
      * Returns the number of iron mines.
      * @return the number of iron mines
      */
     @Override
     public int getCount() {
-        return IronMine.getCount();
+        return data.getCount();
     }
 
     /**
@@ -22,7 +33,7 @@ public class IronMineConstructor implements BuildingConstructor {
      */
     @Override
     public int getMaxCount() {
-        return IronMine.getMaxCount();
+        return data.getMaxCount();
     }
 
     /**
@@ -50,6 +61,6 @@ public class IronMineConstructor implements BuildingConstructor {
      */
     @Override
     public Building addBuilding(Position pos) {
-        return new IronMine(pos);
+        return new IronMine(pos, data);
     }
 }

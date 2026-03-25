@@ -8,19 +8,14 @@ import utility.Position;
  * The level and number of farms determine the maximum population size.
  */
 public class Farm extends Building {
-	private static int maxLevel;
-	private static int count;
-	private static int maxCount;
 	private static final Cost BUILD_COST;
 	private static final int BUILD_TIME; // seconds
 	private static final Cost[] UPGRADE_COSTS;
 	private static final int[] UPGRADE_TIMES;
 	private static final int[] POPULATION_SUPPORTED;
+	private FarmData data;
 
 	static {
-		maxLevel = 0;
-		count = 0;
-		maxCount = 5;
 		BUILD_COST = new Cost(0, 10, 10);
 		BUILD_TIME = 5;
 		UPGRADE_COSTS = new Cost[] {
@@ -36,38 +31,23 @@ public class Farm extends Building {
 	/**
 	 * Class constructor.
 	 * @param pos the position of the new farm
+	 * @param data the data of the farm
 	 */
-	public Farm(Position pos) {
+	public Farm(Position pos, FarmData data) {
 		super(pos);
-		count++;
+		data.incrementCount();
 		upgradeCost = UPGRADE_COSTS[0];
 		upgradeTime = UPGRADE_TIMES[0];
 		hitPoints = 100;
 	}
 
 	/**
-	 * Returns the maximum possible level of a farm.
-	 * @return the maximum possible level
+	 * Returns the maximum level of the building
+	 * @return the maximum level of the building
 	 */
 	@Override
 	public int getMaxLevel() {
-		return maxLevel;
-	}
-
-	/**
-	 * Returns the current number of farms
-	 * @return the number of farms
-	 */
-	public static int getCount() {
-		return count;
-	}
-
-	/**
-	 * Returns the maximum number of farms
-	 * @return the maximum number of farms
-	 */
-	public static int getMaxCount() {
-		return maxCount;
+		return data.getMaxLevel();
 	}
 
 	/**
@@ -84,22 +64,6 @@ public class Farm extends Building {
 	 */
 	public static int getBuildTime() {
 		return BUILD_TIME;
-	}
-
-	/**
-	 * Sets the maximum upgrade level
-	 * @param level the maximum upgrade level
-	 */
-	static void setMaxLevel(int level) {
-		maxLevel = level;
-	}
-
-	/**
-	 * Sets the maximum number of farms allowed
-	 * @param count the maximum number of farms
-	 */
-	static void setMaxCount(int count) {
-		maxCount = count;
 	}
 
 	/**

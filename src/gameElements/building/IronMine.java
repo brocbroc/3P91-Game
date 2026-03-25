@@ -1,6 +1,7 @@
 package gameElements.building;
 
 import gameElements.inhabitant.IronMiner;
+import gameElements.inhabitant.IronMinerData;
 import utility.Cost;
 import utility.Position;
 
@@ -11,20 +12,15 @@ import java.util.List;
  * This class represents an iron mine.
  */
 public class IronMine extends Building {
-    private static int maxLevel;
-    private static int count;
-    private static int maxCount;
     private static final Cost BUILD_COST;
     private static final int BUILD_TIME; // seconds
     private static final Cost[] UPGRADE_COSTS;
     private static final int[] UPGRADE_TIMES;
+    private IronMineData data;
     private List<IronMiner> miners;
     private int maxMiners;
 
     static {
-        maxLevel = 0;
-        count = 0;
-        maxCount = 2;
         BUILD_COST = new Cost(0, 20, 0);
         BUILD_TIME = 40;
         UPGRADE_COSTS = new Cost[] {
@@ -39,10 +35,12 @@ public class IronMine extends Building {
     /**
      * Class constructor.
      * @param pos the position of the new iron mine
+     * @param data the iron mine data
      */
-    public IronMine(Position pos) {
+    public IronMine(Position pos, IronMineData data) {
         super(pos);
-        count++;
+        this.data = data;
+        data.incrementCount();
         upgradeCost = UPGRADE_COSTS[0];
         upgradeTime = UPGRADE_TIMES[0];
         hitPoints = 200;
@@ -56,23 +54,7 @@ public class IronMine extends Building {
      */
     @Override
     public int getMaxLevel() {
-        return maxLevel;
-    }
-
-    /**
-     * Returns the current number of iron mines
-     * @return the number of iron mines
-     */
-    public static int getCount() {
-        return count;
-    }
-
-    /**
-     * Returns the maximum number of iron mines
-     * @return the maximum number of iron mines
-     */
-    public static int getMaxCount() {
-        return maxCount;
+        return data.getMaxLevel();
     }
 
     /**
@@ -89,22 +71,6 @@ public class IronMine extends Building {
      */
     public static int getBuildTime() {
         return BUILD_TIME;
-    }
-
-    /**
-     * Sets the maximum upgrade level
-     * @param level the maximum upgrade level
-     */
-    static void setMaxLevel(int level) {
-        maxLevel = level;
-    }
-
-    /**
-     * Sets the maximum number of iron mines allowed
-     * @param count the maximum number of iron mines
-     */
-    static void setMaxCount(int count) {
-        maxCount = count;
     }
 
     /**

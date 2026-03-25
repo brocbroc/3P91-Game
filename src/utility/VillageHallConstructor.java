@@ -1,19 +1,32 @@
 package utility;
 
+import gameElements.BuildingType;
 import gameElements.building.Building;
+import gameElements.building.BuildingData;
 import gameElements.building.VillageHall;
+import gameElements.building.VillageHallData;
+
+import java.util.EnumMap;
 
 /**
  * This class represents a constructor for the <code>VillageHall</code> class.
  */
 public class VillageHallConstructor implements BuildingConstructor {
+	private EnumMap<BuildingType, BuildingData> buildingData;
+	private VillageHallData data;
+
+	public VillageHallConstructor(EnumMap<BuildingType, BuildingData> buildingData) {
+		this.buildingData = buildingData;
+		data = (VillageHallData) buildingData.get(BuildingType.VILLAGE_HALL);
+	}
+
 	/**
 	 * Returns the number of village halls.
 	 * @return the number of village halls
 	 */
 	@Override
 	public int getCount() {
-		return VillageHall.getCount();
+		return data.getCount();
 	}
 
 	/**
@@ -22,7 +35,7 @@ public class VillageHallConstructor implements BuildingConstructor {
 	 */
 	@Override
 	public int getMaxCount() {
-		return VillageHall.getMaxCount();
+		return data.getMaxCount();
 	}
 
 	/**
@@ -50,6 +63,6 @@ public class VillageHallConstructor implements BuildingConstructor {
 	 */
 	@Override
 	public Building addBuilding(Position pos) {
-		return new VillageHall(pos);
+		return new VillageHall(pos, data, buildingData);
 	}
 }

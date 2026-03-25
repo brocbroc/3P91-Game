@@ -2,18 +2,29 @@ package utility;
 
 import gameElements.building.Building;
 import gameElements.building.Cannon;
+import gameElements.building.CannonData;
 
 /**
  * This class represents a constructor for the <code>Cannon</code> class.
  */
 public class CannonConstructor implements BuildingConstructor {
+    private CannonData data;
+
+    /**
+     * Class constructor
+     * @param data the cannon data
+     */
+    public CannonConstructor(CannonData data) {
+        this.data = data;
+    }
+
     /**
      * Returns the number of cannons.
      * @return the number of cannons
      */
     @Override
     public int getCount() {
-        return Cannon.getCount();
+        return data.getCount();
     }
 
     /**
@@ -22,7 +33,7 @@ public class CannonConstructor implements BuildingConstructor {
      */
     @Override
     public int getMaxCount() {
-        return Cannon.getMaxCount();
+        return data.getMaxCount();
     }
 
     /**
@@ -50,6 +61,6 @@ public class CannonConstructor implements BuildingConstructor {
      */
     @Override
     public Building addBuilding(Position pos) {
-        return new Cannon(pos);
+        return new Cannon(pos, data);
     }
 }

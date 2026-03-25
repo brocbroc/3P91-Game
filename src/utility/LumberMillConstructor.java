@@ -2,18 +2,29 @@ package utility;
 
 import gameElements.building.Building;
 import gameElements.building.LumberMill;
+import gameElements.building.LumberMillData;
 
 /**
  * This class represents a constructor for the <code>LumberMill</code> class.
  */
 public class LumberMillConstructor implements BuildingConstructor {
+    private LumberMillData data;
+
+    /**
+     * Class constructor
+     * @param data the lumber mill data
+     */
+    public LumberMillConstructor(LumberMillData data) {
+        this.data = data;
+    }
+
     /**
      * Returns the number of lumber mills.
      * @return the number of lumber mills
      */
     @Override
     public int getCount() {
-        return LumberMill.getCount();
+        return data.getCount();
     }
 
     /**
@@ -22,7 +33,7 @@ public class LumberMillConstructor implements BuildingConstructor {
      */
     @Override
     public int getMaxCount() {
-        return LumberMill.getMaxCount();
+        return data.getMaxCount();
     }
 
     /**
@@ -50,6 +61,6 @@ public class LumberMillConstructor implements BuildingConstructor {
      */
     @Override
     public Building addBuilding(Position pos) {
-        return new LumberMill(pos);
+        return new LumberMill(pos, data);
     }
 }

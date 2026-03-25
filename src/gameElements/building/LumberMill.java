@@ -10,20 +10,15 @@ import utility.Position;
  * This class represents a lumber mill.
  */
 public class LumberMill extends Building {
-    private static int maxLevel;
-    private static int count;
-    private static int maxCount;
     private static final Cost BUILD_COST;
     private static final int BUILD_TIME; // seconds
     private static final Cost[] UPGRADE_COSTS;
     private static final int[] UPGRADE_TIMES;
+    private LumberMillData data;
     private List<Lumberman> miners;
     private int maxMiners;
 
     static {
-        maxLevel = 0;
-        count = 0;
-        maxCount = 2;
         BUILD_COST = new Cost(0, 0, 20);
         BUILD_TIME = 20;
         UPGRADE_COSTS = new Cost[] {
@@ -38,10 +33,12 @@ public class LumberMill extends Building {
     /**
      * Class constructor.
      * @param pos the position of the new lumber mill
+     * @param data the lumber mill data
      */
-    public LumberMill(Position pos) {
+    public LumberMill(Position pos, LumberMillData data) {
         super(pos);
-        count++;
+        this.data = data;
+        data.incrementCount();
         upgradeCost = UPGRADE_COSTS[0];
         upgradeTime = UPGRADE_TIMES[0];
         hitPoints = 200;
@@ -55,23 +52,7 @@ public class LumberMill extends Building {
      */
     @Override
     public int getMaxLevel() {
-        return maxLevel;
-    }
-
-    /**
-     * Returns the current number of lumber mills
-     * @return the number of lumber mills
-     */
-    public static int getCount() {
-        return count;
-    }
-
-    /**
-     * Returns the maximum number of lumber mills
-     * @return the maximum number of lumber mills
-     */
-    public static int getMaxCount() {
-        return maxCount;
+        return data.getMaxLevel();
     }
 
     /**
@@ -88,22 +69,6 @@ public class LumberMill extends Building {
      */
     public static int getBuildTime() {
         return BUILD_TIME;
-    }
-
-    /**
-     * Sets the maximum upgrade level
-     * @param level the maximum upgrade level
-     */
-    static void setMaxLevel(int level) {
-        maxLevel = level;
-    }
-
-    /**
-     * Sets the maximum number of lumber mills allowed
-     * @param count the maximum number of lumber mills
-     */
-    static void setMaxCount(int count) {
-        maxCount = count;
     }
 
     /**

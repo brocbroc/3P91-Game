@@ -2,18 +2,25 @@ package utility;
 
 import gameElements.building.Building;
 import gameElements.building.Farm;
+import gameElements.building.FarmData;
 
 /**
  * This class represents a constructor for the <code>Farm</code> class.
  */
 public class FarmConstructor implements BuildingConstructor {
+	private FarmData data;
+
+	public FarmConstructor(FarmData data) {
+		this.data = data;
+	}
+
 	/**
 	 * Returns the number of farms.
 	 * @return the number of farms
 	 */
 	@Override
 	public int getCount() {
-		return Farm.getCount();
+		return data.getCount();
 	}
 
 	/**
@@ -22,7 +29,7 @@ public class FarmConstructor implements BuildingConstructor {
 	 */
 	@Override
 	public int getMaxCount() {
-		return Farm.getMaxCount();
+		return data.getMaxCount();
 	}
 
 	/**
@@ -50,6 +57,6 @@ public class FarmConstructor implements BuildingConstructor {
 	 */
 	@Override
 	public Building addBuilding(Position pos) {
-		return new Farm(pos);
+		return new Farm(pos, data);
 	}
 }

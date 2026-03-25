@@ -1,10 +1,7 @@
 package game;
 
 import gameElements.*;
-import gameElements.building.Building;
-import gameElements.building.Defense;
-import gameElements.building.Farm;
-import gameElements.building.VillageHall;
+import gameElements.building.*;
 import gameElements.inhabitant.*;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -21,6 +18,7 @@ public class Village {
 	private static final int MAP_ROW_COUNT = 10;
 	private static final int MAP_COL_COUNT = 20;
 	private Building[][] map;
+	private EnumMap<BuildingType, BuildingData> buildingData;
 	private Inventory inventory;
 	private int level;
 	private int maxPopulation;
@@ -44,6 +42,7 @@ public class Village {
 			map[i] = new Building[MAP_COL_COUNT];
 		}
 
+		buildingData = new EnumMap<>(BuildingType.class);
 		inventory = new Inventory(1000, 1000, 1000);
 		level = 0;
 		maxPopulation = 10;
@@ -56,6 +55,13 @@ public class Village {
 		fighters = new Army();
 		attackWins = 0;
 		attackFails = 0;
+		buildingData.put(BuildingType.VILLAGE_HALL, new VillageHallData());
+		buildingData.put(BuildingType.FARM, new FarmData());
+		buildingData.put(BuildingType.LUMBER_MILL, new LumberMillData());
+		buildingData.put(BuildingType.IRON_MINE, new IronMineData());
+		buildingData.put(BuildingType.GOLD_MINE, new GoldMineData());
+		buildingData.put(BuildingType.ARCHER_TOWER, new ArcherTowerData());
+		buildingData.put(BuildingType.CANNON, new CannonData());
 		inhabitantData.put(InhabitantType.WORKER, new WorkerData());
 		inhabitantData.put(InhabitantType.LUMBERMAN, new LumbermanData());
 		inhabitantData.put(InhabitantType.IRON_MINER, new IronMinerData());
@@ -107,6 +113,23 @@ public class Village {
 	 */
 	public Building getBuilding(Position pos) {
 		return map[pos.X][pos.Y];
+	}
+
+	/**
+	 * Returns the building data of the specified type
+	 * @param type the type of building
+	 * @return the building data
+	 */
+	public BuildingData getBuildingData(BuildingType type) {
+		return buildingData.get(type);
+	}
+
+	/**
+	 * Returns the building data of the village for all types of buildings
+	 * @return the building data
+	 */
+	public EnumMap<BuildingType, BuildingData> getAllBuildingData() {
+		return buildingData;
 	}
 
 	/**

@@ -2,18 +2,29 @@ package utility;
 
 import gameElements.building.Building;
 import gameElements.building.GoldMine;
+import gameElements.building.GoldMineData;
 
 /**
  * This class represents a constructor for the <code>GoldMine</code> class.
  */
 public class GoldMineConstructor implements BuildingConstructor {
+    private GoldMineData data;
+
+    /**
+     * Class constructor
+     * @param data the gold mine data
+     */
+    public GoldMineConstructor(GoldMineData data) {
+        this.data = data;
+    }
+
     /**
      * Returns the number of gold mines.
      * @return the number of gold mine
      */
     @Override
     public int getCount() {
-        return GoldMine.getCount();
+        return data.getCount();
     }
 
     /**
@@ -22,7 +33,7 @@ public class GoldMineConstructor implements BuildingConstructor {
      */
     @Override
     public int getMaxCount() {
-        return GoldMine.getMaxCount();
+        return data.getMaxCount();
     }
 
     /**
@@ -50,6 +61,6 @@ public class GoldMineConstructor implements BuildingConstructor {
      */
     @Override
     public Building addBuilding(Position pos) {
-        return new GoldMine(pos);
+        return new GoldMine(pos, data);
     }
 }

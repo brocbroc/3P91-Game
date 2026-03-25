@@ -1,7 +1,9 @@
 package gameElements.building;
 
+import gameElements.BuildingType;
 import utility.Cost;
 import utility.Position;
+import java.util.EnumMap;
 
 /**
  * This class represents a village hall.
@@ -9,18 +11,14 @@ import utility.Position;
  * buildings for the other Building subclasses. Only one village hall may exist.
  */
 public class VillageHall extends Building {
-	private static int maxLevel;
-	private static int count;
-	private static int maxCount;
 	private static final Cost BUILD_COST;
 	private static final int BUILD_TIME; // seconds
 	private static final Cost[] UPGRADE_COSTS;
 	private static final int[] UPGRADE_TIMES;
+	private EnumMap<BuildingType, BuildingData> buildingData;
+	private VillageHallData data;
 
 	static {
-		maxLevel = MAX_LEVEL;
-		count = 0;
-		maxCount = 1;
 		BUILD_COST = new Cost(5, 5, 5);
 		BUILD_TIME = 5;
 		UPGRADE_COSTS = new Cost[] {
@@ -36,37 +34,14 @@ public class VillageHall extends Building {
 	 * Class constructor.
 	 * @param pos the position of the new village hall
 	 */
-	public VillageHall(Position pos) {
+	public VillageHall(Position pos, VillageHallData data, EnumMap<BuildingType, BuildingData> buildingData) {
 		super(pos);
-		count++;
+		this.data = data;
+		this.buildingData = buildingData;
+		data.incrementCount();
 		upgradeCost = UPGRADE_COSTS[0];
 		upgradeTime = UPGRADE_TIMES[0];
 		hitPoints = 500;
-	}
-
-	/**
-	 * Returns the maximum possible level of a village hall.
-	 * @return the maximum possible level
-	 */
-	@Override
-	public int getMaxLevel() {
-		return maxLevel;
-	}
-
-	/**
-	 * Returns the current number of village halls
-	 * @return the number of village halls
-	 */
-	public static int getCount() {
-		return count;
-	}
-
-	/**
-	 * Returns the maximum number of village halls
-	 * @return the maximum number of village halls
-	 */
-	public static int getMaxCount() {
-		return maxCount;
 	}
 
 	/**
@@ -83,6 +58,14 @@ public class VillageHall extends Building {
 	 */
 	public static int getBuildTime() {
 		return BUILD_TIME;
+	}
+
+	/**
+	 * Returns the maximum level of the building
+	 * @return the maximum level of the building
+	 */
+	public int getMaxLevel() {
+		return data.getMaxLevel();
 	}
 
 	/**
@@ -116,23 +99,23 @@ public class VillageHall extends Building {
 	 * @param level the maximum upgrade level
 	 */
 	private void setAllMaxLevel(int level) {
-		Farm.setMaxLevel(level);
-		LumberMill.setMaxLevel(level);
-		IronMine.setMaxLevel(level);
-		GoldMine.setMaxLevel(level);
-		ArcherTower.setMaxLevel(level);
-		Cannon.setMaxLevel(level);
+		buildingData.get(BuildingType.FARM).setMaxLevel(level);
+		buildingData.get(BuildingType.LUMBER_MILL).setMaxLevel(level);
+		buildingData.get(BuildingType.IRON_MINE).setMaxLevel(level);
+		buildingData.get(BuildingType.GOLD_MINE).setMaxLevel(level);
+		buildingData.get(BuildingType.ARCHER_TOWER).setMaxLevel(level);
+		buildingData.get(BuildingType.CANNON).setMaxLevel(level);
 	}
 
 	/**
 	 * This method sets the maximum number of the other Building subclasses.
 	 */
 	private void setAllMaxCount() {
-		Farm.setMaxCount(Farm.getMaxCount() + 5);
-		LumberMill.setMaxCount(LumberMill.getMaxCount() + 2);
-		IronMine.setMaxCount(IronMine.getMaxCount() + 2);
-		GoldMine.setMaxCount(GoldMine.getMaxCount() + 2);
-		ArcherTower.setMaxCount(ArcherTower.getMaxCount() + 5);
-		Cannon.setMaxCount(Cannon.getMaxCount() + 5);
+		buildingData.get(BuildingType.FARM).setMaxCount(level);
+		buildingData.get(BuildingType.LUMBER_MILL).setMaxCount(level);
+		buildingData.get(BuildingType.IRON_MINE).setMaxCount(level);
+		buildingData.get(BuildingType.GOLD_MINE).setMaxCount(level);
+		buildingData.get(BuildingType.ARCHER_TOWER).setMaxCount(level);
+		buildingData.get(BuildingType.CANNON).setMaxCount(level);
 	}
 }

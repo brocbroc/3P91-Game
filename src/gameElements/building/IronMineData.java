@@ -1,20 +1,20 @@
 package gameElements.building;
 
 /**
- * This class contains the data on a village's farms.
+ * This class contains the data on a village's iron mines.
  * It holds the max level, count, and max count.
  */
-public class FarmData extends BuildingData {
+public class IronMineData extends BuildingData {
 	private static final int[] maxCounts;
 
 	static {
-		maxCounts = new int[] { 5, 10, 15, 20, 25 };
+		maxCounts = new int[] { 2, 4, 6, 8, 10 };
 	}
 
 	/**
 	 * Class constructor
 	 */
-	public FarmData() {
+	public IronMineData() {
 		super();
 		maxCount = maxCounts[0];
 	}

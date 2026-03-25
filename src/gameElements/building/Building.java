@@ -42,8 +42,8 @@ public abstract class Building {
 	}
 
 	/**
-	 * Returns the maximum possible level of buildings of this type.
-	 * @return the maximum possible level
+	 * Returns the maximum level of the building
+	 * @return the maximum level of the building
 	 */
 	public abstract int getMaxLevel();
 

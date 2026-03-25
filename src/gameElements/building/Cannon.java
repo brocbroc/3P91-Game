@@ -7,20 +7,15 @@ import utility.Position;
  * This class represents a cannon.
  */
 public class Cannon extends Building implements Defense {
-    private static int maxLevel;
-    private static int count;
-    private static int maxCount;
     private static final Cost BUILD_COST;
     private static final int BUILD_TIME; // seconds
     private static final Cost[] UPGRADE_COSTS;
     private static final int[] UPGRADE_TIMES;
+    private CannonData data;
     private int damage; // per 2 seconds
     private int range;
 
     static {
-        maxLevel = 0;
-        count = 0;
-        maxCount = 5;
         BUILD_COST = new Cost(20, 20, 0);
         BUILD_TIME = 60;
         UPGRADE_COSTS = new Cost[] {
@@ -35,10 +30,12 @@ public class Cannon extends Building implements Defense {
     /**
      * Class constructor.
      * @param pos the position of the new cannon
+     * @param data the cannon data
      */
-    public Cannon(Position pos) {
+    public Cannon(Position pos, CannonData data) {
         super(pos);
-        count++;
+        this.data = data;
+        data.incrementCount();
         upgradeCost = UPGRADE_COSTS[0];
         upgradeTime = UPGRADE_TIMES[0];
         hitPoints = 400;
@@ -52,23 +49,7 @@ public class Cannon extends Building implements Defense {
      */
     @Override
     public int getMaxLevel() {
-        return maxLevel;
-    }
-
-    /**
-     * Returns the current number of cannons
-     * @return the number of cannons
-     */
-    public static int getCount() {
-        return count;
-    }
-
-    /**
-     * Returns the maximum number of cannons
-     * @return the maximum number of cannons
-     */
-    public static int getMaxCount() {
-        return maxCount;
+        return data.getMaxLevel();
     }
 
     /**
@@ -85,22 +66,6 @@ public class Cannon extends Building implements Defense {
      */
     public static int getBuildTime() {
         return BUILD_TIME;
-    }
-
-    /**
-     * Sets the maximum upgrade level
-     * @param level the maximum upgrade level
-     */
-    static void setMaxLevel(int level) {
-        maxLevel = level;
-    }
-
-    /**
-     * Sets the maximum number of cannons allowed
-     * @param count the maximum number of cannons
-     */
-    static void setMaxCount(int count) {
-        maxCount = count;
     }
 
     /**

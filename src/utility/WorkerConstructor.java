@@ -2,18 +2,29 @@ package utility;
 
 import gameElements.inhabitant.Inhabitant;
 import gameElements.inhabitant.Worker;
+import gameElements.inhabitant.WorkerData;
 
 /**
  * This class creates a worker.
  */
 public class WorkerConstructor implements InhabitantConstructor {
+	private WorkerData data;
+
+	/**
+	 * Class constructor
+	 * @param data the worker data of the village
+	 */
+	public WorkerConstructor(WorkerData data) {
+		this.data = data;
+	}
+
 	/**
 	 * Return the cost of producing a worker
 	 * @return the production cost
 	 */
 	@Override
 	public Cost getProductionCost() {
-		return Worker.getProductionCost();
+		return WorkerData.getProductionCost();
 	}
 
 	/**
@@ -22,7 +33,7 @@ public class WorkerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getProductionTime() {
-		return Worker.getProductionTime();
+		return WorkerData.getProductionTime();
 	}
 
 	/**
@@ -40,7 +51,7 @@ public class WorkerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getLevel() {
-		return Worker.getLevel();
+		return data.getLevel();
 	}
 
 	/**
@@ -49,7 +60,7 @@ public class WorkerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public boolean isUpgrading() {
-		return Worker.isUpgrading();
+		return data.isUpgrading();
 	}
 
 	/**
@@ -58,7 +69,7 @@ public class WorkerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void setUpgrading(boolean upgrading) {
-		Worker.setUpgrading(upgrading);
+		data.setUpgrading(upgrading);
 	}
 
 	/**
@@ -67,7 +78,7 @@ public class WorkerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public Cost getUpgradeCost() {
-		return Worker.getUpgradeCost();
+		return data.getUpgradeCost();
 	}
 
 	/**
@@ -76,7 +87,7 @@ public class WorkerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getUpgradeTime() {
-		return Worker.getUpgradeTime();
+		return data.getUpgradeTime();
 	}
 
 	/**
@@ -84,6 +95,6 @@ public class WorkerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void upgrade() {
-		Worker.upgrade();
+		data.upgrade();
 	}
 }

@@ -2,18 +2,29 @@ package utility;
 
 import gameElements.inhabitant.Inhabitant;
 import gameElements.inhabitant.Lumberman;
+import gameElements.inhabitant.LumbermanData;
 
 /**
  * This class creates a lumberman.
  */
 public class LumbermanConstructor implements InhabitantConstructor {
+	private LumbermanData data;
+
+	/**
+	 * Class constructor
+	 * @param data the lumberman data of the village
+	 */
+	public LumbermanConstructor(LumbermanData data) {
+		this.data = data;
+	}
+
 	/**
 	 * Return the cost of producing a lumberman
 	 * @return the production cost
 	 */
 	@Override
 	public Cost getProductionCost() {
-		return Lumberman.getProductionCost();
+		return LumbermanData.getProductionCost();
 	}
 
 	/**
@@ -22,7 +33,7 @@ public class LumbermanConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getProductionTime() {
-		return Lumberman.getProductionTime();
+		return data.getProductionTime();
 	}
 
 	/**
@@ -40,7 +51,7 @@ public class LumbermanConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getLevel() {
-		return Lumberman.getLevel();
+		return data.getLevel();
 	}
 
 	/**
@@ -49,7 +60,7 @@ public class LumbermanConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public boolean isUpgrading() {
-		return Lumberman.isUpgrading();
+		return data.isUpgrading();
 	}
 
 	/**
@@ -58,7 +69,7 @@ public class LumbermanConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void setUpgrading(boolean upgrading) {
-		Lumberman.setUpgrading(upgrading);
+		data.setUpgrading(upgrading);
 	}
 
 	/**
@@ -67,7 +78,7 @@ public class LumbermanConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public Cost getUpgradeCost() {
-		return Lumberman.getUpgradeCost();
+		return data.getUpgradeCost();
 	}
 
 	/**
@@ -76,7 +87,7 @@ public class LumbermanConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getUpgradeTime() {
-		return Lumberman.getUpgradeTime();
+		return data.getUpgradeTime();
 	}
 
 	/**
@@ -84,6 +95,6 @@ public class LumbermanConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void upgrade() {
-		Lumberman.upgrade();
+		data.upgrade();
 	}
 }

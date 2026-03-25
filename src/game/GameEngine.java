@@ -1,5 +1,6 @@
 package game;
 
+import ChallengeDecision.*;
 import gameElements.InhabitantType;
 import gameElements.building.Building;
 import gameElements.inhabitant.*;
@@ -86,7 +87,7 @@ public class GameEngine implements Runnable {
 		draw();
 
 		while (running) {
-			if (redraw) {
+			if (redraw) { // DOESN'T REDRAW UNTIL NEW INPUT
 				redraw = false;
 				draw();
 			}
@@ -231,7 +232,7 @@ public class GameEngine implements Runnable {
 			return;
 		}
 
-		int buildTime = (int) (constructor.getBuildTime() * Worker.getWorkRate());
+		int buildTime = (int) (constructor.getBuildTime() * base.getWorkRate());
 		System.out.println("Under construction...");
 		final Village BASE = base;
 		scheduler.schedule(() -> {
@@ -277,7 +278,7 @@ public class GameEngine implements Runnable {
 			return;
 		}
 
-		int buildTime = (int) (b.getUpgradeTime() * Worker.getWorkRate());
+		int buildTime = (int) (b.getUpgradeTime() * base.getWorkRate());
 		System.out.println("Upgrading building...");
 		final Village BASE = base;
 		scheduler.schedule(() -> {
@@ -306,36 +307,36 @@ public class GameEngine implements Runnable {
 
 		switch (in.readLine().toLowerCase()) {
 			case "worker":
-				constructor = new WorkerConstructor();
 				type = InhabitantType.WORKER;
+				constructor = new WorkerConstructor((WorkerData) base.getInhabitantData(type));
 				break;
 			case "lumberman":
-				constructor = new LumbermanConstructor();
 				type = InhabitantType.LUMBERMAN;
+				constructor = new LumbermanConstructor((LumbermanData) base.getInhabitantData(type));
 				break;
 			case "iron miner":
-				constructor = new IronMinerConstructor();
 				type = InhabitantType.IRON_MINER;
+				constructor = new IronMinerConstructor((IronMinerData) base.getInhabitantData(type));
 				break;
 			case "gold miner":
-				constructor = new GoldMinerConstructor();
 				type = InhabitantType.GOLD_MINER;
+				constructor = new GoldMinerConstructor((GoldMinerData) base.getInhabitantData(type));
 				break;
 			case "soldier":
-				constructor = new SoldierConstructor();
 				type = InhabitantType.SOLDIER;
+				constructor = new SoldierConstructor((SoldierData) base.getInhabitantData(type));
 				break;
 			case "archer":
-				constructor = new ArcherConstructor();
 				type = InhabitantType.ARCHER;
+				constructor = new ArcherConstructor((ArcherData) base.getInhabitantData(type));
 				break;
 			case "knight":
-				constructor = new KnightConstructor();
 				type = InhabitantType.KNIGHT;
+				constructor = new KnightConstructor((KnightData) base.getInhabitantData(type));
 				break;
 			case "catapult":
-				constructor = new CatapultConstructor();
 				type = InhabitantType.CATAPULT;
+				constructor = new CatapultConstructor((CatapultData) base.getInhabitantData(type));
 				break;
 			default:
 				System.out.println("Invalid inhabitant type.");
@@ -363,31 +364,40 @@ public class GameEngine implements Runnable {
 	public void upgradeInhabitant() throws IOException {
 		System.out.print("Inhabitant type: ");
 		InhabitantConstructor constructor;
+		InhabitantType type;
 
 		switch (in.readLine().toLowerCase()) {
 			case "worker":
-				constructor = new WorkerConstructor();
+				type = InhabitantType.WORKER;
+				constructor = new WorkerConstructor((WorkerData) base.getInhabitantData(type));
 				break;
 			case "lumberman":
-				constructor = new LumbermanConstructor();
+				type = InhabitantType.LUMBERMAN;
+				constructor = new LumbermanConstructor((LumbermanData) base.getInhabitantData(type));
 				break;
 			case "iron miner":
-				constructor = new IronMinerConstructor();
+				type = InhabitantType.IRON_MINER;
+				constructor = new IronMinerConstructor((IronMinerData) base.getInhabitantData(type));
 				break;
 			case "gold miner":
-				constructor = new GoldMinerConstructor();
+				type = InhabitantType.GOLD_MINER;
+				constructor = new GoldMinerConstructor((GoldMinerData) base.getInhabitantData(type));
 				break;
 			case "soldier":
-				constructor = new SoldierConstructor();
+				type = InhabitantType.SOLDIER;
+				constructor = new SoldierConstructor((SoldierData) base.getInhabitantData(type));
 				break;
 			case "archer":
-				constructor = new ArcherConstructor();
+				type = InhabitantType.ARCHER;
+				constructor = new ArcherConstructor((ArcherData) base.getInhabitantData(type));
 				break;
 			case "knight":
-				constructor = new KnightConstructor();
+				type = InhabitantType.KNIGHT;
+				constructor = new KnightConstructor((KnightData) base.getInhabitantData(type));
 				break;
 			case "catapult":
-				constructor = new CatapultConstructor();
+				type = InhabitantType.CATAPULT;
+				constructor = new CatapultConstructor((CatapultData) base.getInhabitantData(type));
 				break;
 			default:
 				System.out.println("Invalid inhabitant type.");
@@ -413,6 +423,7 @@ public class GameEngine implements Runnable {
 	 * @throws IOException if <code>BufferedReader</code> fails
 	 */
 	public void generateVillage() throws IOException {
+		// UPDATE TO USE CHALLENGE DECISION
 		boolean generate = true;
 
 		do {
@@ -477,8 +488,8 @@ public class GameEngine implements Runnable {
 				return;
 			}
 
-			int attackScore = soldiers * Soldier.getDamage() + archers * Archer.getDamage()
-				+ knights * Knight.getDamage() + catapults * Catapult.getDamage();
+			int attackScore = 0;
+			//int attackScore = soldiers * Soldier.getDamage() + archers * Archer.getDamage() + knights * Knight.getDamage() + catapults * Catapult.getDamage();
 
 			if (defenseScore <= attackScore) {
 				System.out.println("Attack success.");

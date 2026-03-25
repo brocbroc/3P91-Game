@@ -2,18 +2,29 @@ package utility;
 
 import gameElements.inhabitant.Inhabitant;
 import gameElements.inhabitant.Knight;
+import gameElements.inhabitant.KnightData;
 
 /**
  * This class constructs a knight.
  */
 public class KnightConstructor implements InhabitantConstructor {
+	private KnightData data;
+
+	/**
+	 * Class constructor
+	 * @param data the knight data
+	 */
+	public KnightConstructor(KnightData data) {
+		this.data = data;
+	}
+
 	/**
 	 * Return the cost of producing a knight
 	 * @return the production cost
 	 */
 	@Override
 	public Cost getProductionCost() {
-		return Knight.getProductionCost();
+		return KnightData.getProductionCost();
 	}
 
 	/**
@@ -22,7 +33,7 @@ public class KnightConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getProductionTime() {
-		return Knight.getProductionTime();
+		return KnightData.getProductionTime();
 	}
 
 	/**
@@ -31,7 +42,7 @@ public class KnightConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public Inhabitant addInhabitant() {
-		return new Knight();
+		return new Knight(data);
 	}
 
 	/**
@@ -40,7 +51,7 @@ public class KnightConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getLevel() {
-		return Knight.getLevel();
+		return data.getLevel();
 	}
 
 	/**
@@ -49,7 +60,7 @@ public class KnightConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public boolean isUpgrading() {
-		return Knight.isUpgrading();
+		return data.isUpgrading();
 	}
 
 	/**
@@ -58,7 +69,7 @@ public class KnightConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void setUpgrading(boolean upgrading) {
-		Knight.setUpgrading(upgrading);
+		data.setUpgrading(upgrading);
 	}
 
 	/**
@@ -67,7 +78,7 @@ public class KnightConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public Cost getUpgradeCost() {
-		return Knight.getUpgradeCost();
+		return data.getUpgradeCost();
 	}
 
 	/**
@@ -76,7 +87,7 @@ public class KnightConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getUpgradeTime() {
-		return Knight.getUpgradeTime();
+		return data.getUpgradeTime();
 	}
 
 	/**
@@ -84,6 +95,6 @@ public class KnightConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void upgrade() {
-		Knight.upgrade();
+		data.upgrade();
 	}
 }

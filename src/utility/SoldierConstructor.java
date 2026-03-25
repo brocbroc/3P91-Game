@@ -2,18 +2,29 @@ package utility;
 
 import gameElements.inhabitant.Inhabitant;
 import gameElements.inhabitant.Soldier;
+import gameElements.inhabitant.SoldierData;
 
 /**
  * This class constructs a soldier.
  */
 public class SoldierConstructor implements InhabitantConstructor {
+	private SoldierData data;
+
+	/**
+	 * Class constructor
+	 * @param data the soldier data for the village
+	 */
+	public SoldierConstructor(SoldierData data) {
+		this.data = data;
+	}
+
 	/**
 	 * Return the cost of producing a soldier
 	 * @return the production cost
 	 */
 	@Override
 	public Cost getProductionCost() {
-		return Soldier.getProductionCost();
+		return SoldierData.getProductionCost();
 	}
 
 	/**
@@ -22,7 +33,7 @@ public class SoldierConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getProductionTime() {
-		return Soldier.getProductionTime();
+		return SoldierData.getProductionTime();
 	}
 
 	/**
@@ -31,7 +42,7 @@ public class SoldierConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public Inhabitant addInhabitant() {
-		return new Soldier();
+		return new Soldier(data);
 	}
 
 	/**
@@ -40,7 +51,7 @@ public class SoldierConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getLevel() {
-		return Soldier.getLevel();
+		return data.getLevel();
 	}
 
 	/**
@@ -49,7 +60,7 @@ public class SoldierConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public boolean isUpgrading() {
-		return Soldier.isUpgrading();
+		return data.isUpgrading();
 	}
 
 	/**
@@ -58,7 +69,7 @@ public class SoldierConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void setUpgrading(boolean upgrading) {
-		Soldier.setUpgrading(upgrading);
+		data.setUpgrading(upgrading);
 	}
 
 	/**
@@ -67,7 +78,7 @@ public class SoldierConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public Cost getUpgradeCost() {
-		return Soldier.getUpgradeCost();
+		return data.getUpgradeCost();
 	}
 
 	/**
@@ -76,7 +87,7 @@ public class SoldierConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getUpgradeTime() {
-		return Soldier.getUpgradeTime();
+		return data.getUpgradeTime();
 	}
 
 	/**
@@ -84,6 +95,6 @@ public class SoldierConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void upgrade() {
-		Soldier.upgrade();
+		data.upgrade();
 	}
 }

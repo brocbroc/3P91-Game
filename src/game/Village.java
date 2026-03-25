@@ -7,6 +7,7 @@ import gameElements.building.Farm;
 import gameElements.building.VillageHall;
 import gameElements.inhabitant.*;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
@@ -24,6 +25,7 @@ public class Village {
 	private int level;
 	private int maxPopulation;
 	private int population;
+	private EnumMap<InhabitantType, InhabitantData> inhabitantData;
 	private PeasantList<Worker> workers;
 	private PeasantList<Lumberman> lumbermen;
 	private PeasantList<IronMiner> ironMiners;
@@ -46,14 +48,23 @@ public class Village {
 		level = 0;
 		maxPopulation = 10;
 		population = 1;
+		inhabitantData = new EnumMap<>(InhabitantType.class);
 		workers = new PeasantList<>();
 		lumbermen = new PeasantList<>();
 		ironMiners = new PeasantList<>();
 		goldMiners = new PeasantList<>();
 		fighters = new Army();
-		workers.addPeasant(new Worker());
 		attackWins = 0;
 		attackFails = 0;
+		inhabitantData.put(InhabitantType.WORKER, new WorkerData());
+		inhabitantData.put(InhabitantType.LUMBERMAN, new LumbermanData());
+		inhabitantData.put(InhabitantType.IRON_MINER, new IronMinerData());
+		inhabitantData.put(InhabitantType.GOLD_MINER, new GoldMinerData());
+		inhabitantData.put(InhabitantType.SOLDIER, new SoldierData());
+		inhabitantData.put(InhabitantType.ARCHER, new ArcherData());
+		inhabitantData.put(InhabitantType.KNIGHT, new KnightData());
+		inhabitantData.put(InhabitantType.CATAPULT, new CatapultData());
+		workers.addPeasant(new Worker());
 	}
 
 	/**
@@ -112,6 +123,23 @@ public class Village {
 	 */
 	public boolean isVillageFull() {
 		return population >= maxPopulation;
+	}
+
+	/**
+	 * Returns the work rate of the workers
+	 * @return the work rate
+	 */
+	public double getWorkRate() {
+		return ((WorkerData) inhabitantData.get(InhabitantType.WORKER)).getWorkRate();
+	}
+
+	/**
+	 * Returns the inhabitant data of the specified type
+	 * @param type the type of inhabitant
+	 * @return the inhabitant data
+	 */
+	public InhabitantData getInhabitantData(InhabitantType type) {
+		return inhabitantData.get(type);
 	}
 
 	/**

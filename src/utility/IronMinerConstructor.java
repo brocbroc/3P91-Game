@@ -2,18 +2,29 @@ package utility;
 
 import gameElements.inhabitant.Inhabitant;
 import gameElements.inhabitant.IronMiner;
+import gameElements.inhabitant.IronMinerData;
 
 /**
  * This class constructs an iron miner.
  */
 public class IronMinerConstructor implements InhabitantConstructor {
+	private IronMinerData data;
+
+	/**
+	 * Class constructor
+	 * @param data the iron miner data of a village
+	 */
+	public IronMinerConstructor(IronMinerData data) {
+		this.data = data;
+	}
+
 	/**
 	 * Return the cost of producing an iron miner
 	 * @return the production cost
 	 */
 	@Override
 	public Cost getProductionCost() {
-		return IronMiner.getProductionCost();
+		return IronMinerData.getProductionCost();
 	}
 
 	/**
@@ -22,7 +33,7 @@ public class IronMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getProductionTime() {
-		return IronMiner.getProductionTime();
+		return IronMinerData.getProductionTime();
 	}
 
 	/**
@@ -40,7 +51,7 @@ public class IronMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getLevel() {
-		return IronMiner.getLevel();
+		return data.getLevel();
 	}
 
 	/**
@@ -49,7 +60,7 @@ public class IronMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public boolean isUpgrading() {
-		return IronMiner.isUpgrading();
+		return data.isUpgrading();
 	}
 
 	/**
@@ -58,7 +69,7 @@ public class IronMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void setUpgrading(boolean upgrading) {
-		IronMiner.setUpgrading(upgrading);
+		data.setUpgrading(upgrading);
 	}
 
 	/**
@@ -67,7 +78,7 @@ public class IronMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public Cost getUpgradeCost() {
-		return IronMiner.getUpgradeCost();
+		return data.getUpgradeCost();
 	}
 
 	/**
@@ -76,7 +87,7 @@ public class IronMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getUpgradeTime() {
-		return IronMiner.getUpgradeTime();
+		return data.getUpgradeTime();
 	}
 
 	/**
@@ -84,6 +95,6 @@ public class IronMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void upgrade() {
-		IronMiner.upgrade();
+		data.upgrade();
 	}
 }

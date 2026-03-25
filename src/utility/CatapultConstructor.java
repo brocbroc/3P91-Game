@@ -1,19 +1,30 @@
 package utility;
 
 import gameElements.inhabitant.Catapult;
+import gameElements.inhabitant.CatapultData;
 import gameElements.inhabitant.Inhabitant;
 
 /**
  * This class constructs a catapult.
  */
 public class CatapultConstructor implements InhabitantConstructor {
+	private CatapultData data;
+
+	/**
+	 * Class constructor
+	 * @param data the catapult data
+	 */
+	public CatapultConstructor(CatapultData data) {
+		this.data = data;
+	}
+
 	/**
 	 * Return the cost of producing a catapult
 	 * @return the production cost
 	 */
 	@Override
 	public Cost getProductionCost() {
-		return Catapult.getProductionCost();
+		return CatapultData.getProductionCost();
 	}
 
 	/**
@@ -22,7 +33,7 @@ public class CatapultConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getProductionTime() {
-		return Catapult.getProductionTime();
+		return CatapultData.getProductionTime();
 	}
 
 	/**
@@ -31,7 +42,7 @@ public class CatapultConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public Inhabitant addInhabitant() {
-		return new Catapult();
+		return new Catapult(data);
 	}
 
 	/**
@@ -40,7 +51,7 @@ public class CatapultConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getLevel() {
-		return Catapult.getLevel();
+		return data.getLevel();
 	}
 
 	/**
@@ -49,7 +60,7 @@ public class CatapultConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public boolean isUpgrading() {
-		return Catapult.isUpgrading();
+		return data.isUpgrading();
 	}
 
 	/**
@@ -58,7 +69,7 @@ public class CatapultConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void setUpgrading(boolean upgrading) {
-		Catapult.setUpgrading(upgrading);
+		data.setUpgrading(upgrading);
 	}
 
 	/**
@@ -67,7 +78,7 @@ public class CatapultConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public Cost getUpgradeCost() {
-		return Catapult.getUpgradeCost();
+		return data.getUpgradeCost();
 	}
 
 	/**
@@ -76,7 +87,7 @@ public class CatapultConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getUpgradeTime() {
-		return Catapult.getUpgradeTime();
+		return data.getUpgradeTime();
 	}
 
 	/**
@@ -84,6 +95,6 @@ public class CatapultConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void upgrade() {
-		Catapult.upgrade();
+		data.upgrade();
 	}
 }

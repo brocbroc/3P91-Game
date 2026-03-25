@@ -1,19 +1,30 @@
 package utility;
 
 import gameElements.inhabitant.GoldMiner;
+import gameElements.inhabitant.GoldMinerData;
 import gameElements.inhabitant.Inhabitant;
 
 /**
  * This class constructs a gold miner.
  */
 public class GoldMinerConstructor implements InhabitantConstructor {
+	private GoldMinerData data;
+
+	/**
+	 * Class constructor
+	 * @param data the gold miner data of the village
+	 */
+	public GoldMinerConstructor(GoldMinerData data) {
+		this.data = data;
+	}
+
 	/**
 	 * Return the cost of producing a gold miner
 	 * @return the production cost
 	 */
 	@Override
 	public Cost getProductionCost() {
-		return GoldMiner.getProductionCost();
+		return GoldMinerData.getProductionCost();
 	}
 
 	/**
@@ -22,7 +33,7 @@ public class GoldMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getProductionTime() {
-		return GoldMiner.getProductionTime();
+		return GoldMinerData.getProductionTime();
 	}
 
 	/**
@@ -40,7 +51,7 @@ public class GoldMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getLevel() {
-		return GoldMiner.getLevel();
+		return data.getLevel();
 	}
 
 	/**
@@ -49,7 +60,7 @@ public class GoldMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public boolean isUpgrading() {
-		return GoldMiner.isUpgrading();
+		return data.isUpgrading();
 	}
 
 	/**
@@ -58,7 +69,7 @@ public class GoldMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void setUpgrading(boolean upgrading) {
-		GoldMiner.setUpgrading(upgrading);
+		data.setUpgrading(upgrading);
 	}
 
 	/**
@@ -67,7 +78,7 @@ public class GoldMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public Cost getUpgradeCost() {
-		return GoldMiner.getUpgradeCost();
+		return data.getUpgradeCost();
 	}
 
 	/**
@@ -76,7 +87,7 @@ public class GoldMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getUpgradeTime() {
-		return GoldMiner.getUpgradeTime();
+		return data.getUpgradeTime();
 	}
 
 	/**
@@ -84,6 +95,6 @@ public class GoldMinerConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void upgrade() {
-		GoldMiner.upgrade();
+		data.upgrade();
 	}
 }

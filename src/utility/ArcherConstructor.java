@@ -1,19 +1,30 @@
 package utility;
 
 import gameElements.inhabitant.Archer;
+import gameElements.inhabitant.ArcherData;
 import gameElements.inhabitant.Inhabitant;
 
 /**
  * This class constructs an archer.
  */
 public class ArcherConstructor implements InhabitantConstructor {
+	private ArcherData data;
+
+	/**
+	 * Class constructor
+	 * @param data the archer data of the village
+	 */
+	public ArcherConstructor(ArcherData data) {
+		this.data = data;
+	}
+
 	/**
 	 * Return the cost of producing an archer
 	 * @return the production cost
 	 */
 	@Override
 	public Cost getProductionCost() {
-		return Archer.getProductionCost();
+		return ArcherData.getProductionCost();
 	}
 
 	/**
@@ -22,7 +33,7 @@ public class ArcherConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getProductionTime() {
-		return Archer.getProductionTime();
+		return ArcherData.getProductionTime();
 	}
 
 	/**
@@ -31,7 +42,7 @@ public class ArcherConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public Inhabitant addInhabitant() {
-		return new Archer();
+		return new Archer(data);
 	}
 
 	/**
@@ -40,7 +51,7 @@ public class ArcherConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getLevel() {
-		return Archer.getLevel();
+		return data.getLevel();
 	}
 
 	/**
@@ -49,7 +60,7 @@ public class ArcherConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public boolean isUpgrading() {
-		return Archer.isUpgrading();
+		return data.isUpgrading();
 	}
 
 	/**
@@ -58,7 +69,7 @@ public class ArcherConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void setUpgrading(boolean upgrading) {
-		Archer.setUpgrading(upgrading);
+		data.setUpgrading(upgrading);
 	}
 
 	/**
@@ -67,7 +78,7 @@ public class ArcherConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public Cost getUpgradeCost() {
-		return Archer.getUpgradeCost();
+		return data.getUpgradeCost();
 	}
 
 	/**
@@ -76,7 +87,7 @@ public class ArcherConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public int getUpgradeTime() {
-		return Archer.getUpgradeTime();
+		return data.getUpgradeTime();
 	}
 
 	/**
@@ -84,6 +95,6 @@ public class ArcherConstructor implements InhabitantConstructor {
 	 */
 	@Override
 	public void upgrade() {
-		Archer.upgrade();
+		data.upgrade();
 	}
 }

@@ -166,6 +166,14 @@ public class Village {
 	}
 
 	/**
+	 * Returns the inhabitant data for all types
+	 * @return the inhabitant data of all types
+	 */
+	public EnumMap<InhabitantType, InhabitantData> getAllInhabitantData() {
+		return inhabitantData;
+	}
+
+	/**
 	 * Returns the number of each type of fighter
 	 * @return an array of the number of each type of fighter
 	 */

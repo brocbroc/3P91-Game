@@ -187,7 +187,7 @@ public class GameEngine implements Runnable {
 
 		switch (in.readLine().toLowerCase()) {
 			case "village hall":
-				constructor = new VillageHallConstructor(base.getAllBuildingData());
+				constructor = new VillageHallConstructor(base.getAllBuildingData(), base.getAllInhabitantData());
 				break;
 			case "farm":
 				constructor = new FarmConstructor((FarmData) base.getBuildingData(BuildingType.FARM));
@@ -403,6 +403,11 @@ public class GameEngine implements Runnable {
 			default:
 				System.out.println("Invalid inhabitant type.");
 				return;
+		}
+
+		if (constructor.getLevel() == constructor.getMaxLevel()) {
+			System.out.println("Maximum upgrade level reached");
+			return;
 		}
 
 		if (!base.tryUpgradeInhabitant(constructor)) {

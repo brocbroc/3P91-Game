@@ -7,7 +7,7 @@ import utility.Position;
  * This class represents a Building.
  */
 public abstract class Building {
-	protected static final int MAX_LEVEL = 4;
+	public static final int MAX_LEVEL = 4;
 	protected Position position;
 	protected int level;
 	protected Cost upgradeCost;

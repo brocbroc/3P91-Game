@@ -55,6 +55,15 @@ public class KnightConstructor implements InhabitantConstructor {
 	}
 
 	/**
+	 * Returns the maximum upgrade level of the Knight class
+	 * @return the maximum level
+	 */
+	@Override
+	public int getMaxLevel() {
+		return data.getMaxLevel();
+	}
+
+	/**
 	 * Returns whether or not the class is upgrading
 	 * @return <code>true</code> if the class is upgrading, <code>false</code> if not
 	 */

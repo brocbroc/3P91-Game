@@ -8,7 +8,15 @@ public class VillageHallData extends BuildingData {
 	public VillageHallData() {
 		super();
 		maxCount = 1;
+		maxLevel = Building.MAX_LEVEL;
 	}
+
+	/**
+	 * Sets the maximum upgrade level
+	 * @param level the maximum upgrade level
+	 */
+	@Override
+	void setMaxLevel(int level) {}
 
 	/**
 	 * Sets the maximum number of buildings of this type allowed

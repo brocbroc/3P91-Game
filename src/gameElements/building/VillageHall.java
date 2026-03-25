@@ -1,6 +1,8 @@
 package gameElements.building;
 
 import gameElements.BuildingType;
+import gameElements.InhabitantType;
+import gameElements.inhabitant.InhabitantData;
 import utility.Cost;
 import utility.Position;
 import java.util.EnumMap;
@@ -8,7 +10,8 @@ import java.util.EnumMap;
 /**
  * This class represents a village hall.
  * The level of the village hall determines the maximum upgrade level and the maximum number of
- * buildings for the other Building subclasses. Only one village hall may exist.
+ * buildings for the other Building subclasses. It also controls inhabitant upgrade levels. Only
+ * one village hall may exist.
  */
 public class VillageHall extends Building {
 	private static final Cost BUILD_COST;
@@ -16,6 +19,7 @@ public class VillageHall extends Building {
 	private static final Cost[] UPGRADE_COSTS;
 	private static final int[] UPGRADE_TIMES;
 	private EnumMap<BuildingType, BuildingData> buildingData;
+	private EnumMap<InhabitantType, InhabitantData> inhabitantData;
 	private VillageHallData data;
 
 	static {
@@ -34,10 +38,11 @@ public class VillageHall extends Building {
 	 * Class constructor.
 	 * @param pos the position of the new village hall
 	 */
-	public VillageHall(Position pos, VillageHallData data, EnumMap<BuildingType, BuildingData> buildingData) {
+	public VillageHall(Position pos, VillageHallData data, EnumMap<BuildingType, BuildingData> buildingData, EnumMap<InhabitantType, InhabitantData> inhabitantData) {
 		super(pos);
 		this.data = data;
 		this.buildingData = buildingData;
+		this.inhabitantData = inhabitantData;
 		data.incrementCount();
 		upgradeCost = UPGRADE_COSTS[0];
 		upgradeTime = UPGRADE_TIMES[0];
@@ -99,23 +104,21 @@ public class VillageHall extends Building {
 	 * @param level the maximum upgrade level
 	 */
 	private void setAllMaxLevel(int level) {
-		buildingData.get(BuildingType.FARM).setMaxLevel(level);
-		buildingData.get(BuildingType.LUMBER_MILL).setMaxLevel(level);
-		buildingData.get(BuildingType.IRON_MINE).setMaxLevel(level);
-		buildingData.get(BuildingType.GOLD_MINE).setMaxLevel(level);
-		buildingData.get(BuildingType.ARCHER_TOWER).setMaxLevel(level);
-		buildingData.get(BuildingType.CANNON).setMaxLevel(level);
+		for (BuildingType type : BuildingType.values()) {
+			buildingData.get(type).setMaxLevel(level);
+		}
+
+		for (InhabitantType type : InhabitantType.values()) {
+			inhabitantData.get(type).setMaxLevel(level);
+		}
 	}
 
 	/**
 	 * This method sets the maximum number of the other Building subclasses.
 	 */
 	private void setAllMaxCount() {
-		buildingData.get(BuildingType.FARM).setMaxCount(level);
-		buildingData.get(BuildingType.LUMBER_MILL).setMaxCount(level);
-		buildingData.get(BuildingType.IRON_MINE).setMaxCount(level);
-		buildingData.get(BuildingType.GOLD_MINE).setMaxCount(level);
-		buildingData.get(BuildingType.ARCHER_TOWER).setMaxCount(level);
-		buildingData.get(BuildingType.CANNON).setMaxCount(level);
+		for (BuildingType type : BuildingType.values()) {
+			buildingData.get(type).setMaxCount(level);
+		}
 	}
 }

@@ -1,10 +1,12 @@
 package utility;
 
 import gameElements.BuildingType;
+import gameElements.InhabitantType;
 import gameElements.building.Building;
 import gameElements.building.BuildingData;
 import gameElements.building.VillageHall;
 import gameElements.building.VillageHallData;
+import gameElements.inhabitant.InhabitantData;
 
 import java.util.EnumMap;
 
@@ -13,10 +15,12 @@ import java.util.EnumMap;
  */
 public class VillageHallConstructor implements BuildingConstructor {
 	private EnumMap<BuildingType, BuildingData> buildingData;
+	private EnumMap<InhabitantType, InhabitantData> inhabitantData;
 	private VillageHallData data;
 
-	public VillageHallConstructor(EnumMap<BuildingType, BuildingData> buildingData) {
+	public VillageHallConstructor(EnumMap<BuildingType, BuildingData> buildingData, EnumMap<InhabitantType, InhabitantData> inhabitantData) {
 		this.buildingData = buildingData;
+		this.inhabitantData = inhabitantData;
 		data = (VillageHallData) buildingData.get(BuildingType.VILLAGE_HALL);
 	}
 
@@ -63,6 +67,6 @@ public class VillageHallConstructor implements BuildingConstructor {
 	 */
 	@Override
 	public Building addBuilding(Position pos) {
-		return new VillageHall(pos, data, buildingData);
+		return new VillageHall(pos, data, buildingData, inhabitantData);
 	}
 }

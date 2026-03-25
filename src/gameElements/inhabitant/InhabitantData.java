@@ -3,12 +3,22 @@ package gameElements.inhabitant;
 import utility.Cost;
 
 public abstract class InhabitantData {
+	protected int maxLevel;
 	protected int level;
 	protected boolean isUpgrading;
 
 	public InhabitantData() {
+		maxLevel = 0;
 		level = 0;
 		isUpgrading = false;
+	}
+
+	/**
+	 * Returns the maximum upgrade level
+	 * @return the maximum level
+	 */
+	public int getMaxLevel() {
+		return maxLevel;
 	}
 
 	/**
@@ -37,6 +47,14 @@ public abstract class InhabitantData {
 	 */
 	public boolean isUpgrading() {
 		return isUpgrading;
+	}
+
+	/**
+	 * Sets the maximum upgrade level
+	 * @param level the new maximum level
+	 */
+	public void setMaxLevel(int level) {
+		maxLevel = level;
 	}
 
 	/**

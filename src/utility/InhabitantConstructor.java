@@ -31,6 +31,12 @@ public interface InhabitantConstructor {
 	int getLevel();
 
 	/**
+	 * Returns the maximum upgrade level of the inhabitant class
+	 * @return the maximum level
+	 */
+	int getMaxLevel();
+
+	/**
 	 * Returns whether or not the inhabitant class is upgrading
 	 * @return <code>true</code> if the class is upgrading, <code>false</code> if not
 	 */

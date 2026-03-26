@@ -89,7 +89,7 @@ public class GoldMine extends Building {
      */
     @Override
     public String draw() {
-        return "G";
+        return "G" + level;
     }
 
     /**

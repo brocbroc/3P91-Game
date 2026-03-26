@@ -90,7 +90,7 @@ public class VillageHall extends Building {
 	 */
 	@Override
 	public String draw() {
-		return "H";
+		return "H" + level;
 	}
 
 	/**

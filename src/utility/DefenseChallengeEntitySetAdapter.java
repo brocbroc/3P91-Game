@@ -1,6 +1,7 @@
-package game;
+package utility;
 
 import ChallengeDecision.*;
+import game.Inventory;
 import gameElements.building.Building;
 import gameElements.building.Defense;
 import java.util.List;

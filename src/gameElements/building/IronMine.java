@@ -90,7 +90,7 @@ public class IronMine extends Building {
      */
     @Override
     public String draw() {
-        return "I";
+        return "I" + level;
     }
 
     /**

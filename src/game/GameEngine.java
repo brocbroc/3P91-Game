@@ -5,28 +5,22 @@ import gameElements.BuildingType;
 import gameElements.InhabitantType;
 import gameElements.building.*;
 import gameElements.inhabitant.*;
-import gui.GraphicalInterface;
-import java.io.BufferedReader;
+import gui.View;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.HashMap;
 import utility.*;
 
 /**
- * This class represents the game engine.
- * It adds players, runs the main game thread, and handles I/O.
+ * This class represents the game engine. It is the controller of the MVC pattern. It processes
+ * input from the view and calls the appropriate model methods.
  */
-public class GameEngine implements Runnable {
-	private GraphicalInterface gui;
+public class GameEngine {
+	private View view;
 	private HashMap<Integer, Player> players;
 	private HashMap<Integer, Village> villages;
-	private Thread gameThread;
-	private BufferedReader in;
 	private ScheduledExecutorService scheduler;
-	private volatile boolean running;
-	private volatile boolean redraw;
 	private Village base;
 
 	/**
@@ -35,16 +29,13 @@ public class GameEngine implements Runnable {
 	public GameEngine() {
 		players = new HashMap<>();
 		villages = new HashMap<>();
-		in = new BufferedReader(new InputStreamReader(System.in));
 		scheduler = new ScheduledThreadPoolExecutor(5);
-		running = false;
-		redraw = false;
 	}
 
 	/**
-	 * Adds a new player to <code>players</code>.
-	 * If there is not a village in <code>villages</code> corresponding to <code>id</code>,
-	 * create a new <code>Village</code> object for the player.
+	 * Adds a new player to players.
+	 * If there is not a village in villages corresponding to the player id, create a new
+	 * <code>Village</code> object for the player.
 	 * @param id the player id
 	 */
 	public void addPlayer(int id) {
@@ -59,48 +50,23 @@ public class GameEngine implements Runnable {
 
 	/**
 	 * Sets the active player.
-	 * This method sets <code>base</code> to the village of the player with <code>id</code>
+	 * This method sets base to the village of the player with id, creates a view for the active
+	 * player, and starts the view thread.
 	 * @param id the player id
 	 */
 	public void setActivePlayer(int id) {
 		if (players.containsKey(id)) {
-			base = players.get(id).getVillage();
+			Player p = players.get(id);
+			base = p.getVillage();
+
+			if (view == null) {
+				view = new View(this, p);
+				view.startGameThread();
+			} else {
+				view.switchPlayer(p);
+			}
 		} else {
 			System.out.println("Invalid player id");
-		}
-	}
-
-	/**
-	 * Starts the thread <code>gameThread</code>
-	 */
-	public void startGameThread() {
-		running = true;
-		gameThread = new Thread(this);
-		gameThread.start();
-	}
-
-	/**
-	 * Runs <code>gameThread</code>.
-	 * This method takes commands from the console and then executes the commands, through
-	 * <code>update()</code>
-	 */
-	@Override
-	public void run() {
-		draw();
-
-		while (running) {
-			if (redraw) { // DOESN'T REDRAW UNTIL NEW INPUT
-				redraw = false;
-				draw();
-			}
-
-			try {
-				String input = in.readLine().toLowerCase();
-				update(input);
-			} catch (IOException e) {
-				System.out.println("An IO exception occurred.");
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -136,57 +102,18 @@ public class GameEngine implements Runnable {
 				this.exit();
 				return;
 			default:
-				System.out.println("Invalid command.");
+				view.printMessage("Invalid command.");
 		}
 	}
 
 	/**
-	 * Draws <code>base</code>.
-	 */
-	public void draw() {
-		final Village BASE = base;
-
-		synchronized (BASE) {
-			System.out.println();
-			int[] inventory = base.getInventoryValues();
-			System.out.printf("Inventory: Gold - %d, Iron - %d, Lumber - %d", inventory[0],
-				inventory[1], inventory[2]);
-			System.out.println();
-			Building[][] map = base.getMap();
-
-			for (Building[] buildings : map) {
-				for (Building building : buildings) {
-					if (building == null) {
-						System.out.print(".");
-					} else if (building.isUnderConstruction()) {
-						System.out.print("#");
-					} else {
-						System.out.print(building.draw());
-					}
-
-					System.out.print(" ");
-				}
-
-				System.out.println();
-			}
-
-			for (int i = 0; i < map[0].length; i++) {
-				System.out.print("——");
-			}
-
-			System.out.println();
-		}
-	}
-
-	/**
-	 * Adds a new building to <code>base</code>, if requirements are met.
-	 * @throws IOException if <code>BufferedReader</code> fails
+	 * Adds a new building to base, if requirements are met.
+	 * @throws IOException if <code>view.prompt()</code> fails
 	 */
 	public void addBuilding() throws IOException {
-		System.out.print("Building type: ");
 		BuildingConstructor constructor;
 
-		switch (in.readLine().toLowerCase()) {
+		switch (view.prompt("Building type: ")) {
 			case "village hall":
 				constructor = new VillageHallConstructor(base.getAllBuildingData(), base.getAllInhabitantData());
 				break;
@@ -209,15 +136,20 @@ public class GameEngine implements Runnable {
 				constructor = new CannonConstructor((CannonData) base.getBuildingData(BuildingType.CANNON));
 				break;
 			default:
-				System.out.println("Invalid building type.");
+				view.printMessage("Invalid building type.");
 				return;
 		}
 
-		System.out.print("Position [x y]: ");
-		String posInput = in.readLine();
-		Position pos = parsePosition(posInput);
+		Position pos = parsePosition(view.prompt("Position [x y]: "));
 
 		if (pos == null || base.isSquareFull(pos)) {
+			view.printMessage("Invalid building position.");
+			return;
+		}
+
+		// User input verified. Begin checking if operation is possible
+
+		if (base.isSquareFull(pos)) {
 			System.out.println("Invalid building position.");
 			return;
 		}
@@ -239,27 +171,22 @@ public class GameEngine implements Runnable {
 		final Village BASE = base;
 		scheduler.schedule(() -> {
 			BASE.completeAddBuilding(builder, pos);
-
-			if (BASE == base) {
-				System.out.println("Building completed.");
-				redraw = true;
-			}
 		}, buildTime, TimeUnit.SECONDS);
 	}
 
 	/**
 	 * Upgrades the building at the desired location, if requirements are met.
-	 * @throws IOException if <code>BufferedReader</code> fails
+	 * @throws IOException if <code>view.prompt()</code> fails
 	 */
 	public void upgradeBuilding() throws IOException {
-		System.out.print("Position [x y]: ");
-		String posInput = in.readLine();
-		Position pos = parsePosition(posInput);
+		Position pos = parsePosition(view.prompt("Position [x y]: "));
 
 		if (pos == null) {
-			System.out.println("Invalid building position.");
+			view.printMessage("Invalid building position.");
 			return;
 		}
+
+		// User input verified. Begin checking if operation is possible
 
 		Building b = base.getBuilding(pos);
 
@@ -285,29 +212,18 @@ public class GameEngine implements Runnable {
 		final Village BASE = base;
 		scheduler.schedule(() -> {
 			BASE.completeUpgradeBuilding(b, builder);
-
-			if (BASE == base) {
-				System.out.println("Upgrade completed.");
-				redraw = true;
-			}
 		}, buildTime, TimeUnit.SECONDS);
 	}
 
 	/**
 	 * Adds an inhabitant of the desired type, if requirements are met.
-	 * @throws IOException if <code>BufferedReader</code> fails
+	 * @throws IOException if <code>view.prompt()</code> fails
 	 */
 	public void addInhabitant() throws IOException {
-		if (base.isVillageFull()) {
-			System.out.println("Village is full. No new inhabitants can be added.");
-			return;
-		}
-
-		System.out.print("Inhabitant type: ");
 		InhabitantConstructor constructor;
 		InhabitantType type;
 
-		switch (in.readLine().toLowerCase()) {
+		switch (view.prompt("Inhabitant type: ")) {
 			case "worker":
 				type = InhabitantType.WORKER;
 				constructor = new WorkerConstructor((WorkerData) base.getInhabitantData(type));
@@ -345,6 +261,13 @@ public class GameEngine implements Runnable {
 				return;
 		}
 
+		// User input verified. Checking if operation is possible
+
+		if (base.isVillageFull()) {
+			System.out.println("Village is full. No new inhabitants can be added.");
+			return;
+		}
+
 		Inhabitant inhabitant = base.tryAddInhabitant(constructor);
 
 		if (inhabitant == null) {
@@ -356,20 +279,18 @@ public class GameEngine implements Runnable {
 		final Village BASE = base;
 		scheduler.schedule(() -> {
 			BASE.completeAddInhabitant(inhabitant, type);
-			System.out.println("Inhabitant added.");
 		}, constructor.getProductionTime(), TimeUnit.SECONDS);
 	}
 
 	/**
 	 * Upgrades the desired type of inhabitants, if requirements are met.
-	 * @throws IOException if <code>BufferedReader</code> fails
+	 * @throws IOException if <code>view.prompt()</code> fails
 	 */
 	public void upgradeInhabitant() throws IOException {
-		System.out.print("Inhabitant type: ");
 		InhabitantConstructor constructor;
 		InhabitantType type;
 
-		switch (in.readLine().toLowerCase()) {
+		switch (view.prompt("Inhabitant type: ")) {
 			case "worker":
 				type = InhabitantType.WORKER;
 				constructor = new WorkerConstructor((WorkerData) base.getInhabitantData(type));
@@ -421,14 +342,13 @@ public class GameEngine implements Runnable {
 		final Village BASE = base;
 		scheduler.schedule(() -> {
 			BASE.completeUpgradeInhabitant(constructor);
-			System.out.println("Inhabitant upgraded.");
 		}, constructor.getUpgradeTime(), TimeUnit.SECONDS);
 
 	}
 
 	/**
 	 * Creates new villages until the player selects one, then starts attack
-	 * @throws IOException if <code>BufferedReader</code> fails
+	 * @throws IOException if <code>view.prompt()</code> fails
 	 */
 	public void generateVillage() throws IOException {
 		boolean generate = true;
@@ -444,17 +364,16 @@ public class GameEngine implements Runnable {
 				damage += defense.getProperty();
 			}
 
-			System.out.println("Village hit points: " + hitPoints);
-			System.out.println("Village damage: " + damage);
-			System.out.print("Accept or pass (anything else to stop): ");
-			String input = in.readLine().toLowerCase();
+			view.printMessage("Village hit points: " + hitPoints);
+			view.printMessage("Village damage: " + damage);
+			String input = view.prompt("Accept or pass (anything else to stop): ");
 
 			if (input.equals("accept")) {
-				System.out.println("Target found. Attack begins.");
+				view.printMessage("Target found. Preparing attack force...");
 				attack(challengee);
 				generate = false;
 			} else if (!input.equals("pass")) {
-				System.out.println("Village generation ended.");
+				view.printMessage("Village generation ended.");
 				generate = false;
 			}
 		} while (generate);
@@ -463,46 +382,42 @@ public class GameEngine implements Runnable {
 	/**
 	 * Attacks the target village
 	 * @param challengee the target village
-	 * @throws IOException if <code>BufferedReader</code> fails
+	 * @throws IOException if <code>view.prompt()</code> fails
 	 */
 	public void attack(ChallengeEntitySet<Double, Double> challengee) throws IOException {
 		int[] fighterCounts = base.getFighterCount();
 		int[] attackForce = new int[4];
 
 		try {
-			System.out.print("Number of soldiers (max " + fighterCounts[0] + "): ");
-			String input = in.readLine();
+			String input = view.prompt("Number of soldiers (max " + fighterCounts[0] + "): ");
 			attackForce[0] = Integer.parseInt(input);
 
 			if (attackForce[0] < 0 || attackForce[0] > fighterCounts[0]) {
-				System.out.println("Invalid number of soldiers.");
+				view.printMessage("Invalid number of soldiers.");
 				return;
 			}
 
-			System.out.print("Number of archers (max " + fighterCounts[1] + "): ");
-			input = in.readLine();
+			input = view.prompt("Number of archers (max " + fighterCounts[1] + "): ");
 			attackForce[1] = Integer.parseInt(input);
 
 			if (attackForce[1] < 0 || attackForce[1] > fighterCounts[1]) {
-				System.out.println("Invalid number of archers.");
+				view.printMessage("Invalid number of archers.");
 				return;
 			}
 
-			System.out.print("Number of knights (max " + fighterCounts[2] + "): ");
-			input = in.readLine();
+			input = view.prompt("Number of knights (max " + fighterCounts[2] + "): ");
 			attackForce[2] = Integer.parseInt(input);
 
 			if (attackForce[2] < 0 || attackForce[2] > fighterCounts[2]) {
-				System.out.println("Invalid number of knights.");
+				view.printMessage("Invalid number of knights.");
 				return;
 			}
 
-			System.out.print("Number of catapults (max " + fighterCounts[3] + "): ");
-			input = in.readLine();
+			input = view.prompt("Number of catapults (max " + fighterCounts[3] + "): ");
 			attackForce[3] = Integer.parseInt(input);
 
 			if (attackForce[3] < 0 || attackForce[3] > fighterCounts[3]) {
-				System.out.println("Invalid number of catapults.");
+				view.printMessage("Invalid number of catapults.");
 				return;
 			}
 
@@ -510,23 +425,17 @@ public class GameEngine implements Runnable {
 			ChallengeResult result = Arbitrer.challengeDecide(challenger, challengee);
 
 			if (result.getChallengeWon()) {
-				System.out.println("Attack success.");
-				List<ChallengeResource<Double,Double>> lootList = result.getLoot();
-				Cost loot = new Cost(
-					lootList.get(0).getProperty().intValue(),
-					lootList.get(1).getProperty().intValue(),
-					lootList.get(2).getProperty().intValue()
-				);
-				base.addLoot(loot);
+				view.printMessage("Attack success.");
 				base.recordAttack(true);
+				List<ChallengeResource<Double,Double>> lootList = result.getLoot();
+				Cost loot = new Cost(lootList.get(0).getProperty().intValue(), lootList.get(1).getProperty().intValue(), lootList.get(2).getProperty().intValue());
+				base.addLoot(loot);
 			} else {
-				System.out.println("Attack failed.");
 				base.recordAttack(false);
+				view.printMessage("Attack failed.");
 			}
-
-			redraw = true;
 		} catch (NumberFormatException e) {
-			System.out.println("Invalid input.");
+			view.printMessage("Invalid input.");
 		}
 	}
 
@@ -534,20 +443,19 @@ public class GameEngine implements Runnable {
 	 * Returns the rank of the active player
 	 */
 	public void checkRank() {
-		System.out.println("Rank of village: " + base.getRank());
+		view.printMessage("Rank of village: " + base.getRank());
 	}
 
 	/**
 	 * Switches the active player
-	 * @throws IOException if <code>BufferedReader</code> fails
+	 * @throws IOException if <code>view.prompt()</code> fails
 	 */
 	public void switchPlayer() throws IOException {
-		System.out.print("New player ID: ");
-
+		// SOMEHOW BROKEN?? DOESN'T READ INPUT PROPERLY.
+		// It's trying to get input from view run loop another time before switching to new view
 		try {
-			int id = Integer.parseInt(in.readLine());
+			int id = Integer.parseInt(view.prompt("New player ID: "));
 			setActivePlayer(id);
-			redraw = true;
 		} catch (NumberFormatException e) {
 			System.out.println("Invalid player id.");
 		}
@@ -555,13 +463,12 @@ public class GameEngine implements Runnable {
 
 	/**
 	 * Exits the game.
-	 * @throws IOException if <code>BufferedReader</code> fails
+	 * @throws IOException if <code>view.prompt()</code> fails
 	 */
 	public void exit() throws IOException {
 		System.out.println("Game exited.");
-		running = false;
-		in.close();
 		scheduler.shutdown();
+		view.closeGameThread();
 	}
 
 	/**
@@ -591,6 +498,5 @@ public class GameEngine implements Runnable {
 		game.addPlayer(0);
 		game.addPlayer(1);
 		game.setActivePlayer(0);
-		game.startGameThread();
 	}
 }

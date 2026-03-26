@@ -37,6 +37,7 @@ public class Farm extends Building {
 	 */
 	public Farm(Position pos, FarmData data) {
 		super(pos);
+		this.data = data;
 		data.incrementCount();
 		upgradeCost = UPGRADE_COSTS[0];
 		upgradeTime = UPGRADE_TIMES[0];
@@ -95,7 +96,7 @@ public class Farm extends Building {
 	 */
 	@Override
 	public String draw() {
-		return "F";
+		return "F" + level;
 	}
 
 	/**

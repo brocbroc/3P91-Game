@@ -88,7 +88,7 @@ public class LumberMill extends Building {
      */
     @Override
     public String draw() {
-        return "L";
+        return "L" + level;
     }
 
     /**

@@ -97,7 +97,7 @@ public class Cannon extends Building implements Defense {
      */
     @Override
     public String draw() {
-        return "C";
+        return "C" + level;
     }
 
     /**

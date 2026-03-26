@@ -97,7 +97,7 @@ public class ArcherTower extends Building implements Defense {
      */
     @Override
     public String draw() {
-        return "A";
+        return "A" + level;
     }
 
     /**

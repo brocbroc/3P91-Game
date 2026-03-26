@@ -5,18 +5,22 @@ import gameElements.*;
 import gameElements.building.*;
 import gameElements.inhabitant.*;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Random;
 
 import utility.*;
 
 /**
- * This class represents a village. It stores the buildings and the inhabitants of the village.
- * Any changes to the contents of the village are handled by this class.
+ * This class represents a village. It represents the model of the MVC pattern. It stores the
+ * buildings and the inhabitants of the village. Any changes to the contents of the village are
+ * handled by this class. It notifies observers when a change is made.
  */
-public class Village {
+public class Village implements Observable {
 	private static final int MAP_ROW_COUNT = 10;
 	private static final int MAP_COL_COUNT = 20;
+	private List<Observer> observers;
 	private Building[][] map;
 	private EnumMap<BuildingType, BuildingData> buildingData;
 	private Inventory inventory;
@@ -36,6 +40,7 @@ public class Village {
 	 * Class constructor.
 	 */
 	public Village() {
+		observers = new ArrayList<>();
 		map = new Building[MAP_ROW_COUNT][];
 
 		for (int i = 0; i < map.length; i++) {
@@ -71,6 +76,35 @@ public class Village {
 		inhabitantData.put(InhabitantType.KNIGHT, new KnightData());
 		inhabitantData.put(InhabitantType.CATAPULT, new CatapultData());
 		workers.addPeasant(new Worker());
+	}
+
+	/**
+	 * Adds an observer
+	 * @param o an observer
+	 */
+	@Override
+	public void addObserver(Observer o) {
+		observers.add(o);
+	}
+
+	/**
+	 * Removes an observer
+	 * @param o an observer
+	 */
+	@Override
+	public void removeObserver(Observer o) {
+		observers.remove(o);
+	}
+
+	/**
+	 * Notifies observers
+	 * @param message a string describing the changes to the subject
+	 */
+	@Override
+	public void notifyObservers(String message) {
+		for (Observer o : observers) {
+			o.update(message);
+		}
 	}
 
 	/**
@@ -182,6 +216,23 @@ public class Village {
 	}
 
 	/**
+	 * Return the counts of the inhabitant types
+	 * @return the counts of inhabitants by type
+	 */
+	public int[] getInhabitantCountByType() {
+		int[] counts = new int[8];
+		counts[0] = workers.getCount();
+		counts[1] = lumbermen.getCount();
+		counts[2] = ironMiners.getCount();
+		counts[3] = goldMiners.getCount();
+		counts[4] = fighters.getSoldierCount();
+		counts[5] = fighters.getArcherCount();
+		counts[6] = fighters.getKnightCount();
+		counts[7] = fighters.getCatapultCount();
+		return counts;
+	}
+
+	/**
 	 * Returns the number of each type of fighter
 	 * @return an array of the number of each type of fighter
 	 */
@@ -228,6 +279,8 @@ public class Village {
 		if (b instanceof Farm) {
 			maxPopulation += ((Farm) b).getPopulationIncrease();
 		}
+
+		notifyObservers("Building completed.");
 	}
 
 	/**
@@ -266,6 +319,8 @@ public class Village {
 		} else if (b instanceof VillageHall) {
 			level++;
 		}
+
+		notifyObservers("Upgrade completed.");
 	}
 
 	/**
@@ -315,6 +370,8 @@ public class Village {
 				fighters.addCatapult((Catapult) inhabitant);
 				break;
 		}
+
+		notifyObservers("Inhabitant added");
 	}
 
 	/**
@@ -339,6 +396,7 @@ public class Village {
 	public void completeUpgradeInhabitant(InhabitantConstructor constructor) {
 		constructor.upgrade();
 		constructor.setUpgrading(false);
+		notifyObservers("Inhabitant upgraded.");
 	}
 
 	/**
@@ -402,6 +460,7 @@ public class Village {
 		inventory.addGold(loot.GOLD);
 		inventory.addIron(loot.IRON);
 		inventory.addLumber(loot.LUMBER);
+		notifyObservers("Loot added.");
 	}
 
 	/**

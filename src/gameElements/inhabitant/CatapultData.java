@@ -12,6 +12,8 @@ public class CatapultData extends InhabitantData implements FighterData {
 	private static final int PRODUCTION_TIME; // seconds
 	private static final Cost[] UPGRADE_COSTS;
 	private static final int[] UPGRADE_TIMES;
+	private static final int[] HIT_POINTS;
+	private static final int[] DAMAGE;
 	private int hitPoints;
 	private int damage;
 	private int range;
@@ -26,6 +28,8 @@ public class CatapultData extends InhabitantData implements FighterData {
 			new Cost(320, 320, 320)
 		};
 		UPGRADE_TIMES = new int[] { 25, 30, 35, 40 };
+		HIT_POINTS = new int[] { 500, 550, 600, 650, 700 };
+		DAMAGE = new int[] { 20, 35, 50, 65, 80 };
 	}
 
 	/**
@@ -33,9 +37,18 @@ public class CatapultData extends InhabitantData implements FighterData {
 	 */
 	public CatapultData() {
 		super();
-		hitPoints = 500;
-		damage = 20;
+		hitPoints = HIT_POINTS[0];
+		damage = DAMAGE[0];
 		range = 10;
+	}
+
+	/**
+	 * Class constructor for generated army.
+	 * @param level the level of the village
+	 */
+	public CatapultData(int level) {
+		hitPoints = HIT_POINTS[level];
+		damage = DAMAGE[level];
 	}
 
 	/**
@@ -113,7 +126,7 @@ public class CatapultData extends InhabitantData implements FighterData {
 	@Override
 	public void upgrade() {
 		level++;
-		hitPoints += 50;
-		damage += 5;
+		hitPoints = HIT_POINTS[level];
+		damage = DAMAGE[level];
 	}
 }

@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Arbitrer {
     
-    public static ChallengeResult challengeDecide( ChallengeEntitySet<Double,Double> challenger, ChallengeEntitySet<Double,Double> challengee ) {
+    public static ChallengeResult challengeDecide(ChallengeEntitySet<Double,Double> challenger, ChallengeEntitySet<Double, Double> challengee ) {
         ChallengeResult challengeResult = new ChallengeResult( false );
         int i = 0, j = 0, challengerSize, challengeeSize;
         FightResult fr;

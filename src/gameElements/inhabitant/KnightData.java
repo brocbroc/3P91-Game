@@ -12,6 +12,8 @@ public class KnightData extends InhabitantData implements FighterData {
 	private static final int PRODUCTION_TIME; // seconds
 	private static final Cost[] UPGRADE_COSTS;
 	private static final int[] UPGRADE_TIMES;
+	private static final int[] HIT_POINTS;
+	private static final int[] DAMAGE;
 	private int hitPoints;
 	private int damage;
 	private int range;
@@ -26,13 +28,27 @@ public class KnightData extends InhabitantData implements FighterData {
 			new Cost(160, 320, 160)
 		};
 		UPGRADE_TIMES = new int[] { 25, 30, 35, 40 };
+		HIT_POINTS = new int[] { 500, 550, 600, 650, 700 };
+		DAMAGE = new int[] { 20, 30, 40, 50, 60 };
 	}
 
+	/**
+	 * Class constructor.
+	 */
 	public KnightData() {
 		super();
-		hitPoints = 500;
-		damage = 15;
+		hitPoints = HIT_POINTS[0];
+		damage = DAMAGE[0];
 		range = 1;
+	}
+
+	/**
+	 * Class constructor for generated army.
+	 * @param level the level of the village
+	 */
+	public KnightData(int level) {
+		hitPoints = HIT_POINTS[level];
+		damage = DAMAGE[level];
 	}
 
 	/**
@@ -110,7 +126,7 @@ public class KnightData extends InhabitantData implements FighterData {
 	@Override
 	public void upgrade() {
 		level++;
-		hitPoints += 50;
-		damage += 5;
+		hitPoints = HIT_POINTS[level];
+		damage = DAMAGE[level];
 	}
 }

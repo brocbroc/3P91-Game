@@ -1,11 +1,11 @@
 package game;
 
+import ChallengeDecision.ChallengeEntitySet;
 import gameElements.*;
 import gameElements.building.*;
 import gameElements.inhabitant.*;
-import java.util.ArrayList;
+
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Random;
 
 import utility.*;
@@ -138,6 +138,14 @@ public class Village {
 	 */
 	public int[] getInventoryValues() {
 		return new int[] { inventory.getGold(), inventory.getIron(), inventory.getLumber() };
+	}
+
+	/**
+	 * Return the level of the village
+	 * @return the level of the village
+	 */
+	public int getLevel() {
+		return level;
 	}
 
 	/**
@@ -335,29 +343,52 @@ public class Village {
 
 	/**
 	 * Generates village for attacking.
-	 * @return the defense score of the generated village
+	 * @return a ChallengeEntitySet representing the village
 	 */
-	public int generateVillage() {
+	public ChallengeEntitySet<Double, Double> generateVillage() {
 		Random rand = new Random();
-		int[] buildingCounts = new int[7];
-		buildingCounts[0] = 1;
-		buildingCounts[1] = rand.nextInt(5) - 3 + (level + 1) * 5;
-		buildingCounts[2] = rand.nextInt(3) - 1 + (level + 1) * 2;
-		buildingCounts[3] = rand.nextInt(3) - 1 + (level + 1) * 2;
-		buildingCounts[4] = rand.nextInt(3) - 1 + (level + 1) * 2;
-		buildingCounts[5] = rand.nextInt(5) - 3 + (level + 1) * 5;
-		buildingCounts[6] = rand.nextInt(5) - 3 + (level + 1) * 5;
-		int score = (int) (buildingCounts[0] * 500 * (1 + (level + 1) * 0.2)
-			+ buildingCounts[1] * 100 * (1 + (level + 1) * 0.2)
-			+ buildingCounts[2] * 200 * (1 + (level + 1) * 0.2)
-			+ buildingCounts[3] * 200 * (1 + (level + 1) * 0.2)
-			+ buildingCounts[4] * 200 * (1 + (level + 1) * 0.2)
-			+ buildingCounts[5] * 400 * (1 + (level + 1) * 0.2)
-			+ buildingCounts[6] * 400 * (1 + (level + 1) * 0.2));
-		score = score / 50;
-		score += (int) (buildingCounts[5] * 25 * (1 + (level + 1) * 0.2) + buildingCounts[6] * 50 * (1 + (level + 1) * 0.2));
+		Building[][] buildings = new Building[7][];
+		buildings[0] = new Building[1];
+		buildings[1] = new Building[rand.nextInt(3) - 2 + buildingData.get(BuildingType.FARM).getMaxCount()];
+		buildings[2] = new Building[rand.nextInt(3) - 2 + buildingData.get(BuildingType.LUMBER_MILL).getMaxCount()];
+		buildings[3] = new Building[rand.nextInt(3) - 2 + buildingData.get(BuildingType.IRON_MINE).getMaxCount()];
+		buildings[4] = new Building[rand.nextInt(3) - 2 + buildingData.get(BuildingType.GOLD_MINE).getMaxCount()];
+		buildings[5] = new Building[rand.nextInt(3) - 2 + buildingData.get(BuildingType.ARCHER_TOWER).getMaxCount()];
+		buildings[6] = new Building[rand.nextInt(3) - 2 + buildingData.get(BuildingType.CANNON).getMaxCount()];
 
-		return score;
+		buildings[0][0] = new VillageHall(level);
+
+		for (int i = 0; i < buildings[1].length; i++) {
+			buildings[1][i] = new Farm(level);
+		}
+		for (int i = 0; i < buildings[2].length; i++) {
+			buildings[2][i] = new LumberMill(level);
+		}
+		for (int i = 0; i < buildings[3].length; i++) {
+			buildings[3][i] = new IronMine(level);
+		}
+		for (int i = 0; i < buildings[4].length; i++) {
+			buildings[4][i] = new GoldMine(level);
+		}
+		for (int i = 0; i < buildings[5].length; i++) {
+			buildings[5][i] = new ArcherTower(level);
+		}
+		for (int i = 0; i < buildings[6].length; i++) {
+			buildings[6][i] = new Cannon(level);
+		}
+
+		Inventory generatedInventory = new Inventory((level + 1) * 100, (level + 1) * 100,
+			(level + 1) * 100);
+		return new DefenseChallengeEntitySetAdapter(buildings, generatedInventory);
+	}
+
+	/**
+	 * Returns a ChallengeEntitySet representing the attack force
+	 * @param attackForce the counts of the fighters
+	 * @return a ChallengeEntitySet representing the attack force
+	 */
+	public ChallengeEntitySet<Double, Double> createAttackForce(int[] attackForce) {
+		return new AttackChallengeEntitySetAdapter(attackForce, inhabitantData, inventory);
 	}
 
 	/**
@@ -386,30 +417,6 @@ public class Village {
 		int lumberLoss = Math.min(loss.LUMBER, inventory.getLumber());
 
 		inventory.payCost(new Cost(goldLoss, ironLoss, lumberLoss));
-	}
-
-	/**
-	 * Calculates the defense score of the village.
-	 * The defense score is determined by the damage to defense buildings
-	 * and the hit points of the buildings.
-	 * @return the defense score of the village
-	 */
-	public int getDefenseScore() {
-		int score = 0;
-
-		for (Building[] row : map) {
-			for (Building building : row) {
-				if (building != null && !building.isUnderConstruction()) {
-					if (building instanceof Defense) {
-						score += ((Defense) building).getDamage();
-					}
-
-					score += building.getHitPoints() / 50;
-				}
-			}
-		}
-
-		return score;
 	}
 
 	/**

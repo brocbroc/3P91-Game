@@ -12,6 +12,7 @@ public class Farm extends Building {
 	private static final int BUILD_TIME; // seconds
 	private static final Cost[] UPGRADE_COSTS;
 	private static final int[] UPGRADE_TIMES;
+	private static final int[] HIT_POINTS;
 	private static final int[] POPULATION_SUPPORTED;
 	private FarmData data;
 
@@ -26,6 +27,7 @@ public class Farm extends Building {
 		};
 		UPGRADE_TIMES = new int[] { 10, 10, 20, 20 };
 		POPULATION_SUPPORTED = new int[] { 10, 20, 40, 60, 100 };
+		HIT_POINTS = new int[] { 100, 125, 150, 175, 200 };
 	}
 
 	/**
@@ -38,7 +40,16 @@ public class Farm extends Building {
 		data.incrementCount();
 		upgradeCost = UPGRADE_COSTS[0];
 		upgradeTime = UPGRADE_TIMES[0];
-		hitPoints = 100;
+		hitPoints = HIT_POINTS[0];
+	}
+
+	/**
+	 * Class constructor for generated villages
+	 * @param level the level of the building
+	 */
+	public Farm(int level) {
+		super();
+		hitPoints = HIT_POINTS[level];
 	}
 
 	/**
@@ -93,7 +104,7 @@ public class Farm extends Building {
 	@Override
 	public void upgrade() {
 		level++;
-		hitPoints += 20;
+		hitPoints = HIT_POINTS[level];
 
 		if (level < MAX_LEVEL) {
 			upgradeCost = UPGRADE_COSTS[level];

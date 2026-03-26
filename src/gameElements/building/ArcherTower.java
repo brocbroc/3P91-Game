@@ -11,6 +11,8 @@ public class ArcherTower extends Building implements Defense {
     private static final int BUILD_TIME; // seconds
     private static final Cost[] UPGRADE_COSTS;
     private static final int[] UPGRADE_TIMES;
+    private static final int[] HIT_POINTS;
+    private static final int[] DAMAGE;
     private ArcherTowerData data;
     private int damage; // per 2 seconds
     private int range;
@@ -25,6 +27,8 @@ public class ArcherTower extends Building implements Defense {
             new Cost(25, 50, 60)
         };
         UPGRADE_TIMES = new int[] { 45, 60, 75, 90 };
+        HIT_POINTS = new int[] { 400, 500, 600, 700, 800 };
+        DAMAGE = new int[] { 25, 30, 35, 40, 45 };
     }
 
     /**
@@ -38,9 +42,19 @@ public class ArcherTower extends Building implements Defense {
         data.incrementCount();
         upgradeCost = UPGRADE_COSTS[0];
         upgradeTime = UPGRADE_TIMES[0];
-        hitPoints = 400;
-        damage = 25;
+        hitPoints = HIT_POINTS[0];
+        damage = DAMAGE[0];
         range = 15;
+    }
+
+    /**
+     * Class constructor for generated villages
+     * @param level the level of the building
+     */
+    public ArcherTower(int level) {
+        super();
+        hitPoints = HIT_POINTS[level];
+        damage = DAMAGE[level];
     }
 
     /**
@@ -92,8 +106,8 @@ public class ArcherTower extends Building implements Defense {
     @Override
     public void upgrade() {
         level++;
-        hitPoints += 80;
-        damage += 5;
+        hitPoints = HIT_POINTS[level];
+        damage = DAMAGE[level];
 
         if (level < MAX_LEVEL) {
             upgradeCost = UPGRADE_COSTS[level];

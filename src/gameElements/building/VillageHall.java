@@ -18,6 +18,7 @@ public class VillageHall extends Building {
 	private static final int BUILD_TIME; // seconds
 	private static final Cost[] UPGRADE_COSTS;
 	private static final int[] UPGRADE_TIMES;
+	private static final int[] HIT_POINTS;
 	private EnumMap<BuildingType, BuildingData> buildingData;
 	private EnumMap<InhabitantType, InhabitantData> inhabitantData;
 	private VillageHallData data;
@@ -32,6 +33,7 @@ public class VillageHall extends Building {
 			new Cost(40, 40, 40)
 		};
 		UPGRADE_TIMES = new int[] { 5, 5, 5, 5 };
+		HIT_POINTS = new int[] { 500, 625, 750, 875, 1000 };
 	}
 
 	/**
@@ -46,7 +48,16 @@ public class VillageHall extends Building {
 		data.incrementCount();
 		upgradeCost = UPGRADE_COSTS[0];
 		upgradeTime = UPGRADE_TIMES[0];
-		hitPoints = 500;
+		hitPoints = HIT_POINTS[0];
+	}
+
+	/**
+	 * Class constructor for generated villages
+	 * @param level the level of the building
+	 */
+	public VillageHall(int level) {
+		super();
+		hitPoints = HIT_POINTS[level];
 	}
 
 	/**
@@ -88,6 +99,7 @@ public class VillageHall extends Building {
 	@Override
 	public void upgrade() {
 		level++;
+		hitPoints = HIT_POINTS[level];
 
 		if (level < MAX_LEVEL) {
 			upgradeCost = UPGRADE_COSTS[level];
@@ -96,7 +108,6 @@ public class VillageHall extends Building {
 
 		setAllMaxLevel(level);
 		setAllMaxCount();
-		hitPoints += 100;
 	}
 
 	/**

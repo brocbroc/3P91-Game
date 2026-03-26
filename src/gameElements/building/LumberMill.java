@@ -14,6 +14,7 @@ public class LumberMill extends Building {
     private static final int BUILD_TIME; // seconds
     private static final Cost[] UPGRADE_COSTS;
     private static final int[] UPGRADE_TIMES;
+    private static final int[] HIT_POINTS;
     private LumberMillData data;
     private List<Lumberman> miners;
     private int maxMiners;
@@ -28,6 +29,7 @@ public class LumberMill extends Building {
             new Cost(15, 20, 60)
         };
         UPGRADE_TIMES = new int[] { 15, 30, 45, 60 };
+        HIT_POINTS = new int[] { 200, 250, 300, 350, 400 };
     }
 
     /**
@@ -41,9 +43,18 @@ public class LumberMill extends Building {
         data.incrementCount();
         upgradeCost = UPGRADE_COSTS[0];
         upgradeTime = UPGRADE_TIMES[0];
-        hitPoints = 200;
+        hitPoints = HIT_POINTS[0];
         miners = new ArrayList<>();
         maxMiners = 1;
+    }
+
+    /**
+     * Class constructor for generated villages
+     * @param level the level of the building
+     */
+    public LumberMill(int level) {
+        super();
+        hitPoints = HIT_POINTS[level];
     }
 
     /**
@@ -86,7 +97,7 @@ public class LumberMill extends Building {
     @Override
     public void upgrade() {
         level++;
-        hitPoints += 40;
+        hitPoints = HIT_POINTS[level];
         maxMiners += 2;
 
         if (level < MAX_LEVEL) {

@@ -9,6 +9,7 @@ import gui.GraphicalInterface;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.HashMap;
 import utility.*;
@@ -25,7 +26,7 @@ public class GameEngine implements Runnable {
 	private BufferedReader in;
 	private ScheduledExecutorService scheduler;
 	private volatile boolean running;
-	private volatile boolean redraw; // Implement later
+	private volatile boolean redraw;
 	private Village base;
 
 	/**
@@ -348,6 +349,7 @@ public class GameEngine implements Runnable {
 
 		if (inhabitant == null) {
 			System.out.println("Inhabitant requirements not met.");
+			return;
 		}
 
 		System.out.println("Producing inhabitant...");
@@ -429,18 +431,27 @@ public class GameEngine implements Runnable {
 	 * @throws IOException if <code>BufferedReader</code> fails
 	 */
 	public void generateVillage() throws IOException {
-		// UPDATE TO USE CHALLENGE DECISION
 		boolean generate = true;
 
 		do {
-			int defenseScore = base.generateVillage();
-			System.out.println("Village defense score: " + defenseScore);
+			ChallengeEntitySet<Double, Double> challengee = base.generateVillage();
+			List<ChallengeDefense<Double, Double>> entityDefenseList = challengee.getEntityDefenseList();
+			double hitPoints = 0;
+			double damage = 0;
+
+			for (ChallengeDefense<Double, Double> defense : entityDefenseList) {
+				hitPoints += defense.getHitPoints();
+				damage += defense.getProperty();
+			}
+
+			System.out.println("Village hit points: " + hitPoints);
+			System.out.println("Village damage: " + damage);
 			System.out.print("Accept or pass (anything else to stop): ");
 			String input = in.readLine().toLowerCase();
 
 			if (input.equals("accept")) {
 				System.out.println("Target found. Attack begins.");
-				attack(defenseScore);
+				attack(challengee);
 				generate = false;
 			} else if (!input.equals("pass")) {
 				System.out.println("Village generation ended.");
@@ -451,55 +462,61 @@ public class GameEngine implements Runnable {
 
 	/**
 	 * Attacks the target village
-	 * @param defenseScore the target village defense score
+	 * @param challengee the target village
 	 * @throws IOException if <code>BufferedReader</code> fails
 	 */
-	public void attack(int defenseScore) throws IOException {
+	public void attack(ChallengeEntitySet<Double, Double> challengee) throws IOException {
 		int[] fighterCounts = base.getFighterCount();
+		int[] attackForce = new int[4];
 
 		try {
 			System.out.print("Number of soldiers (max " + fighterCounts[0] + "): ");
 			String input = in.readLine();
-			int soldiers = Integer.parseInt(input);
+			attackForce[0] = Integer.parseInt(input);
 
-			if (soldiers < 0 || soldiers > fighterCounts[0]) {
+			if (attackForce[0] < 0 || attackForce[0] > fighterCounts[0]) {
 				System.out.println("Invalid number of soldiers.");
 				return;
 			}
 
 			System.out.print("Number of archers (max " + fighterCounts[1] + "): ");
 			input = in.readLine();
-			int archers = Integer.parseInt(input);
+			attackForce[1] = Integer.parseInt(input);
 
-			if (archers < 0 || archers > fighterCounts[1]) {
+			if (attackForce[1] < 0 || attackForce[1] > fighterCounts[1]) {
 				System.out.println("Invalid number of archers.");
 				return;
 			}
 
 			System.out.print("Number of knights (max " + fighterCounts[2] + "): ");
 			input = in.readLine();
-			int knights = Integer.parseInt(input);
+			attackForce[2] = Integer.parseInt(input);
 
-			if (knights < 0 || knights > fighterCounts[2]) {
+			if (attackForce[2] < 0 || attackForce[2] > fighterCounts[2]) {
 				System.out.println("Invalid number of knights.");
 				return;
 			}
 
 			System.out.print("Number of catapults (max " + fighterCounts[3] + "): ");
 			input = in.readLine();
-			int catapults = Integer.parseInt(input);
+			attackForce[3] = Integer.parseInt(input);
 
-			if (catapults < 0 || catapults > fighterCounts[3]) {
+			if (attackForce[3] < 0 || attackForce[3] > fighterCounts[3]) {
 				System.out.println("Invalid number of catapults.");
 				return;
 			}
 
-			int attackScore = 0;
-			//int attackScore = soldiers * Soldier.getDamage() + archers * Archer.getDamage() + knights * Knight.getDamage() + catapults * Catapult.getDamage();
+			ChallengeEntitySet<Double, Double> challenger = base.createAttackForce(attackForce);
+			ChallengeResult result = Arbitrer.challengeDecide(challenger, challengee);
 
-			if (defenseScore <= attackScore) {
+			if (result.getChallengeWon()) {
 				System.out.println("Attack success.");
-				Cost loot = new Cost(defenseScore / 50, defenseScore / 50, defenseScore / 50);
+				List<ChallengeResource<Double,Double>> lootList = result.getLoot();
+				Cost loot = new Cost(
+					lootList.get(0).getProperty().intValue(),
+					lootList.get(1).getProperty().intValue(),
+					lootList.get(2).getProperty().intValue()
+				);
 				base.addLoot(loot);
 				base.recordAttack(true);
 			} else {

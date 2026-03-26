@@ -26,6 +26,13 @@ public abstract class Building {
 	}
 
 	/**
+	 * Class constructor for generated villages
+	 */
+	public Building() {
+		isUnderConstruction = false;
+	}
+
+	/**
 	 * Returns the position of the building.
 	 * @return the position of the building
 	 */

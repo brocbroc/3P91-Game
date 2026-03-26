@@ -12,6 +12,8 @@ public class ArcherData extends InhabitantData implements FighterData {
 	private static final int PRODUCTION_TIME; // seconds
 	private static final Cost[] UPGRADE_COSTS;
 	private static final int[] UPGRADE_TIMES;
+	private static final int[] HIT_POINTS;
+	private static final int[] DAMAGE;
 	private int hitPoints;
 	private int damage;
 	private int range; // per 2 seconds
@@ -26,6 +28,8 @@ public class ArcherData extends InhabitantData implements FighterData {
 			new Cost(40, 160, 320)
 		};
 		UPGRADE_TIMES = new int[] { 15, 20, 25, 30 };
+		HIT_POINTS = new int[] { 50, 75, 100, 125, 150 };
+		DAMAGE = new int[] { 5, 10, 15, 20, 25 };
 	}
 
 	/**
@@ -33,9 +37,18 @@ public class ArcherData extends InhabitantData implements FighterData {
 	 */
 	public ArcherData() {
 		super();
-		hitPoints = 50;
-		damage = 5;
+		hitPoints = HIT_POINTS[0];
+		damage = DAMAGE[0];
 		range = 10;
+	}
+
+	/**
+	 * Class constructor for generated army.
+	 * @param level the level of the village
+	 */
+	public ArcherData(int level) {
+		hitPoints = HIT_POINTS[level];
+		damage = DAMAGE[level];
 	}
 
 	/**
@@ -113,7 +126,7 @@ public class ArcherData extends InhabitantData implements FighterData {
 	@Override
 	public void upgrade() {
 		level++;
-		hitPoints += 50;
-		damage += 5;
+		hitPoints = HIT_POINTS[level];
+		damage = DAMAGE[level];
 	}
 }

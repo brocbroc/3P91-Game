@@ -4,12 +4,10 @@ import ChallengeDecision.ChallengeEntitySet;
 import gameElements.*;
 import gameElements.building.*;
 import gameElements.inhabitant.*;
-
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
-
 import utility.*;
 
 /**

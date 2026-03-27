@@ -1,11 +1,10 @@
 package gameElements.building;
 
 import gameElements.inhabitant.GoldMiner;
-import utility.Cost;
-import utility.Position;
-
 import java.util.ArrayList;
 import java.util.List;
+import utility.Cost;
+import utility.Position;
 
 /**
  * This class represents a gold mine.

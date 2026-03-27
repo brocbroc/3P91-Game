@@ -7,7 +7,6 @@ import gameElements.building.BuildingData;
 import gameElements.building.VillageHall;
 import gameElements.building.VillageHallData;
 import gameElements.inhabitant.InhabitantData;
-
 import java.util.EnumMap;
 
 /**
@@ -18,6 +17,11 @@ public class VillageHallConstructor implements BuildingConstructor {
 	private EnumMap<InhabitantType, InhabitantData> inhabitantData;
 	private VillageHallData data;
 
+	/**
+	 * Class constructor
+	 * @param buildingData the building data of the village
+	 * @param inhabitantData the inhabitant data of the village
+	 */
 	public VillageHallConstructor(EnumMap<BuildingType, BuildingData> buildingData, EnumMap<InhabitantType, InhabitantData> inhabitantData) {
 		this.buildingData = buildingData;
 		this.inhabitantData = inhabitantData;

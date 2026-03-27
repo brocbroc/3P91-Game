@@ -1,7 +1,5 @@
 package gameElements.inhabitant;
 
-import utility.Cost;
-
 /**
  * This class represents a worker. Workers are responsible for construction.
  */

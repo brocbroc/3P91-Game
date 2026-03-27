@@ -1,7 +1,5 @@
 package gameElements.inhabitant;
 
-import utility.Cost;
-
 /**
  * This class represents a gold miner. They produce gold at gold mines.
  */

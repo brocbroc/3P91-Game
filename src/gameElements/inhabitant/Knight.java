@@ -1,7 +1,5 @@
 package gameElements.inhabitant;
 
-import utility.Cost;
-
 /**
  * Represents a heavily armored knight unit.
  */

@@ -1,7 +1,5 @@
 package gameElements.inhabitant;
 
-import utility.Cost;
-
 /**
  * This class represents a lumberman. They can produce lumber at a lumber mill.
  */

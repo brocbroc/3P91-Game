@@ -4,7 +4,6 @@ import game.Village;
 
 /**
  * This class represents a position on the map.
- * DO NOT TOUCH
  */
 public class Position {
 	public final int X;

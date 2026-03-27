@@ -2,11 +2,17 @@ package gameElements.inhabitant;
 
 import utility.Cost;
 
+/**
+ * This class represents a village's data of a subtype of inhabitant.
+ */
 public abstract class InhabitantData {
 	protected int maxLevel;
 	protected int level;
 	protected boolean isUpgrading;
 
+	/**
+	 * Class constructor
+	 */
 	public InhabitantData() {
 		maxLevel = 0;
 		level = 0;

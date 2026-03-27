@@ -66,7 +66,7 @@ public class GameEngine {
 				view.switchPlayer(p);
 			}
 		} else {
-			System.out.println("Invalid player id");
+			view.printMessage("Invalid player id");
 		}
 	}
 
@@ -150,24 +150,24 @@ public class GameEngine {
 		// User input verified. Begin checking if operation is possible
 
 		if (base.isSquareFull(pos)) {
-			System.out.println("Invalid building position.");
+			view.printMessage("Invalid building position.");
 			return;
 		}
 
 		if (constructor.getCount() == constructor.getMaxCount()) {
-			System.out.println("Maximum number of buildings of this type already constructed.");
+			view.printMessage("Maximum number of buildings of this type already constructed.");
 			return;
 		}
 
 		Worker builder = base.tryAddBuilding(constructor, pos);
 
 		if (builder == null) {
-			System.out.println("Building requirements not met.");
+			view.printMessage("Building requirements not met.");
 			return;
 		}
 
 		int buildTime = (int) (constructor.getBuildTime() * base.getWorkRate());
-		System.out.println("Under construction...");
+		view.printMessage("Under construction...");
 		final Village BASE = base;
 		scheduler.schedule(() -> {
 			BASE.completeAddBuilding(builder, pos);
@@ -191,24 +191,24 @@ public class GameEngine {
 		Building b = base.getBuilding(pos);
 
 		if (b == null) {
-			System.out.println("No building to upgrade.");
+			view.printMessage("No building to upgrade.");
 			return;
 		}
 
 		if (b.getLevel() == b.getMaxLevel()) {
-			System.out.println("Building is fully upgraded.");
+			view.printMessage("Building is fully upgraded.");
 			return;
 		}
 
 		Worker builder = base.tryUpgradeBuilding(b);
 
 		if (builder == null) {
-			System.out.println("Upgrade requirements not met.");
+			view.printMessage("Upgrade requirements not met.");
 			return;
 		}
 
 		int buildTime = (int) (b.getUpgradeTime() * base.getWorkRate());
-		System.out.println("Upgrading building...");
+		view.printMessage("Upgrading building...");
 		final Village BASE = base;
 		scheduler.schedule(() -> {
 			BASE.completeUpgradeBuilding(b, builder);
@@ -257,25 +257,25 @@ public class GameEngine {
 				constructor = new CatapultConstructor((CatapultData) base.getInhabitantData(type));
 				break;
 			default:
-				System.out.println("Invalid inhabitant type.");
+				view.printMessage("Invalid inhabitant type.");
 				return;
 		}
 
 		// User input verified. Checking if operation is possible
 
 		if (base.isVillageFull()) {
-			System.out.println("Village is full. No new inhabitants can be added.");
+			view.printMessage("Village is full. No new inhabitants can be added.");
 			return;
 		}
 
 		Inhabitant inhabitant = base.tryAddInhabitant(constructor);
 
 		if (inhabitant == null) {
-			System.out.println("Inhabitant requirements not met.");
+			view.printMessage("Inhabitant requirements not met.");
 			return;
 		}
 
-		System.out.println("Producing inhabitant...");
+		view.printMessage("Producing inhabitant...");
 		final Village BASE = base;
 		scheduler.schedule(() -> {
 			BASE.completeAddInhabitant(inhabitant, type);
@@ -288,57 +288,48 @@ public class GameEngine {
 	 */
 	public void upgradeInhabitant() throws IOException {
 		InhabitantConstructor constructor;
-		InhabitantType type;
 
 		switch (view.prompt("Inhabitant type: ")) {
 			case "worker":
-				type = InhabitantType.WORKER;
-				constructor = new WorkerConstructor((WorkerData) base.getInhabitantData(type));
+				constructor = new WorkerConstructor((WorkerData) base.getInhabitantData(InhabitantType.WORKER));
 				break;
 			case "lumberman":
-				type = InhabitantType.LUMBERMAN;
-				constructor = new LumbermanConstructor((LumbermanData) base.getInhabitantData(type));
+				constructor = new LumbermanConstructor((LumbermanData) base.getInhabitantData(InhabitantType.LUMBERMAN));
 				break;
 			case "iron miner":
-				type = InhabitantType.IRON_MINER;
-				constructor = new IronMinerConstructor((IronMinerData) base.getInhabitantData(type));
+				constructor = new IronMinerConstructor((IronMinerData) base.getInhabitantData(InhabitantType.IRON_MINER));
 				break;
 			case "gold miner":
-				type = InhabitantType.GOLD_MINER;
-				constructor = new GoldMinerConstructor((GoldMinerData) base.getInhabitantData(type));
+				constructor = new GoldMinerConstructor((GoldMinerData) base.getInhabitantData(InhabitantType.GOLD_MINER));
 				break;
 			case "soldier":
-				type = InhabitantType.SOLDIER;
-				constructor = new SoldierConstructor((SoldierData) base.getInhabitantData(type));
+				constructor = new SoldierConstructor((SoldierData) base.getInhabitantData(InhabitantType.SOLDIER));
 				break;
 			case "archer":
-				type = InhabitantType.ARCHER;
-				constructor = new ArcherConstructor((ArcherData) base.getInhabitantData(type));
+				constructor = new ArcherConstructor((ArcherData) base.getInhabitantData(InhabitantType.ARCHER));
 				break;
 			case "knight":
-				type = InhabitantType.KNIGHT;
-				constructor = new KnightConstructor((KnightData) base.getInhabitantData(type));
+				constructor = new KnightConstructor((KnightData) base.getInhabitantData(InhabitantType.KNIGHT));
 				break;
 			case "catapult":
-				type = InhabitantType.CATAPULT;
-				constructor = new CatapultConstructor((CatapultData) base.getInhabitantData(type));
+				constructor = new CatapultConstructor((CatapultData) base.getInhabitantData(InhabitantType.CATAPULT));
 				break;
 			default:
-				System.out.println("Invalid inhabitant type.");
+				view.printMessage("Invalid inhabitant type.");
 				return;
 		}
 
 		if (constructor.getLevel() == constructor.getMaxLevel()) {
-			System.out.println("Maximum upgrade level reached");
+			view.printMessage("Maximum upgrade level reached");
 			return;
 		}
 
 		if (!base.tryUpgradeInhabitant(constructor)) {
-			System.out.println("Upgrade requirements not met.");
+			view.printMessage("Upgrade requirements not met.");
 			return;
 		}
 
-		System.out.println("Upgrading inhabitant...");
+		view.printMessage("Upgrading inhabitant...");
 		final Village BASE = base;
 		scheduler.schedule(() -> {
 			BASE.completeUpgradeInhabitant(constructor);
@@ -451,13 +442,11 @@ public class GameEngine {
 	 * @throws IOException if <code>view.prompt()</code> fails
 	 */
 	public void switchPlayer() throws IOException {
-		// SOMEHOW BROKEN?? DOESN'T READ INPUT PROPERLY.
-		// It's trying to get input from view run loop another time before switching to new view
 		try {
 			int id = Integer.parseInt(view.prompt("New player ID: "));
 			setActivePlayer(id);
 		} catch (NumberFormatException e) {
-			System.out.println("Invalid player id.");
+			view.printMessage("Invalid player id.");
 		}
 	}
 
@@ -466,7 +455,7 @@ public class GameEngine {
 	 * @throws IOException if <code>view.prompt()</code> fails
 	 */
 	public void exit() throws IOException {
-		System.out.println("Game exited.");
+		view.printMessage("Game exited.");
 		scheduler.shutdown();
 		view.closeGameThread();
 	}

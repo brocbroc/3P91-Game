@@ -1,6 +1,5 @@
 package gameElements.inhabitant;
 
-import utility.Cost;
 import utility.Position;
 
 /**

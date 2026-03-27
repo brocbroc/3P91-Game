@@ -34,14 +34,6 @@ public class View implements Runnable, Observer {
 	}
 
 	/**
-	 * Returns true if the view thread is running
-	 * @return true if the view is running, false otherwise
-	 */
-	public boolean isRunning() {
-		return running;
-	}
-
-	/**
 	 * Starts the game thread. Attaches an observer to the village base.
 	 */
 	public void startGameThread() {

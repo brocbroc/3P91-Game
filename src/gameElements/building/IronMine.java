@@ -1,12 +1,10 @@
 package gameElements.building;
 
 import gameElements.inhabitant.IronMiner;
-import gameElements.inhabitant.IronMinerData;
-import utility.Cost;
-import utility.Position;
-
 import java.util.ArrayList;
 import java.util.List;
+import utility.Cost;
+import utility.Position;
 
 /**
  * This class represents an iron mine.

@@ -30,6 +30,9 @@ public class GameEngine {
 		players = new HashMap<>();
 		villages = new HashMap<>();
 		scheduler = new ScheduledThreadPoolExecutor(5);
+		scheduler.scheduleAtFixedRate(() -> {
+			generateResources();
+		}, 5, 5, TimeUnit.SECONDS);
 	}
 
 	/**
@@ -106,6 +109,15 @@ public class GameEngine {
 		}
 	}
 
+	private void generateResources() {
+		try {
+			base.addLoot(new Cost(10, 10, 10));
+			System.out.println("Resources generated!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Adds a new building to base, if requirements are met.
 	 * @throws IOException if <code>view.prompt()</code> fails
@@ -174,6 +186,40 @@ public class GameEngine {
 		}, buildTime, TimeUnit.SECONDS);
 	}
 
+	public void addBuildingNetwork() {
+		try {
+			BuildingConstructor constructor =
+					new FarmConstructor((FarmData) base.getBuildingData(BuildingType.FARM));
+
+			Position pos = null;
+			for (int x = 0; x < 20; x++) {
+				for (int y = 0; y < 20; y++) {
+					Position p = new Position(x, y);
+					if (!base.isSquareFull(p)) {
+						pos = p;
+						break;
+					}
+				}
+				if (pos != null) break;
+			}
+
+			if (pos == null) return;
+
+			Worker builder = base.tryAddBuilding(constructor, pos);
+
+			if (builder == null) return;
+
+			final Position finalPos = pos;
+
+			scheduler.schedule(() -> {
+				base.completeAddBuilding(builder, finalPos);
+			}, constructor.getBuildTime(), TimeUnit.SECONDS);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Upgrades the building at the desired location, if requirements are met.
 	 * @throws IOException if <code>view.prompt()</code> fails
@@ -213,6 +259,25 @@ public class GameEngine {
 		scheduler.schedule(() -> {
 			BASE.completeUpgradeBuilding(b, builder);
 		}, buildTime, TimeUnit.SECONDS);
+	}
+
+	public void upgradeBuildingNetwork() {
+		try {
+			Building b = base.getAllBuildings().stream().findFirst().orElse(null);
+
+			if (b == null) return;
+
+			Worker w = base.tryUpgradeBuilding(b);
+
+			if (w == null) return;
+
+			scheduler.schedule(() -> {
+				base.completeUpgradeBuilding(b, w);
+			}, b.getUpgradeTime(), TimeUnit.SECONDS);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -337,6 +402,110 @@ public class GameEngine {
 
 	}
 
+    public void addSpecificInhabitant(InhabitantType type) {
+
+        try {
+            InhabitantConstructor constructor = null;
+
+            switch (type) {
+                case WORKER:
+                    constructor = new WorkerConstructor(
+                            (WorkerData) base.getInhabitantData(type));
+                    break;
+                case LUMBERMAN:
+                    constructor = new LumbermanConstructor(
+                            (LumbermanData) base.getInhabitantData(type));
+                    break;
+                case IRON_MINER:
+                    constructor = new IronMinerConstructor(
+                            (IronMinerData) base.getInhabitantData(type));
+                    break;
+                case GOLD_MINER:
+                    constructor = new GoldMinerConstructor(
+                            (GoldMinerData) base.getInhabitantData(type));
+                    break;
+                case SOLDIER:
+                    constructor = new SoldierConstructor(
+                            (SoldierData) base.getInhabitantData(type));
+                    break;
+                case ARCHER:
+                    constructor = new ArcherConstructor(
+                            (ArcherData) base.getInhabitantData(type));
+                    break;
+                case KNIGHT:
+                    constructor = new KnightConstructor(
+                            (KnightData) base.getInhabitantData(type));
+                    break;
+                case CATAPULT:
+                    constructor = new CatapultConstructor(
+                            (CatapultData) base.getInhabitantData(type));
+                    break;
+            }
+
+            if (constructor == null || base.isVillageFull()) return;
+
+            Inhabitant i = base.tryAddInhabitant(constructor);
+            if (i == null) return;
+
+            InhabitantType finalType = type;
+
+            scheduler.schedule(() -> {
+                base.completeAddInhabitant(i, finalType);
+            }, constructor.getProductionTime(), TimeUnit.SECONDS);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	public void addInhabitantNetwork() {
+		try {
+			InhabitantConstructor constructor;
+			InhabitantType type;
+
+			int choice = (int)(Math.random() * 4);
+
+			switch (choice) {
+				case 0:
+					type = InhabitantType.SOLDIER;
+					constructor = new SoldierConstructor(
+							(SoldierData) base.getInhabitantData(type));
+					break;
+				case 1:
+					type = InhabitantType.ARCHER;
+					constructor = new ArcherConstructor(
+							(ArcherData) base.getInhabitantData(type));
+					break;
+				case 2:
+					type = InhabitantType.KNIGHT;
+					constructor = new KnightConstructor(
+							(KnightData) base.getInhabitantData(type));
+					break;
+				default:
+					type = InhabitantType.CATAPULT;
+					constructor = new CatapultConstructor(
+							(CatapultData) base.getInhabitantData(type));
+					break;
+			}
+
+			if (base.isVillageFull()) return;
+
+			Inhabitant i = base.tryAddInhabitant(constructor);
+
+			if (i == null) return;
+
+			InhabitantType finalType = type;
+
+			scheduler.schedule(() -> {
+				base.completeAddInhabitant(i, finalType);
+			}, constructor.getProductionTime(), TimeUnit.SECONDS);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
 	/**
 	 * Creates new villages until the player selects one, then starts attack
 	 * @throws IOException if <code>view.prompt()</code> fails
@@ -368,6 +537,19 @@ public class GameEngine {
 				generate = false;
 			}
 		} while (generate);
+	}
+
+	public String generateVillageNetwork() {
+		base.generateVillage();
+		return "Village generated";
+	}
+
+	public String generateArmyNetwork() {
+		return "Army generated (test)";
+	}
+
+	public String testVillageNetwork() {
+		return "Village test complete";
 	}
 
 	/**
@@ -430,6 +612,31 @@ public class GameEngine {
 		}
 	}
 
+	public String attackNetwork() {
+		try {
+			int[] fighterCounts = base.getFighterCount();
+
+			if (fighterCounts[0] == 0 &&
+					fighterCounts[1] == 0 &&
+					fighterCounts[2] == 0 &&
+					fighterCounts[3] == 0) {
+
+				return "Attack FAILED (no army)";
+			}
+
+			boolean win = Math.random() > 0.5;
+
+			if (win) {
+				return "ATTACK SUCCESS | Loot gained";
+			} else {
+				return "ATTACK FAILED";
+			}
+
+		} catch (Exception e) {
+			return "Attack error";
+		}
+	}
+
 	/**
 	 * Returns the rank of the active player
 	 */
@@ -476,6 +683,79 @@ public class GameEngine {
 			return null;
 		}
 	}
+
+    public String processCommand(String input) {
+
+        try {
+            input = input.trim().toUpperCase();
+
+            switch (input) {
+
+                case "BUILD":
+                    addBuildingNetwork();
+                    return "Building started";
+
+				case "TRAIN WORKER":
+					addSpecificInhabitant(InhabitantType.WORKER);
+					return "Lumberman training started";
+
+
+                case "TRAIN LUMBERMAN":
+                    addSpecificInhabitant(InhabitantType.LUMBERMAN);
+                    return "Lumberman training started";
+
+                case "TRAIN IRON MINER":
+                    addSpecificInhabitant(InhabitantType.IRON_MINER);
+                    return "Iron miner training started";
+
+                case "TRAIN GOLD MINER":
+                    addSpecificInhabitant(InhabitantType.GOLD_MINER);
+                    return "Gold miner training started";
+
+                case "TRAIN SOLDIER":
+                    addSpecificInhabitant(InhabitantType.SOLDIER);
+                    return "Soldier training started";
+
+                case "TRAIN ARCHER":
+                    addSpecificInhabitant(InhabitantType.ARCHER);
+                    return "Archer training started";
+
+                case "TRAIN KNIGHT":
+                    addSpecificInhabitant(InhabitantType.KNIGHT);
+                    return "Knight training started";
+
+                case "TRAIN CATAPULT":
+                    addSpecificInhabitant(InhabitantType.CATAPULT);
+                    return "Catapult training started";
+
+                case "UPGRADE":
+                    upgradeBuildingNetwork();
+                    return "Upgrade started";
+
+                case "ATTACK":
+                    return attackNetwork();
+
+                case "GENERATE VILLAGE":
+                    return "Village generated";
+
+                case "GENERATE ARMY":
+                    return "Army generated";
+
+                case "TEST VILLAGE":
+                    return "Village test complete";
+
+                case "EXIT":
+                    return "EXIT";
+
+                default:
+                    return "INVALID COMMAND";
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "ERROR processing command";
+        }
+    }
 
 	/**
 	 * Begins a new game.

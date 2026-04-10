@@ -5,7 +5,7 @@ import server.Protocol;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -21,20 +21,25 @@ public class GameClient {
 	private ObjectOutputStream outputStream;
 	private ObjectInputStream inputStream;
 	private BufferedReader in;
-	private volatile boolean attacking;
 	private BlockingQueue<Packet> packetQueue;
 
+	/**
+	 * Class constructor. Gets id and verifies client.
+	 * @param id the client id
+	 * @param hostname the hostname
+	 * @param port the port
+	 */
 	public GameClient(String id, String hostname, int port) {
 		this.id = id;
 		this.hostname = hostname;
 		this.port = port;
-		attacking = false;
 		packetQueue = new LinkedBlockingQueue<>();
 
 		try {
 			socket = new Socket(hostname, port);
 			outputStream = new ObjectOutputStream(socket.getOutputStream());
 			inputStream = new ObjectInputStream(socket.getInputStream());
+			in = new BufferedReader(new InputStreamReader(System.in));
 			System.out.println("Successfully connected to the server.");
 
 			// Verify client; handshake protocol
@@ -55,15 +60,14 @@ public class GameClient {
 			new Thread(this::sendLoop).start();
 
 			//close();
-		} catch (UnknownHostException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (ClassNotFoundException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+	/**
+	 * Runs the receiver loop. Gets data from server then calls appropriate method.
+	 */
 	public void receiveLoop() {
 		try {
 			while (!socket.isClosed()) {
@@ -144,6 +148,9 @@ public class GameClient {
 		}
 	}
 
+	/**
+	 * Runs sender loop. Gets input from console then sends to server
+	 */
 	public void sendLoop() {
 		try {
 			while (!socket.isClosed()) {
@@ -178,7 +185,7 @@ public class GameClient {
 						outputStream.flush();
 						break;
 					case "generate village":
-						outputStream.writeObject(generateVillage());
+						outputStream.writeObject(new Packet(Protocol.GENERATE_VILLAGE, ""));
 						outputStream.flush();
 						handleGenerateVillage();
 						break;
@@ -195,7 +202,12 @@ public class GameClient {
 						outputStream.flush();
 						break;
 					case "close game":
-						outputStream.writeObject(closeGame());
+						outputStream.writeObject(new Packet(Protocol.CLOSE_GAME, ""));
+						outputStream.flush();
+						close();
+						break;
+					case "exit program":
+						outputStream.writeObject(new Packet(Protocol.EXIT_PROGRAM, ""));
 						outputStream.flush();
 						close();
 						break;
@@ -208,6 +220,11 @@ public class GameClient {
 		}
 	}
 
+	/**
+	 * Gets user input for adding a building
+	 * @return a packet
+	 * @throws IOException if BufferedReader fails
+	 */
 	public Packet addBuilding() throws IOException {
 		System.out.print("Building type: ");
 		String type = in.readLine().toLowerCase();
@@ -216,28 +233,43 @@ public class GameClient {
 		return new Packet(Protocol.ADD_BUILDING, type + "\n" + position);
 	}
 
+	/**
+	 * Gets user input for upgrading a building
+	 * @return a packet
+	 * @throws IOException if BufferedReader fails
+	 */
 	public Packet upgradeBuilding() throws IOException {
 		System.out.print("Position [x y]: ");
 		String position = in.readLine().toLowerCase();
 		return new Packet(Protocol.UPGRADE_BUILDING, position);
 	}
 
+	/**
+	 * Gets user input for training an inhabitant
+	 * @return a packet
+	 * @throws IOException if BufferedReader fails
+	 */
 	public Packet trainInhabitant() throws IOException {
 		System.out.print("Inhabitant type: ");
 		String type = in.readLine().toLowerCase();
 		return new Packet(Protocol.TRAIN_INHABITANT, type);
 	}
 
+	/**
+	 * Gets user input for upgrading an inhabitant class
+	 * @return a packet
+	 * @throws IOException if BufferedReader fails
+	 */
 	public Packet upgradeInhabitant() throws IOException {
 		System.out.print("Inhabitant type: ");
 		String type = in.readLine().toLowerCase();
 		return new Packet(Protocol.UPGRADE_INHABITANT, type);
 	}
 
-	public Packet generateVillage() {
-		return new Packet(Protocol.GENERATE_VILLAGE, "");
-	}
-
+	/**
+	 * Gets user input on generated village. Begins attack if accepted
+	 * @throws IOException if BufferedReader fails
+	 */
 	public void handleGenerateVillage() throws IOException {
 		try {
 			Packet option = packetQueue.take();
@@ -245,20 +277,21 @@ public class GameClient {
 			System.out.print("Enter accept to begin attack (anything else to stop): ");
 			String response = in.readLine().toLowerCase();
 
-			switch (response) {
-				case "accept":
-					System.out.println("Target found. Preparing attack force...");
-					attacking = true;
-					handleAttack();
-					break;
-				default:
-					System.out.println("Target rejected.");
+			if (response.equals("accept")) {
+				System.out.println("Target found. Preparing attack force...");
+				handleAttack();
+			} else {
+				System.out.println("Target rejected.");
 			}
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+	/**
+	 * Gets user input for launching an attack
+	 * @throws IOException if BufferedReader fails
+	 */
 	public void handleAttack() throws IOException {
 		System.out.print("Number of soldiers: ");
 		String fighters = in.readLine() + "\n";
@@ -272,10 +305,10 @@ public class GameClient {
 		outputStream.flush();
 	}
 
-	public Packet closeGame() {
-		return new Packet(Protocol.CLOSE_GAME, "");
-	}
-
+	/**
+	 * Closes the client socket
+	 * @throws IOException if an exception is thrown while closing
+	 */
 	public synchronized void close() throws IOException {
 		inputStream.close();
 		outputStream.close();
@@ -283,7 +316,13 @@ public class GameClient {
 		System.out.println("Client closed.");
 	}
 
+	/**
+	 * Main method.
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		GameClient client = new GameClient("2", "localhost", 8080);
+		System.out.print("Client ID: ");
+		Scanner scanner = new Scanner(System.in);
+		GameClient client = new GameClient(scanner.next(), "localhost", 8080);
 	}
 }

@@ -6,7 +6,6 @@ import gameElements.BuildingType;
 import gameElements.InhabitantType;
 import gameElements.building.*;
 import gameElements.inhabitant.*;
-import client.View;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -22,7 +21,7 @@ import utility.*;
  * GameClient.
  */
 public class GameEngine implements Runnable, Observer {
-	private View view;
+	private GameServer server;
 	private ScheduledExecutorService scheduler;
 	private HashMap<String, Player> players;
 	private Player player;
@@ -31,6 +30,7 @@ public class GameEngine implements Runnable, Observer {
 	private ObjectOutputStream outputStream;
 	private ObjectInputStream inputStream;
 	private boolean running;
+	private boolean terminate;
 	private ChallengeEntitySet<Double, Double> targetVillage;
 	private ExecutorService threadPool;
 	private final int[] TESTING_RATIO = new int[2];
@@ -41,11 +41,13 @@ public class GameEngine implements Runnable, Observer {
 	 * @param clientSocket the client to handle
 	 * @param players the valid players
 	 */
-	public GameEngine(Socket clientSocket, HashMap<String, Player> players) {
+	public GameEngine(GameServer server, Socket clientSocket, HashMap<String, Player> players) {
+		this.server = server;
 		this.clientSocket = clientSocket;
 		scheduler = new ScheduledThreadPoolExecutor(10);
 		this.players = players;
 		running = false;
+		terminate = false;
 		threadPool = Executors.newFixedThreadPool(10);
 	}
 
@@ -115,10 +117,18 @@ public class GameEngine implements Runnable, Observer {
 					case CLOSE_GAME:
 						running = false;
 						break;
+					case EXIT_PROGRAM:
+						running = false;
+						terminate = true;
+						break;
 				}
 			}
 
 			close();
+
+			if (terminate) {
+				server.stop();
+			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} catch (ClassNotFoundException e) {
@@ -126,6 +136,10 @@ public class GameEngine implements Runnable, Observer {
 		}
 	}
 
+	/**
+	 * Closes the client handler
+	 * @throws IOException if exception occurs on closing socket and I/O streams
+	 */
 	public void close() throws IOException {
 		base.removeObserver(this);
 		inputStream.close();
@@ -174,12 +188,22 @@ public class GameEngine implements Runnable, Observer {
 		return new VillageSnapshot(map, base.getInventoryValues(), base.getInhabitantLevels(), base.getInhabitantCounts());
 	}
 
+	/**
+	 * Sends an alert to the client
+	 * @param message the alert message
+	 * @throws IOException if outputStream fails
+	 */
 	public void alert(String message) throws IOException {
 		Packet alert = new Packet(Protocol.ALERT, message);
 		outputStream.writeObject(alert);
 		outputStream.flush();
 	}
 
+	/**
+	 * Sends a prompt to the client.
+	 * @param message the prompt message
+	 * @throws IOException if outputStream fails
+	 */
 	public void prompt(String message) throws IOException {
 		Packet alert = new Packet(Protocol.PROMPT, message);
 		outputStream.writeObject(alert);
@@ -463,14 +487,19 @@ public class GameEngine implements Runnable, Observer {
 		}
 	}
 
+	/**
+	 * Conducts attack tests on generated villages
+	 * @throws IOException if alert() fails
+	 */
 	public synchronized void attackTesting() throws IOException {
 		try {
 			TESTING_RATIO[0] = 0;
 			TESTING_RATIO[1] = 0;
 			latch = new CountDownLatch(10);
+			ChallengeEntitySet<Double, Double> challenger = base.createAttackForce(base.getFighterCount());
 
 			for (int i = 0; i < 10; i++) {
-				threadPool.execute(this::runAttackTesting);
+				threadPool.execute(new AttackTest(challenger));
 			}
 
 			latch.await();
@@ -480,32 +509,54 @@ public class GameEngine implements Runnable, Observer {
 		}
 	}
 
-	public void runAttackTesting() {
-		ChallengeEntitySet<Double, Double> challengee = base.generateVillage();
-		ChallengeEntitySet<Double, Double> challenger = base.createAttackForce(base.getFighterCount());
-		ChallengeResult result = Arbitrer.challengeDecide(challenger, challengee);
+	/**
+	 * Helper class for attack testing
+	 */
+	private class AttackTest implements Runnable {
+		private ChallengeEntitySet<Double, Double> challenger;
 
-		if (result.getChallengeWon()) {
-			synchronized (TESTING_RATIO) {
-				TESTING_RATIO[0]++;
-			}
-		} else {
-			synchronized (TESTING_RATIO) {
-				TESTING_RATIO[1]++;
-			}
+		/**
+		 * Class constructor.
+		 * @param challenger the player's army
+		 */
+		public AttackTest(ChallengeEntitySet<Double, Double> challenger) {
+			this.challenger = challenger;
 		}
 
-		latch.countDown();
+		/**
+		 * Conducts one attack test
+		 */
+		public void run() {
+			ChallengeEntitySet<Double, Double> challengee = base.generateVillage();
+			ChallengeResult result = Arbitrer.challengeDecide(challenger, challengee);
+
+			if (result.getChallengeWon()) {
+				synchronized (TESTING_RATIO) {
+					TESTING_RATIO[0]++;
+				}
+			} else {
+				synchronized (TESTING_RATIO) {
+					TESTING_RATIO[1]++;
+				}
+			}
+
+			latch.countDown();
+		}
 	}
 
+	/**
+	 * Conducts defense tests on base
+	 * @throws IOException if alert() fails
+	 */
 	public synchronized void villageTesting() throws IOException {
 		try {
 			TESTING_RATIO[0] = 0;
 			TESTING_RATIO[1] = 0;
 			latch = new CountDownLatch(10);
+			ChallengeEntitySet<Double, Double> challengee = base.createDefenseForce();
 
 			for (int i = 0; i < 10; i++) {
-				threadPool.execute(this::runVillageTesting);
+				threadPool.execute(new DefenseTest(challengee));
 			}
 
 			latch.await();
@@ -515,22 +566,39 @@ public class GameEngine implements Runnable, Observer {
 		}
 	}
 
-	public void runVillageTesting() {
-		ChallengeEntitySet<Double, Double> challengee = base.createDefenseForce();
-		ChallengeEntitySet<Double, Double> challenger = base.generateArmy();
-		ChallengeResult result = Arbitrer.challengeDecide(challenger, challengee);
+	/**
+	 * Helper class for defense testing
+	 */
+	private class DefenseTest implements Runnable {
+		private ChallengeEntitySet<Double, Double> challengee;
 
-		if (result.getChallengeWon()) {
-			synchronized (TESTING_RATIO) {
-				TESTING_RATIO[1]++;
-			}
-		} else {
-			synchronized (TESTING_RATIO) {
-				TESTING_RATIO[0]++;
-			}
+		/**
+		 * Class constructor.
+		 * @param challengee the player's defenses
+		 */
+		public DefenseTest(ChallengeEntitySet<Double, Double> challengee) {
+			this.challengee = challengee;
 		}
 
-		latch.countDown();
+		/**
+		 * Conducts one defense test
+		 */
+		public void run() {
+			ChallengeEntitySet<Double, Double> challenger = base.generateArmy();
+			ChallengeResult result = Arbitrer.challengeDecide(challenger, challengee);
+
+			if (result.getChallengeWon()) {
+				synchronized (TESTING_RATIO) {
+					TESTING_RATIO[1]++;
+				}
+			} else {
+				synchronized (TESTING_RATIO) {
+					TESTING_RATIO[0]++;
+				}
+			}
+
+			latch.countDown();
+		}
 	}
 
 	/**

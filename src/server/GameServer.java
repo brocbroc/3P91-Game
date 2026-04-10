@@ -6,7 +6,11 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
+/**
+ * This class represents the multi-client game server.
+ */
 public class GameServer implements Runnable {
 	private int serverPort;
 	private ServerSocket serverSocket = null;
@@ -14,6 +18,10 @@ public class GameServer implements Runnable {
 	private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 	private HashMap<String, Player> players;
 
+	/**
+	 * Class constructor.
+	 * @param port the port number
+	 */
 	public GameServer(int port) {
 		this.serverPort = port;
 		players = new HashMap<>();
@@ -22,6 +30,9 @@ public class GameServer implements Runnable {
 		players.put("2", new Player("2", new Village()));
 	}
 
+	/**
+	 * Runs the server loop. Listens for clients and creates a client handler when a client is found.
+	 */
 	public void run() {
 		int counter = 0;
 
@@ -46,39 +57,44 @@ public class GameServer implements Runnable {
 			}
 
 			System.out.println("Connection number " + ++counter);
-			this.threadPool.execute(new GameEngine(clientSocket, players));
+			this.threadPool.execute(new GameEngine(this, clientSocket, players));
 		}
 
 		this.threadPool.shutdown();
 		System.out.println("Game server stopped.") ;
 	}
 
+	/**
+	 * Returns whether or not the server is stopped
+	 * @return true if the server is stopped
+	 */
 	private synchronized boolean isStopped() {
 		return this.isStopped;
 	}
 
+	/**
+	 * Stops the server
+	 */
 	public synchronized void stop() {
-		this.isStopped = true;
+		// Only the thread that called stop() is still alive
+		if (((ThreadPoolExecutor) threadPool).getActiveCount() == 1) {
+			this.isStopped = true;
 
-		try {
-			this.serverSocket.close();
-		} catch (IOException e) {
-			throw new RuntimeException("Error closing server", e);
+			try {
+				this.serverSocket.close();
+			} catch (IOException e) {
+				throw new RuntimeException("Error closing server", e);
+			}
 		}
 	}
 
+	/**
+	 * Main method.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		GameServer server = new GameServer(8080);
 		System.out.println("Starting game server.");
 		new Thread(server).start();
-
-		/*try {
-			Thread.sleep(500 * 1000);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-
-		System.out.println("Stopping game server.");
-		server.stop();*/
 	}
 }

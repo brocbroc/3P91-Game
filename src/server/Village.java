@@ -478,7 +478,7 @@ public class Village implements Observable {
 		Random rand = new Random();
 
 		for (int i = 0; i < 4; i++) {
-			fighters[i] = rand.nextInt(5) - 2 + (level + 1) * 5;
+			fighters[i] = rand.nextInt(4) - 2 + (level + 1) * 4;
 		}
 
 		Inventory generatedInventory = new Inventory((level + 1) * 100, (level + 1) * 100,

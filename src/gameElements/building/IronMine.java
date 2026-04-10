@@ -1,5 +1,6 @@
 package gameElements.building;
 
+import gameElements.BuildingType;
 import gameElements.inhabitant.IronMiner;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,15 @@ public class IronMine extends Building {
      */
     public static int getBuildTime() {
         return BUILD_TIME;
+    }
+
+    /**
+     * Returns the type of the building
+     * @return the building type
+     */
+    @Override
+    public BuildingType getType() {
+        return BuildingType.IRON_MINE;
     }
 
     /**

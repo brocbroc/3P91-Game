@@ -1,11 +1,11 @@
-package game;
+package server;
 
 /**
  * This class represents a player of the game.
  * Every player has a village and an ID. The village is not deleted when the player is.
  */
 public class Player {
-	private final int ID;
+	private final String ID;
 	private final Village VILLAGE;
 
 	/**
@@ -13,7 +13,7 @@ public class Player {
 	 * @param id the player ID
 	 * @param village the player's village
 	 */
-	public Player(int id, Village village) {
+	public Player(String id, Village village) {
 		ID = id;
 		VILLAGE = village;
 	}
@@ -22,7 +22,7 @@ public class Player {
 	 * Returns the player ID.
 	 * @return the player ID
 	 */
-	public int getId() {
+	public String getId() {
 		return ID;
 	}
 

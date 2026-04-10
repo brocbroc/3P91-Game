@@ -1,7 +1,8 @@
 package utility;
 
 import ChallengeDecision.*;
-import game.Inventory;
+import gameElements.BuildingType;
+import server.Inventory;
 import gameElements.building.Building;
 import gameElements.building.Defense;
 import java.util.List;
@@ -20,7 +21,26 @@ public class DefenseChallengeEntitySetAdapter extends ChallengeEntitySet<Double,
 		super();
 		List<ChallengeDefense<Double, Double>> entityDefenseList = this.getEntityDefenseList();
 
-		for (int i = 0; i < 5; i++) {
+		for (Building[] row : buildings) {
+			for (Building b : row) {
+				if (b != null) {
+					if (b.getType() == BuildingType.ARCHER_TOWER
+						|| b.getType() == BuildingType.CANNON) {
+						entityDefenseList.add(
+							new ChallengeDefense<>(
+								(double) ((Defense) b).getDamage(),
+								(double) b.getHitPoints()
+							)
+						);
+					} else {
+						entityDefenseList.add(
+							new ChallengeDefense<>(0.0, (double) b.getHitPoints()));
+					}
+				}
+			}
+		}
+
+		/*for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < buildings[i].length; j++) {
 				entityDefenseList.add(
 					new ChallengeDefense<>(0.0, (double) buildings[i][j].getHitPoints()));
@@ -36,7 +56,7 @@ public class DefenseChallengeEntitySetAdapter extends ChallengeEntitySet<Double,
 					)
 				);
 			}
-		}
+		}*/
 
 		List<ChallengeResource<Double, Double>> entityResourceList = this.getEntityResourceList();
 		entityResourceList.add(new ChallengeResource<>((double) inventory.getGold()));

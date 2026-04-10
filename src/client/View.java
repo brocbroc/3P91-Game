@@ -1,6 +1,6 @@
-package gui;
+package client;
 
-import game.*;
+import server.*;
 import gameElements.InhabitantType;
 import gameElements.building.Building;
 import gameElements.inhabitant.InhabitantData;
@@ -54,18 +54,6 @@ public class View implements Runnable, Observer {
 	}
 
 	/**
-	 * Switches to a new player
-	 * @param player the new player
-	 */
-	public void switchPlayer(Player player) {
-		base.removeObserver(this);
-		this.player = player;
-		base = player.getVillage();
-		base.addObserver(this);
-		draw();
-	}
-
-	/**
 	 * Runs the game thread.
 	 * This method takes input from the console and then calls <code>update()</code>
 	 */
@@ -92,12 +80,12 @@ public class View implements Runnable, Observer {
 
 		synchronized (BASE) {
 			System.out.println();
-			int[] inventory = base.getInventoryValues();
+			int[] inventory = BASE.getInventoryValues();
 			System.out.printf("Inventory: Gold - %d, Iron - %d, Lumber - %d", inventory[0], inventory[1], inventory[2]);
 			System.out.println();
-			Building[][] map = base.getMap();
-			EnumMap<InhabitantType, InhabitantData> inhabitantData = base.getAllInhabitantData();
-			int[] counts = base.getInhabitantCountByType();
+			Building[][] map = BASE.getMap();
+			EnumMap<InhabitantType, InhabitantData> inhabitantData = BASE.getAllInhabitantData();
+			int[] counts = BASE.getInhabitantCounts();
 
 			drawVillageRow(map[0]);
 			System.out.printf("    Workers:     %d (level %d)\n", counts[0], inhabitantData.get(InhabitantType.WORKER).getLevel());

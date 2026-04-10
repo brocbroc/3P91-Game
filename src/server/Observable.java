@@ -1,4 +1,4 @@
-package game;
+package server;
 
 /**
  * This interface defines an observable subject.

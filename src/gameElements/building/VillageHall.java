@@ -85,6 +85,15 @@ public class VillageHall extends Building {
 	}
 
 	/**
+	 * Returns the type of the building
+	 * @return the building type
+	 */
+	@Override
+	public BuildingType getType() {
+		return BuildingType.VILLAGE_HALL;
+	}
+
+	/**
 	 * Returns the character representing the building
 	 * @return a character
 	 */

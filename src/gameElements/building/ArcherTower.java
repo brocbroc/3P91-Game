@@ -1,5 +1,6 @@
 package gameElements.building;
 
+import gameElements.BuildingType;
 import utility.Cost;
 import utility.Position;
 
@@ -89,6 +90,15 @@ public class ArcherTower extends Building implements Defense {
     @Override
     public int getDamage() {
         return damage;
+    }
+
+    /**
+     * Returns the type of the building
+     * @return the building type
+     */
+    @Override
+    public BuildingType getType() {
+        return BuildingType.ARCHER_TOWER;
     }
 
     /**

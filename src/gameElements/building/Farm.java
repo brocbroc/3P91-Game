@@ -1,5 +1,6 @@
 package gameElements.building;
 
+import gameElements.BuildingType;
 import utility.Cost;
 import utility.Position;
 
@@ -88,6 +89,15 @@ public class Farm extends Building {
 		}
 
 		return POPULATION_SUPPORTED[level] - POPULATION_SUPPORTED[level - 1];
+	}
+
+	/**
+	 * Returns the type of the building
+	 * @return the building type
+	 */
+	@Override
+	public BuildingType getType() {
+		return BuildingType.FARM;
 	}
 
 	/**

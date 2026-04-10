@@ -1,5 +1,6 @@
 package gameElements.building;
 
+import gameElements.BuildingType;
 import gameElements.inhabitant.Lumberman;
 import java.util.List;
 import java.util.ArrayList;
@@ -80,6 +81,15 @@ public class LumberMill extends Building {
      */
     public static int getBuildTime() {
         return BUILD_TIME;
+    }
+
+    /**
+     * Returns the type of the building
+     * @return the building type
+     */
+    @Override
+    public BuildingType getType() {
+        return BuildingType.LUMBER_MILL;
     }
 
     /**

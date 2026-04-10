@@ -1,5 +1,6 @@
 package gameElements.building;
 
+import gameElements.BuildingType;
 import utility.Cost;
 import utility.Position;
 
@@ -94,6 +95,12 @@ public abstract class Building {
 	public int getHitPoints() {
 		return hitPoints;
 	}
+
+	/**
+	 * Returns the type of the building
+	 * @return the building type
+	 */
+	public abstract BuildingType getType();
 
 	/**
 	 * Returns the character representing the building

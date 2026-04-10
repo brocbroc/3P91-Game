@@ -1,4 +1,4 @@
-package game;
+package server;
 
 import ChallengeDecision.ChallengeEntitySet;
 import gameElements.*;
@@ -78,7 +78,6 @@ public class Village implements Observable {
 
 	/**
 	 * Adds an observer
-	 *
 	 * @param o an observer
 	 */
 	@Override
@@ -88,7 +87,6 @@ public class Village implements Observable {
 
 	/**
 	 * Removes an observer
-	 *
 	 * @param o an observer
 	 */
 	@Override
@@ -98,7 +96,6 @@ public class Village implements Observable {
 
 	/**
 	 * Notifies observers
-	 *
 	 * @param message a string describing the changes to the subject
 	 */
 	@Override
@@ -110,7 +107,6 @@ public class Village implements Observable {
 
 	/**
 	 * Returns the number of rows in <code>map</code>.
-	 *
 	 * @return the number of rows in <code>map</code>
 	 */
 	public static int getMapRowCount() {
@@ -119,7 +115,6 @@ public class Village implements Observable {
 
 	/**
 	 * Returns the number of columns in <code>map</code>.
-	 *
 	 * @return the number of columns in <code>map</code>
 	 */
 	public static int getMapColCount() {
@@ -128,7 +123,6 @@ public class Village implements Observable {
 
 	/**
 	 * Returns the map of the village.
-	 *
 	 * @return <code>map</code>
 	 */
 	public Building[][] getMap() {
@@ -137,7 +131,6 @@ public class Village implements Observable {
 
 	/**
 	 * Checks if a given map square is occupied.
-	 *
 	 * @param pos the position to check
 	 * @return <code>true</code> if the square is occupied, <code>false</code> if not
 	 */
@@ -147,7 +140,6 @@ public class Village implements Observable {
 
 	/**
 	 * Returns the building at the given map square.
-	 *
 	 * @param pos the position to retrieve from
 	 * @return the <code>Building</code> object at the position
 	 */
@@ -157,7 +149,6 @@ public class Village implements Observable {
 
 	/**
 	 * Returns the building data of the specified type
-	 *
 	 * @param type the type of building
 	 * @return the building data
 	 */
@@ -167,7 +158,6 @@ public class Village implements Observable {
 
 	/**
 	 * Returns the building data of the village for all types of buildings
-	 *
 	 * @return the building data
 	 */
 	public EnumMap<BuildingType, BuildingData> getAllBuildingData() {
@@ -176,16 +166,14 @@ public class Village implements Observable {
 
 	/**
 	 * Returns the current inventory count.
-	 *
 	 * @return an array of the inventory count of gold, iron, and lumber, respectively
 	 */
 	public int[] getInventoryValues() {
-		return new int[]{inventory.getGold(), inventory.getIron(), inventory.getLumber()};
+		return new int[] { inventory.getGold(), inventory.getIron(), inventory.getLumber() };
 	}
 
 	/**
 	 * Return the level of the village
-	 *
 	 * @return the level of the village
 	 */
 	public int getLevel() {
@@ -194,7 +182,6 @@ public class Village implements Observable {
 
 	/**
 	 * Returns whether or not the village is full of inhabitants.
-	 *
 	 * @return <code>true</code> if the village is full, <code>false</code> if not
 	 */
 	public boolean isVillageFull() {
@@ -203,7 +190,6 @@ public class Village implements Observable {
 
 	/**
 	 * Returns the work rate of the workers
-	 *
 	 * @return the work rate
 	 */
 	public double getWorkRate() {
@@ -212,7 +198,6 @@ public class Village implements Observable {
 
 	/**
 	 * Returns the inhabitant data of the specified type
-	 *
 	 * @param type the type of inhabitant
 	 * @return the inhabitant data
 	 */
@@ -222,7 +207,6 @@ public class Village implements Observable {
 
 	/**
 	 * Returns the inhabitant data for all types
-	 *
 	 * @return the inhabitant data of all types
 	 */
 	public EnumMap<InhabitantType, InhabitantData> getAllInhabitantData() {
@@ -230,11 +214,27 @@ public class Village implements Observable {
 	}
 
 	/**
+	 * Returns the level of each inhabitant type
+	 * @return the inhabitant levels
+	 */
+	public int[] getInhabitantLevels() {
+		int[] levels = new int[8];
+		levels[0] = inhabitantData.get(InhabitantType.WORKER).getLevel();
+		levels[1] = inhabitantData.get(InhabitantType.LUMBERMAN).getLevel();
+		levels[2] = inhabitantData.get(InhabitantType.IRON_MINER).getLevel();
+		levels[3] = inhabitantData.get(InhabitantType.GOLD_MINER).getLevel();
+		levels[4] = inhabitantData.get(InhabitantType.SOLDIER).getLevel();
+		levels[5] = inhabitantData.get(InhabitantType.ARCHER).getLevel();
+		levels[6] = inhabitantData.get(InhabitantType.KNIGHT).getLevel();
+		levels[7] = inhabitantData.get(InhabitantType.CATAPULT).getLevel();
+		return levels;
+	}
+
+	/**
 	 * Return the counts of the inhabitant types
-	 *
 	 * @return the counts of inhabitants by type
 	 */
-	public int[] getInhabitantCountByType() {
+	public int[] getInhabitantCounts() {
 		int[] counts = new int[8];
 		counts[0] = workers.getCount();
 		counts[1] = lumbermen.getCount();
@@ -249,29 +249,28 @@ public class Village implements Observable {
 
 	/**
 	 * Returns the number of each type of fighter
-	 *
 	 * @return an array of the number of each type of fighter
 	 */
 	public int[] getFighterCount() {
-		return new int[]{
-				fighters.getSoldierCount(),
-				fighters.getArcherCount(),
-				fighters.getKnightCount(),
-				fighters.getCatapultCount()
+		return new int[] {
+			fighters.getSoldierCount(),
+			fighters.getArcherCount(),
+			fighters.getKnightCount(),
+			fighters.getCatapultCount()
 		};
 	}
 
 	/**
-	 * Adds a building to the map if the cost can be paid and there is a free worker.
+	 * Adds a building to the map if the square is empty, there are less than the maximum number of
+	 * buildings of that type, the cost can be paid and there is a free worker.
 	 * Sets the free worker to busy and returns the worker.
-	 *
 	 * @param constructor the building constructor
-	 * @param pos         the position of the building
+	 * @param pos the position of the building
 	 * @return the worker constructing the building if a building is added, <code>null</code> if a
 	 * building cannot be added
 	 */
-	public Worker tryAddBuilding(BuildingConstructor constructor, Position pos) {
-		if (!inventory.checkCost(constructor.getBuildCost()) || workers.isFreePeasantEmpty()) {
+	public synchronized Worker tryAddBuilding(BuildingConstructor constructor, Position pos) {
+		if (isSquareFull(pos) || constructor.getCount() == constructor.getMaxCount() || !inventory.checkCost(constructor.getBuildCost()) || workers.isFreePeasantEmpty()) {
 			return null;
 		}
 
@@ -285,8 +284,7 @@ public class Village implements Observable {
 	/**
 	 * Finishes building construction. Releases the builder and sets the building as not under
 	 * construction.
-	 *
-	 * @param w   the worker constructing the building
+	 * @param w the worker constructing the building
 	 * @param pos the position of the building
 	 */
 	public synchronized void completeAddBuilding(Worker w, Position pos) {
@@ -302,16 +300,17 @@ public class Village implements Observable {
 	}
 
 	/**
-	 * Begins the upgrade building process if the building is not under construction, the cost can
-	 * be paid, and there is a free worker.
-	 *
-	 * @param b the building to upgrade
+	 * Begins the upgrade building process if the building exists, the level is not maxed out, the
+	 * building is not under construction, the cost can be paid, and there is a free worker.
+	 * @param pos the position of the building to upgrade
 	 * @return the worker upgrading the building if the building can be upgrade,
 	 * <code>null</code> if the building cannot be upgraded
 	 */
-	public Worker tryUpgradeBuilding(Building b) {
-		if (b.isUnderConstruction() || !inventory.checkCost(b.getUpgradeCost())
-				|| workers.isFreePeasantEmpty()) {
+	public synchronized Worker tryUpgradeBuilding(Position pos) {
+		Building b = getBuilding(pos);
+
+		if (b == null || b.getLevel() == b.getMaxLevel() || b.isUnderConstruction() || !inventory.checkCost(b.getUpgradeCost())
+			|| workers.isFreePeasantEmpty()) {
 			return null;
 		}
 
@@ -325,12 +324,12 @@ public class Village implements Observable {
 	/**
 	 * Finishes the upgrade building process. Releases the worker, applies the upgrade, and sets
 	 * the building as not under construction.
-	 *
-	 * @param b the building being upgraded
+	 * @param pos the position of the building being upgraded
 	 * @param w the worker upgrading the building
 	 */
-	public synchronized void completeUpgradeBuilding(Building b, Worker w) {
+	public synchronized void completeUpgradeBuilding(Position pos, Worker w) {
 		workers.freePeasant(w);
+		Building b = getBuilding(pos);
 		b.setUnderConstruction(false);
 		b.upgrade();
 
@@ -344,13 +343,12 @@ public class Village implements Observable {
 	}
 
 	/**
-	 * Adds an inhabitant if the cost can be paid.
-	 *
+	 * Adds an inhabitant if the village is not full and the cost can be paid.
 	 * @param constructor the inhabitant constructor
 	 * @return an inhabitant if one was added, <code>null</code> otherwise
 	 */
-	public Inhabitant tryAddInhabitant(InhabitantConstructor constructor) {
-		if (!inventory.checkCost(constructor.getProductionCost())) {
+	public synchronized Inhabitant tryTrainInhabitant(InhabitantConstructor constructor) {
+		if (isVillageFull() || !inventory.checkCost(constructor.getProductionCost())) {
 			return null;
 		}
 
@@ -361,11 +359,10 @@ public class Village implements Observable {
 
 	/**
 	 * Completes adding an inhabitant to the village
-	 *
 	 * @param inhabitant the inhabitant to add
-	 * @param type       the type of inhabitant
+	 * @param type the type of inhabitant
 	 */
-	public synchronized void completeAddInhabitant(Inhabitant inhabitant, InhabitantType type) {
+	public synchronized void completeTrainInhabitant(Inhabitant inhabitant, InhabitantType type) {
 		switch (type) {
 			case WORKER:
 				workers.addPeasant((Worker) inhabitant);
@@ -393,17 +390,17 @@ public class Village implements Observable {
 				break;
 		}
 
-		notifyObservers("Inhabitant added");
+		notifyObservers("Inhabitant trained.");
 	}
 
 	/**
-	 * Begins the upgrade inhabitant process, if the upgrade cost can be paid
-	 *
+	 * Begins the upgrade inhabitant process if the level is not maxed out, the inhabitant type is
+	 * not upgrading, and the upgrade cost can be paid.
 	 * @param constructor the inhabitant constructor
 	 * @return <code>true</code> if the inhabitant can be added, <code>false</code> if not
 	 */
-	public boolean tryUpgradeInhabitant(InhabitantConstructor constructor) {
-		if (constructor.isUpgrading() || !inventory.checkCost(constructor.getUpgradeCost())) {
+	public synchronized boolean tryUpgradeInhabitant(InhabitantConstructor constructor) {
+		if (constructor.getLevel() == constructor.getMaxLevel() || constructor.isUpgrading() || !inventory.checkCost(constructor.getUpgradeCost())) {
 			return false;
 		}
 
@@ -414,10 +411,9 @@ public class Village implements Observable {
 
 	/**
 	 * Completes the upgrade inhabitant process
-	 *
 	 * @param constructor the inhabitant constructor
 	 */
-	public void completeUpgradeInhabitant(InhabitantConstructor constructor) {
+	public synchronized void completeUpgradeInhabitant(InhabitantConstructor constructor) {
 		constructor.upgrade();
 		constructor.setUpgrading(false);
 		notifyObservers("Inhabitant upgraded.");
@@ -425,7 +421,6 @@ public class Village implements Observable {
 
 	/**
 	 * Generates village for attacking.
-	 *
 	 * @return a ChallengeEntitySet representing the village
 	 */
 	public ChallengeEntitySet<Double, Double> generateVillage() {
@@ -461,18 +456,42 @@ public class Village implements Observable {
 		}
 
 		Inventory generatedInventory = new Inventory((level + 1) * 100, (level + 1) * 100,
-				(level + 1) * 100);
+			(level + 1) * 100);
 		return new DefenseChallengeEntitySetAdapter(buildings, generatedInventory);
 	}
 
 	/**
 	 * Returns a ChallengeEntitySet representing the attack force
-	 *
 	 * @param attackForce the counts of the fighters
 	 * @return a ChallengeEntitySet representing the attack force
 	 */
 	public ChallengeEntitySet<Double, Double> createAttackForce(int[] attackForce) {
 		return new AttackChallengeEntitySetAdapter(attackForce, inhabitantData, inventory);
+	}
+
+	/**
+	 * Generates a ChallengeEntitySet representing an attacking army to test the village
+	 * @return a ChallengeEntitySet representing an attacking army
+	 */
+	public ChallengeEntitySet<Double, Double> generateArmy() {
+		int[] fighters = new int[4];
+		Random rand = new Random();
+
+		for (int i = 0; i < 4; i++) {
+			fighters[i] = rand.nextInt(4) - 2 + (level + 1) * 4;
+		}
+
+		Inventory generatedInventory = new Inventory((level + 1) * 100, (level + 1) * 100,
+			(level + 1) * 100);
+		return new AttackChallengeEntitySetAdapter(fighters, inhabitantData, generatedInventory);
+	}
+
+	/**
+	 * Returns a ChallengeEntitySet representing the village defenses
+	 * @return a ChallengeEntitySet representing the village defenses
+	 */
+	public ChallengeEntitySet<Double, Double> createDefenseForce() {
+		return new DefenseChallengeEntitySetAdapter(map, inventory);
 	}
 
 	/**
@@ -486,7 +505,7 @@ public class Village implements Observable {
 		inventory.addGold(loot.GOLD);
 		inventory.addIron(loot.IRON);
 		inventory.addLumber(loot.LUMBER);
-		notifyObservers("Loot added.");
+		notifyObservers("Attack succeeded. Loot added.");
 	}
 
 	/**
@@ -506,7 +525,6 @@ public class Village implements Observable {
 
 	/**
 	 * Updates the number of attack wins or fails.
-	 *
 	 * @param result <code>true</code> if attack was successful, <code>false</code> if not
 	 */
 	public void recordAttack(boolean result) {
@@ -519,7 +537,6 @@ public class Village implements Observable {
 
 	/**
 	 * Returns the rank of the village.
-	 *
 	 * @return a string indicating the rank of the village
 	 */
 	public String getRank() {
@@ -548,31 +565,16 @@ public class Village implements Observable {
 				}
 
 				return "IRON";
-			default:
+ 			default:
 				return "IRON";
 		}
 	}
 
 	/**
 	 * Returns the ratio of successful attacks to total attacks
-	 *
 	 * @return the attack ratio
 	 */
 	private double attackRatio() {
 		return (double) attackWins / (attackWins + attackFails);
-	}
-
-	public List<Building> getAllBuildings() {
-		List<Building> list = new ArrayList<>();
-
-		for (int i = 0; i < map.length; i++) {
-			for (int j = 0; j < map[i].length; j++) {
-				if (map[i][j] != null) {
-					list.add(map[i][j]);
-				}
-			}
-		}
-
-		return list;
 	}
 }

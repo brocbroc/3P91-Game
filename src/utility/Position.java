@@ -1,6 +1,6 @@
 package utility;
 
-import game.Village;
+import server.Village;
 
 /**
  * This class represents a position on the map.

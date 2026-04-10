@@ -3,7 +3,7 @@ package utility;
 import ChallengeDecision.ChallengeAttack;
 import ChallengeDecision.ChallengeEntitySet;
 import ChallengeDecision.ChallengeResource;
-import game.Inventory;
+import server.Inventory;
 import gameElements.InhabitantType;
 import gameElements.inhabitant.*;
 import java.util.EnumMap;

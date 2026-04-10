@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.concurrent.*;
 import utility.*;
@@ -23,7 +24,7 @@ import utility.*;
 public class GameEngine implements Runnable, Observer {
 	private GameServer server;
 	private ScheduledExecutorService scheduler;
-	private HashMap<String, Player> players;
+	private Map<String, Player> players;
 	private Player player;
 	private Village base;
 	private Socket clientSocket;
@@ -41,7 +42,7 @@ public class GameEngine implements Runnable, Observer {
 	 * @param clientSocket the client to handle
 	 * @param players the valid players
 	 */
-	public GameEngine(GameServer server, Socket clientSocket, HashMap<String, Player> players) {
+	public GameEngine(GameServer server, Socket clientSocket, Map<String, Player> players) {
 		this.server = server;
 		this.clientSocket = clientSocket;
 		scheduler = new ScheduledThreadPoolExecutor(10);
@@ -63,8 +64,8 @@ public class GameEngine implements Runnable, Observer {
 			// Verify client; handshake protocol
 			Packet key = (Packet) inputStream.readObject();
 
-			if (key.getHeader() != Protocol.KEY || !players.containsKey(key.getMessage())) {
-				System.out.println("Client is not a valid player.");
+			if (key.getHeader() != Protocol.KEY) {
+				System.out.println("Invalid handshake protocol.");
 				key = new Packet(Protocol.KEY, "invalid");
 				outputStream.writeObject(key);
 				outputStream.flush();
@@ -72,7 +73,16 @@ public class GameEngine implements Runnable, Observer {
 				return;
 			}
 
-			player = players.get(key.getMessage());
+			player = server.authenticatePlayer(key.getMessage());
+
+			if (player == null) {
+				System.out.println("Client is not a valid player.");
+				key = new Packet(Protocol.KEY, "invalid");
+				outputStream.writeObject(key);
+				outputStream.flush();
+				close();
+				return;
+			}
 			base = player.getVillage();
 			base.addObserver(this);
 			key = new Packet(Protocol.KEY, "valid");

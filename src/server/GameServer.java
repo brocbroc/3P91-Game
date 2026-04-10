@@ -3,36 +3,56 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Stream;
 
-/**
- * This class represents the multi-client game server.
- */
 public class GameServer implements Runnable {
 	private int serverPort;
 	private ServerSocket serverSocket = null;
 	private boolean isStopped = false;
 	private ExecutorService threadPool = Executors.newFixedThreadPool(10);
-	private HashMap<String, Player> players;
+	private ConcurrentHashMap<String, Player> players;
 
-	/**
-	 * Class constructor.
-	 * @param port the port number
-	 */
 	public GameServer(int port) {
 		this.serverPort = port;
-		players = new HashMap<>();
-		players.put("0", new Player("0", new Village()));
-		players.put("1", new Player("1", new Village()));
-		players.put("2", new Player("2", new Village()));
+		players = new ConcurrentHashMap<>();
 	}
 
-	/**
-	 * Runs the server loop. Listens for clients and creates a client handler when a client is found.
-	 */
+	public Player authenticatePlayer(String id) {
+		if (players.containsKey(id)) {
+			return players.get(id);
+		}
+
+		if (playerExistsInFile(id)) {
+			Player player = new Player(id, new Village());
+			players.put(id, player);
+			return player;
+		}
+
+		return null;
+	}
+
+	private boolean playerExistsInFile(String id) {
+		Path path = Paths.get("players.txt");
+
+		if (!Files.exists(path)) {
+			return false;
+		}
+
+		try (Stream<String> lines = Files.lines(path)) {
+			return lines.map(String::trim)
+					.anyMatch(line -> line.equals(id));
+		} catch (IOException e) {
+			throw new RuntimeException("Error reading players.txt", e);
+		}
+	}
+
 	public void run() {
 		int counter = 0;
 
@@ -49,7 +69,7 @@ public class GameServer implements Runnable {
 				clientSocket = this.serverSocket.accept();
 			} catch (IOException e) {
 				if (isStopped()) {
-					System.out.println("Game server stopped.") ;
+					System.out.println("Game server stopped.");
 					break;
 				}
 
@@ -61,22 +81,14 @@ public class GameServer implements Runnable {
 		}
 
 		this.threadPool.shutdown();
-		System.out.println("Game server stopped.") ;
+		System.out.println("Game server stopped.");
 	}
 
-	/**
-	 * Returns whether or not the server is stopped
-	 * @return true if the server is stopped
-	 */
 	private synchronized boolean isStopped() {
 		return this.isStopped;
 	}
 
-	/**
-	 * Stops the server
-	 */
 	public synchronized void stop() {
-		// Only the thread that called stop() is still alive
 		if (((ThreadPoolExecutor) threadPool).getActiveCount() == 1) {
 			this.isStopped = true;
 
@@ -88,10 +100,6 @@ public class GameServer implements Runnable {
 		}
 	}
 
-	/**
-	 * Main method.
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		GameServer server = new GameServer(8080);
 		System.out.println("Starting game server.");

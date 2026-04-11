@@ -12,18 +12,33 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Stream;
 
+/**
+ * This class represents the multi-client game server.
+ */
 public class GameServer implements Runnable {
 	private int serverPort;
 	private ServerSocket serverSocket = null;
 	private boolean isStopped = false;
 	private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 	private ConcurrentHashMap<String, Player> players;
+	private String clientIDFilename;
 
-	public GameServer(int port) {
+	/**
+	 * Class constructor.
+	 * @param port the port number
+	 * @param filename the name of the file with client ids
+	 */
+	public GameServer(int port, String filename) {
 		this.serverPort = port;
+		this.clientIDFilename = filename;
 		players = new ConcurrentHashMap<>();
 	}
 
+	/**
+	 * Returns the player associated with the given id
+	 * @param id the player id
+	 * @return the player with the given id, null if no such player exists
+	 */
 	public Player authenticatePlayer(String id) {
 		if (players.containsKey(id)) {
 			return players.get(id);
@@ -38,8 +53,13 @@ public class GameServer implements Runnable {
 		return null;
 	}
 
+	/**
+	 * Returns true if the given id is in the client file
+	 * @param id the id to check
+	 * @return true if the id is in the client file, false if not
+	 */
 	private boolean playerExistsInFile(String id) {
-		Path path = Paths.get("players.txt");
+		Path path = Paths.get(clientIDFilename);
 
 		if (!Files.exists(path)) {
 			return false;
@@ -53,6 +73,9 @@ public class GameServer implements Runnable {
 		}
 	}
 
+	/**
+	 * Runs the server loop. Listens for clients and creates a client handler when a client is found.
+	 */
 	public void run() {
 		int counter = 0;
 
@@ -84,10 +107,17 @@ public class GameServer implements Runnable {
 		System.out.println("Game server stopped.");
 	}
 
+	/**
+	 * Returns whether or not the server is stopped
+	 * @return true if the server is stopped
+	 */
 	private synchronized boolean isStopped() {
 		return this.isStopped;
 	}
 
+	/**
+	 * Stops the server
+	 */
 	public synchronized void stop() {
 		if (((ThreadPoolExecutor) threadPool).getActiveCount() == 1) {
 			this.isStopped = true;
@@ -100,8 +130,12 @@ public class GameServer implements Runnable {
 		}
 	}
 
+	/**
+	 * Main method.
+	 * @param args string arguments
+	 */
 	public static void main(String[] args) {
-		GameServer server = new GameServer(8080);
+		GameServer server = new GameServer(8080, "players.txt");
 		System.out.println("Starting game server.");
 		new Thread(server).start();
 	}

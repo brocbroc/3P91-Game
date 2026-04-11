@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.concurrent.*;
@@ -64,8 +63,7 @@ public class GameEngine implements Runnable, Observer {
 			// Verify client; handshake protocol
 			Packet key = (Packet) inputStream.readObject();
 
-			if (key.getHeader() != Protocol.KEY) {
-				System.out.println("Invalid handshake protocol.");
+			if (key.getHeader() != Protocol.KEY) { // Client is not following handshake protocol
 				key = new Packet(Protocol.KEY, "invalid");
 				outputStream.writeObject(key);
 				outputStream.flush();
@@ -75,14 +73,14 @@ public class GameEngine implements Runnable, Observer {
 
 			player = server.authenticatePlayer(key.getMessage());
 
-			if (player == null) {
-				System.out.println("Client is not a valid player.");
+			if (player == null) { // Client is not a valid player
 				key = new Packet(Protocol.KEY, "invalid");
 				outputStream.writeObject(key);
 				outputStream.flush();
 				close();
 				return;
 			}
+
 			base = player.getVillage();
 			base.addObserver(this);
 			key = new Packet(Protocol.KEY, "valid");
